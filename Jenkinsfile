@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        sh 'sudo ./gradlew build'
+        sh './gradlew build'
       }
     }
 
