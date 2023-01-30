@@ -14,11 +14,5 @@ pipeline {
       }
     }
 
-    stage('run') {
-      steps {
-        sh './gradlew bootRun'
-      }
-    }
-
   }
 }
