@@ -1,10 +1,17 @@
 package com.tukorea.cogTest.domain.test;
 
-public class Twohand extends Test{
-    private Long totalMeanDuration;
-    private Long totalMeanError;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    public Twohand(Long totalMeanDuration, Long totalMeanError) {
+@NoArgsConstructor
+@Getter
+public class Twohand extends Test{
+    private Double totalMeanDuration;
+    private Double totalMeanError;
+
+    @Builder
+    public Twohand(Double totalMeanDuration, Double totalMeanError) {
         this.totalMeanDuration = totalMeanDuration;
         this.totalMeanError = totalMeanError;
     }

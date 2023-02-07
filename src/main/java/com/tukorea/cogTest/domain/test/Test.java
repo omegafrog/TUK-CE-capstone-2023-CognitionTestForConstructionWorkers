@@ -1,17 +1,16 @@
 package com.tukorea.cogTest.domain.test;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.EqualsAndHashCode;
 
-@Entity
-@EqualsAndHashCode
+@Embeddable
 public class Test {
 
     @Id
     @GeneratedValue
     private Long id;
+
     public Test() {
     }
 }

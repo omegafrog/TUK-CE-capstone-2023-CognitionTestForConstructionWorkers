@@ -1,7 +1,6 @@
 package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.dto.SubjectDTO;
-import com.tukorea.cogTest.repository.JpaSimpleSubjectRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
@@ -16,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class SubjectRepositoryTest {
 
     @Autowired
-    public JpaSimpleSubjectRepository subjectRepository;
+    private SubjectRepository subjectRepository;
 
     @PersistenceUnit
     public EntityManagerFactory emf;
