@@ -23,7 +23,10 @@ public class WebSecurityConfig {
                                 .csrf()
                                 .ignoringRequestMatchers(
                                         new AntPathRequestMatcher("/h2-console/**")
-                                );
+                                ).and()
+                                .headers()
+                                .frameOptions()
+                                .sameOrigin();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
