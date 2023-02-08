@@ -1,5 +1,7 @@
 package com.tukorea.cogTest.domain;
 
+import com.tukorea.cogTest.domain.enums.DetailedJob;
+import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import jakarta.persistence.*;
 import lombok.Builder;

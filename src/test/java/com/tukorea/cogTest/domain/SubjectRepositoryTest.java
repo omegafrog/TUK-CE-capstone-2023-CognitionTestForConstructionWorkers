@@ -1,5 +1,7 @@
 package com.tukorea.cogTest.domain;
 
+import com.tukorea.cogTest.domain.enums.DetailedJob;
+import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
+@Transactional
 class SubjectRepositoryTest {
 
     @Autowired
@@ -21,7 +24,6 @@ class SubjectRepositoryTest {
     public EntityManagerFactory emf;
 
     @Test
-    @Transactional
     void saveNFindTest(){
         EntityManager em = emf.createEntityManager();
         Field field = Field.builder()
@@ -38,14 +40,13 @@ class SubjectRepositoryTest {
                 .risk(Risk.HIGH_RISK)
                 .build();
         Subject savedEntity = subjectRepository.save(subject);
-        Subject foundedEntity = subjectRepository.findById(savedEntity.getId()).orElseThrow();
+        Subject foundedEntity = subjectRepository.findById(savedEntity.getId());
         System.out.println("savedEntity = " + savedEntity.getId());
         System.out.println("foundedEn = " + foundedEntity.getId());
         Assertions.assertThat(savedEntity).isEqualTo(foundedEntity);
     }
 
     @Test
-    @Transactional
     void updateSubjectTest(){
         EntityManager em = emf.createEntityManager();
         Field field = Field.builder()
@@ -72,5 +73,30 @@ class SubjectRepositoryTest {
                 .build().toDTO();
         Subject updatedSubject = savedEntity.update(updateDTO);
         Assertions.assertThat(updatedSubject.getName()).isEqualTo(updateDTO.getName());
+    }
+
+    @Test
+    void deleteTest(){
+        EntityManager em = emf.createEntityManager();
+        Field field = Field.builder()
+                .name("testField1")
+                .numOfWorkers(0)
+                .build();
+        em.persist(field);
+        Subject subject = Subject.builder()
+                .age(10)
+                .career(10)
+                .field(field)
+                .name("testWorker")
+                .detailedJob(DetailedJob.COMMON)
+                .risk(Risk.HIGH_RISK)
+                .build();
+        Subject savedEntity = subjectRepository.save(subject);
+        subjectRepository.delete(savedEntity.getId());
+        Assertions.assertThatThrownBy(
+                () -> subjectRepository.findById(savedEntity.getId())
+
+        ).isInstanceOf(IllegalArgumentException.class);
+
     }
 }

@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.domain;
+package com.tukorea.cogTest.domain.enums;
 
 public enum Risk {
     NORMAL("정상"),

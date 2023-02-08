@@ -1,8 +1,8 @@
 package com.tukorea.cogTest.dto;
 
-import com.tukorea.cogTest.domain.DetailedJob;
+import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.Field;
-import com.tukorea.cogTest.domain.Risk;
+import com.tukorea.cogTest.domain.enums.Risk;
 import lombok.Builder;
 import lombok.Data;
 

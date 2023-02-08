@@ -1,5 +1,7 @@
 package com.tukorea.cogTest.domain;
 
+import com.tukorea.cogTest.domain.enums.DetailedJob;
+import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.test.Pvt;
 import com.tukorea.cogTest.domain.test.Twohand;
 import jakarta.persistence.EntityManager;
@@ -47,8 +49,7 @@ class TestResultTest {
                 .target(savedSubject)
                 .build();
         TestResult savedResult = testResultRepository.save(result);
-        TestResult foundedResult = testResultRepository.findById(savedResult.getId())
-                .orElseThrow(() -> new IllegalArgumentException());
+        TestResult foundedResult = testResultRepository.findById(savedResult.getId());
         Assertions.assertThat(savedResult).isEqualTo(foundedResult);
     }
 

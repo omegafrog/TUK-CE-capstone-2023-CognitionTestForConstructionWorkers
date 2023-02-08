@@ -9,5 +9,5 @@ public interface TestResultRepository {
 
     TestResult update(Long id, TestResult item);
 
-    Optional<TestResult> findById(Long id);
+    TestResult findById(Long id);
 }

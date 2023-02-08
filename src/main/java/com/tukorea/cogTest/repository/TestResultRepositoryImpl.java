@@ -27,14 +27,14 @@ public class TestResultRepositoryImpl implements TestResultRepository {
     }
 
     @Override
-    public TestResult update(Long id, TestResult item) {
-        TestResult foundedResult = simpleTestResultRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 검사결과입니다." + id));
+    public TestResult update(Long id, TestResult item) throws RuntimeException{
+        TestResult foundedResult = findById(id);
         return foundedResult.update(item);
     }
 
     @Override
-    public Optional<TestResult> findById(Long id) {
-        return simpleTestResultRepository.findById(id);
+    public TestResult findById(Long id) throws RuntimeException{
+        return simpleTestResultRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("그런 테스트 결과는 없습니다." + id));
     }
 }

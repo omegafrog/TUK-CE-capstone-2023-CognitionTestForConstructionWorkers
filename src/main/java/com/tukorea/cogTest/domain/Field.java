@@ -11,7 +11,6 @@ import java.util.Objects;
 
 
 @Entity
-@EqualsAndHashCode
 @NoArgsConstructor
 @Getter
 public class Field {
@@ -48,5 +47,11 @@ public class Field {
 
     public void appendWorkerNum(){
         numOfWorkers++;
+    }
+
+    public Field update(Field field){
+        this.name = field.getName();
+        this.numOfWorkers = field.getNumOfWorkers();
+        return this;
     }
 }

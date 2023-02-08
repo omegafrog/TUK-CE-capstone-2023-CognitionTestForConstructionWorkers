@@ -13,8 +13,8 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
     public final JpaSimpleSubjectRepository simpleSubjectRepository;
     @Override
-    public Subject update(Long id, Subject updateArgument) {
-        Subject foundedSubject = simpleSubjectRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
+    public Subject update(Long id, Subject updateArgument) throws RuntimeException{
+        Subject foundedSubject = findById(id);
         return foundedSubject.update(updateArgument.toDTO());
     }
 
@@ -25,7 +25,15 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public Optional<Subject> findById(Long id) {
-        return simpleSubjectRepository.findById(id);
+    public Subject findById(Long id) throws RuntimeException{
+        return simpleSubjectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
+    }
+
+    @Override
+    public void delete(Long id) throws IllegalArgumentException{
+        Subject foundedSubject = simpleSubjectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
+        simpleSubjectRepository.delete(foundedSubject);
     }
 }

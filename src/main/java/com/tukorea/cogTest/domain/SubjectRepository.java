@@ -5,5 +5,8 @@ import java.util.Optional;
 public interface SubjectRepository {
      Subject save(Subject subject);
      Subject update(Long id, Subject subject);
-     Optional<Subject> findById(Long id);
+     Subject findById(Long id);
+
+     void delete(Long id);
 }
+
