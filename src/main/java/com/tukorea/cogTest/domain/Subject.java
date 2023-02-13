@@ -2,6 +2,7 @@ package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -20,8 +21,14 @@ public class Subject {
 
     @Id
     @GeneratedValue
-    private Long id;
-    private String name;
+    Long id;
+
+    String name;
+    String username;
+    String password;
+
+    Role role;
+
     private int age;
     private DetailedJob detailedJob;
     private int career;

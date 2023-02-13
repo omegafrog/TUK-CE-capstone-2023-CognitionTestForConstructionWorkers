@@ -6,7 +6,9 @@ public interface SubjectRepository {
      Subject save(Subject subject);
      Subject update(Long id, Subject subject);
      Subject findById(Long id);
-
      void delete(Long id);
+
+     Subject findByUsername(String username);
+
 }
 
