@@ -5,13 +5,11 @@ import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
+import com.tukorea.cogTest.dtos.FieldForm;
 import com.tukorea.cogTest.service.FieldService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +33,7 @@ public class FieldController {
     private ObjectMapper objectMapper;
 
     @PostMapping("")
-    public ResponseEntity<Map<String, Object>> addField(@ModelAttribute Field field, HttpServletResponse response)  {
+    public ResponseEntity<Map<String, Object>> addField( FieldForm field)  {
         try {
             Field savedField = fieldService.save(field);
             ConcurrentHashMap<String, Object> result = new ConcurrentHashMap<>();
@@ -48,15 +46,86 @@ public class FieldController {
         }
     }
 
-    @PostMapping(value = "/{:id}/workers", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String, Object>> addWorkers(
+    @PostMapping(value = "{id}/workers")
+    public ResponseEntity<Map<String, Object>> addWorker(
+            @RequestParam String mode,
             @PathVariable Long id,
-            @RequestParam MultipartFile file
+            @RequestParam MultipartFile file,
+            @RequestParam List<Subject> subjects,
+            @ModelAttribute Subject subject
     ) {
         try {
+            return switch (mode) {
+                case "file" -> addWorkerByFile(id, file);
+                case "multi" -> addMultiWorkers(id, subjects);
+                case "sole" -> addSoleWorker(id, subject);
+                default ->
+                        new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+            };
+        }catch (NullPointerException e){
+            return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("{id}")
+    public ResponseEntity<Map<String, Object>> updateField(
+            @PathVariable Long id,
+            @ModelAttribute FieldForm field) {
+        try {
+            Field updatedField = fieldService.update(id, field);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("field", updatedField);
+            ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Update Field success", result);
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Map<String, Object>> deleteField(
+            @PathVariable Long id){
+        try {
+            fieldService.delete(id);
+            ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Delete Field success", null);
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null);
+            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    /**
+     * ResponseEntity body를 만들어주는 메소드
+     * @param statusCode : HttpStatus
+     * @param msg : String
+     * @param results : Map&lt;String, Object&gt;
+     * @return ConcurrentHashMap&lt;String, Object&gt;
+     */
+    private static ConcurrentHashMap<String, Object> setResponseBody(HttpStatus statusCode, String msg, Map<String, Object> results) {
+        ConcurrentHashMap<String, Object> body= new ConcurrentHashMap<>();
+        body.put("statusCode", statusCode);
+        body.put("msg", msg);
+        if(results!=null){
+            body.put("results", results);
+        }
+        return body;
+    }
+
+    /**
+     * 피험자를 csv file로 받아서 field에 추가하는 메소드
+     * @param id : field id
+     * @param file : file
+     * @return ResponseEntity
+     */
+    private ResponseEntity<Map<String, Object>> addWorkerByFile(Long id, MultipartFile file) {
+        try {
             Field foundedField = fieldService.findById(id);
+
             InputStream inputStream = file.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
             List<Subject> subjectList = new ArrayList<>();
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
@@ -86,17 +155,15 @@ public class FieldController {
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server error", null);
             return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
-
     }
 
-    @PostMapping("/{:id}/workers")
-    public ResponseEntity<Map<String, Object>> addWorker(
-            @PathVariable Long id,
-            @ModelAttribute Subject subject,
-            HttpServletResponse response) {
-
+    /**
+     * 피험자 1명을 필드에 추가함
+     * @param id : field id
+     * @param subject : 추가할 피험자
+     * @return : ResponseEntity
+     */
+    private ResponseEntity<Map<String, Object>> addSoleWorker(Long id, Subject subject) {
         try {
             Field foundedField = fieldService.findById(id);
             subject.assignField(foundedField);
@@ -112,11 +179,25 @@ public class FieldController {
         }
     }
 
-    private static ConcurrentHashMap<String, Object> setResponseBody(HttpStatus statusCode, String msg, Map<String, Object> results) {
-        ConcurrentHashMap<String, Object> body= new ConcurrentHashMap<>();
-        body.put("statusCode", statusCode);
-        body.put("msg", msg);
-        body.put("results", results);
-        return body;
+    /**
+     * 여러명의 피험자를 필드에 추가함
+     * @param id : field id
+     * @param subjects : subject list
+     * @return : ResponseEntity
+     */
+    private ResponseEntity<Map<String, Object>> addMultiWorkers(Long id, List<Subject> subjects) {
+        try {
+            Field foundedField = fieldService.findById(id);
+            for (Subject subject : subjects) {
+                subject.assignField(foundedField);
+                Subject savedSubject = subjectService.save(subject);
+            }
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("subjects", subjects);
+            return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add multiple Workers success", result), HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            log.error("{}", e.getMessage());
+            return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+        }
     }
 }
