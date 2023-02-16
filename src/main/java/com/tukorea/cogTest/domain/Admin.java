@@ -15,12 +15,14 @@ import java.util.Objects;
 public class Admin {
     @Id
     @GeneratedValue
-    private Long id;
+    Long id;
 
-    private String name;
+    String name;
+    String username;
+    String password;
+    Role role;
     private String position;
 
-    private Role role;
 
     @OneToOne
     @JoinColumn(name = "field_id")

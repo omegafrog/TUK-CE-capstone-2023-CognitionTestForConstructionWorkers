@@ -36,4 +36,10 @@ public class SubjectRepositoryImpl implements SubjectRepository {
                 .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
         simpleSubjectRepository.delete(foundedSubject);
     }
+
+    @Override
+    public Subject findByUsername(String username) {
+        return simpleSubjectRepository.findByUsername(username)
+                .orElseThrow(()->new IllegalArgumentException("그런 피험자는 없습니다."+username));
+    }
 }
