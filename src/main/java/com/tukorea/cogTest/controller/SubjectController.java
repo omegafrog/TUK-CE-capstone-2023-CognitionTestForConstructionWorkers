@@ -26,10 +26,9 @@ public class SubjectController {
     }
 
     @PostMapping("/{id}/test-result")
-    public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResult testResult){
+    public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult){
         Subject subject = subjectService.findSubject(id);
-        testResult.assignTarget(subject);
-        return testResultService.save(testResult);
+        return testResultService.save(testResult, subject);
 
     }
 

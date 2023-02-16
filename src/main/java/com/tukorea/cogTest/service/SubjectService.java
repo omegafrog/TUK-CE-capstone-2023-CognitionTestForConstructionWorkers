@@ -44,13 +44,14 @@ public class SubjectService implements UserDetailsService{
     }
      @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try{
-            Subject foundedSubject = subjectRepository.findByUsername(username);
-            return User.withUsername(foundedSubject.getUsername())
-                    .password(foundedSubject.getPassword())
-                    .roles(foundedSubject.getRole().value)
-                    .build();
-        }catch (IllegalArgumentException e){
-            throw new UsernameNotFoundException(e.getMessage());
-        }
+         try {
+             Subject foundedSubject = subjectRepository.findByUsername(username);
+             return User.withUsername(foundedSubject.getUsername())
+                     .password(foundedSubject.getPassword())
+                     .roles(foundedSubject.getRole().value)
+                     .build();
+         } catch (IllegalArgumentException e) {
+             throw new UsernameNotFoundException(e.getMessage());
+         }
+     }
 }

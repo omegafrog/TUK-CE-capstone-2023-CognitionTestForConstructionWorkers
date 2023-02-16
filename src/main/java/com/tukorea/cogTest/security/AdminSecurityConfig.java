@@ -44,13 +44,12 @@ public class AdminSecurityConfig {
     @Bean
     SecurityFilterChain subject(HttpSecurity http) throws Exception {
         http
-
                 .securityMatcher("/subject/**")
                 .authenticationProvider(subjectAuthenticationProvider)
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.ROLE_USER.value)
                 .and()
-                .formLogin()
+                .formLogin().permitAll()
                 .loginProcessingUrl("/subject/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
