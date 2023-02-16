@@ -74,6 +74,10 @@ public class Subject {
         return this;
     }
 
+    public void assignField(Field field){
+        this.field = field;
+    }
+
     public SubjectDTO toDTO(){
         return SubjectDTO.builder()
                 .id(this.id)

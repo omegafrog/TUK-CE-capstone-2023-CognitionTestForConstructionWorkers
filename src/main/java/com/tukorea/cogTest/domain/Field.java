@@ -2,7 +2,6 @@ package com.tukorea.cogTest.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
@@ -21,7 +20,7 @@ public class Field {
 
     private String name;
 
-    private int numOfWorkers;
+    private int numOfWorkers=0;
 
     @Builder
     public Field(Long id, String name, int numOfWorkers) {
