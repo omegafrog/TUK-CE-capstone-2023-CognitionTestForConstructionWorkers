@@ -1,9 +1,11 @@
 package com.tukorea.cogTest.service;
 
+
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.domain.TestResultRepository;
 import com.tukorea.cogTest.dto.TestResultForm;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class TestResultService {
 
     /**
      * 테스트 결과를 저장한다.
+
      * @param testResultForm 테스트 결과 폼 dto
      * @param subject 피험자 객체
      * @return TestResult 저장한 테스트 결과 객체
@@ -39,5 +42,6 @@ public class TestResultService {
     public List<TestResult> findBySubjectId(Long id){
         return testResultRepository.findByUserId(id);
     }
+
 
 }

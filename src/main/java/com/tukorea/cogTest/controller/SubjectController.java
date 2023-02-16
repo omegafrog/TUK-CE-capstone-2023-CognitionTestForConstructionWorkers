@@ -17,18 +17,20 @@ import java.util.List;
 @RequestMapping("/subject")
 public class SubjectController {
 
-    private final TestResultService testResultService;
     private final SubjectService subjectService;
+    private final TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
-    public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) throws RuntimeException {
-        return testResultService.findBySubjectId(id);
+    public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) {
+        return subjectService.findTestResult(id);
     }
 
     @PostMapping("/{id}/test-result")
-    public TestResult saveSubjectTestResult(@PathVariable Long id,  TestResultForm testResult) throws RuntimeException{
-        Subject foundedSubject = subjectService.findSubject(id);
-        return testResultService.save(testResult, foundedSubject);
+    public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResult testResult){
+        Subject subject = subjectService.findSubject(id);
+        testResult.assignTarget(subject);
+        return testResultService.save(testResult);
+
     }
 
 }
