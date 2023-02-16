@@ -2,6 +2,8 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
+import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.service.SubjectService;
 import com.tukorea.cogTest.service.TestResultService;
@@ -21,15 +23,14 @@ public class SubjectController {
     private final TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
-    public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) {
+    public List<TestResultDTO> lookupSubjectTestResult(@PathVariable Long id) {
         return subjectService.findTestResult(id);
     }
 
     @PostMapping("/{id}/test-result")
-    public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult){
-        Subject subject = subjectService.findSubject(id);
-        return testResultService.save(testResult, subject);
-
+    public TestResultDTO saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult){
+        SubjectDTO subjectDTO = subjectService.findSubject(id).toDTO();
+        return testResultService.save(testResult, subjectDTO);
     }
 
 }

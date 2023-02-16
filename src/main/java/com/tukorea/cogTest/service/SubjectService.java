@@ -3,8 +3,8 @@ package com.tukorea.cogTest.service;
 
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.SubjectRepository;
-import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.domain.TestResultRepository;
+import com.tukorea.cogTest.dto.TestResultDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,9 +29,13 @@ public class SubjectService implements UserDetailsService{
      * @return List&lt;TestResult&gt; : 테스트 결과 객체 리스트
      * @throws RuntimeException : 피험자의 id에 해당하는 피험자를 찾지 못했을 경우 IllegalArgumentException을 throw한다.
      */
-    public List<TestResult> findTestResult(Long subjectId) throws RuntimeException{
+    public List<TestResultDTO> findTestResult(Long subjectId) throws RuntimeException{
         Subject foundedSubject = subjectRepository.findById(subjectId);
-        return testResultRepository.findByUserId(foundedSubject.getId());
+        List<TestResultDTO> result = new ArrayList<>();
+        testResultRepository.findByUserId(foundedSubject.getId()).iterator().forEachRemaining(
+                testResult -> result.add(testResult.toDTO())
+        );
+        return result;
     }
 
     /**
@@ -54,4 +59,5 @@ public class SubjectService implements UserDetailsService{
              throw new UsernameNotFoundException(e.getMessage());
          }
      }
+
 }

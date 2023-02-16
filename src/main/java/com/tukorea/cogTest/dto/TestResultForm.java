@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Data
 public class TestResultForm {
-    private Subject target;
+    private SubjectDTO target;
 
     private LocalDate date = LocalDate.now();
 
