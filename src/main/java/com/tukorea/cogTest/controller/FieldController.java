@@ -1,12 +1,14 @@
 package com.tukorea.cogTest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
-import com.tukorea.cogTest.dtos.FieldForm;
+import com.tukorea.cogTest.dto.FieldDTO;
+import com.tukorea.cogTest.dto.SubjectForm;
+import com.tukorea.cogTest.dto.FieldForm;
 import com.tukorea.cogTest.service.FieldService;
+import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,7 @@ public class FieldController {
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> addField( FieldForm field)  {
         try {
-            Field savedField = fieldService.save(field);
+            FieldDTO savedField = fieldService.save(field);
             ConcurrentHashMap<String, Object> result = new ConcurrentHashMap<>();
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
@@ -72,7 +74,7 @@ public class FieldController {
             @PathVariable Long id,
             @ModelAttribute FieldForm field) {
         try {
-            Field updatedField = fieldService.update(id, field);
+            FieldDTO updatedField = fieldService.update(id, field);
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("field", updatedField);
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Update Field success", result);
@@ -121,7 +123,7 @@ public class FieldController {
      */
     private ResponseEntity<Map<String, Object>> addWorkerByFile(Long id, MultipartFile file) {
         try {
-            Field foundedField = fieldService.findById(id);
+            FieldDTO foundedField = fieldService.findById(id);
 
             InputStream inputStream = file.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -130,14 +132,14 @@ public class FieldController {
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 String[] split = line.split(",");
-                Subject subject = Subject.builder()
+                SubjectForm subject = SubjectForm.builder()
                         .name(split[0])
                         .age(Integer.parseInt(split[1]))
                         .detailedJob(DetailedJob.values()[Integer.parseInt(split[2])])
                         .career(Integer.parseInt(split[3]))
                         .remarks(split[4])
                         .risk(Risk.values()[Integer.parseInt(split[5])])
-                        .field(foundedField)
+                        .fieldDTO(foundedField)
                         .build();
                 Subject savedSubject = subjectService.save(subject);
                 subjectList.add(savedSubject);
@@ -165,7 +167,7 @@ public class FieldController {
      */
     private ResponseEntity<Map<String, Object>> addSoleWorker(Long id, Subject subject) {
         try {
-            Field foundedField = fieldService.findById(id);
+            FieldDTO foundedField = fieldService.findById(id);
             subject.assignField(foundedField);
             Subject savedSubject = subjectService.save(subject);
             Map<String, Object> result = new ConcurrentHashMap<>();
@@ -187,7 +189,7 @@ public class FieldController {
      */
     private ResponseEntity<Map<String, Object>> addMultiWorkers(Long id, List<Subject> subjects) {
         try {
-            Field foundedField = fieldService.findById(id);
+            FieldDTO foundedField = fieldService.findById(id);
             for (Subject subject : subjects) {
                 subject.assignField(foundedField);
                 Subject savedSubject = subjectService.save(subject);

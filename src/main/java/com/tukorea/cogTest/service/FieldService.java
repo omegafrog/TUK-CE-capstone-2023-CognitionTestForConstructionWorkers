@@ -2,7 +2,8 @@ package com.tukorea.cogTest.service;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.FieldRepository;
-import com.tukorea.cogTest.dtos.FieldForm;
+import com.tukorea.cogTest.dto.FieldDTO;
+import com.tukorea.cogTest.dto.FieldForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,24 +12,24 @@ public class FieldService {
     @Autowired
     private  FieldRepository fieldRepository;
 
-    public Field save(FieldForm fieldForm) throws IllegalArgumentException{
+    public FieldDTO save(FieldForm fieldForm) throws IllegalArgumentException{
         Field field = Field.builder()
                 .name(fieldForm.getName())
                 .numOfWorkers(fieldForm.getNumOfWorkers())
                 .build();
-        return fieldRepository.save(field);
+        return fieldRepository.save(field).toDTO();
     }
 
-    public Field findById(Long id) throws IllegalArgumentException{
-        return fieldRepository.findById(id);
+    public FieldDTO findById(Long id) throws IllegalArgumentException{
+        return fieldRepository.findById(id).toDTO();
     }
 
-    public Field update(Long id, FieldForm fieldForm){
+    public FieldDTO update(Long id, FieldForm fieldForm){
         Field field = Field.builder()
                 .name(fieldForm.getName())
                 .numOfWorkers(fieldForm.getNumOfWorkers())
                 .build();
-        return fieldRepository.update(id, field);
+        return fieldRepository.update(id, field).toDTO();
     }
 
     public void delete(Long id){
