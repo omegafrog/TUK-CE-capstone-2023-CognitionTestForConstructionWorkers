@@ -2,6 +2,7 @@ package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.test.Pvt;
 import com.tukorea.cogTest.domain.test.Twohand;
+import com.tukorea.cogTest.dto.TestResultDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,4 +74,13 @@ public class TestResult {
         this.target = target;
     }
 
+    public TestResultDTO toDTO(){
+        return TestResultDTO.builder()
+                .id(id)
+                .date(date)
+                .target(target)
+                .twohandResult(twohandResult)
+                .pvtResult(pvtResult)
+                .build();
+    }
 }
