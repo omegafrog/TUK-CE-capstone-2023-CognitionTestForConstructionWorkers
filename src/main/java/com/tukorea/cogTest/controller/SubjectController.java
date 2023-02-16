@@ -2,6 +2,7 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
+import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.service.SubjectService;
 import com.tukorea.cogTest.service.TestResultService;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +17,18 @@ import java.util.List;
 @RequestMapping("/subject")
 public class SubjectController {
 
-    private final SubjectService subjectService;
     private final TestResultService testResultService;
+    private final SubjectService subjectService;
 
     @GetMapping("/{id}/test-result")
-    public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) {
-        return subjectService.findTestResult(id);
+    public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) throws RuntimeException {
+        return testResultService.findBySubjectId(id);
     }
 
     @PostMapping("/{id}/test-result")
-    public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResult testResult){
-        Subject subject = subjectService.findSubject(id);
-        testResult.assignTarget(subject);
-        return testResultService.save(testResult);
+    public TestResult saveSubjectTestResult(@PathVariable Long id,  TestResultForm testResult) throws RuntimeException{
+        Subject foundedSubject = subjectService.findSubject(id);
+        return testResultService.save(testResult, foundedSubject);
     }
 
 }
