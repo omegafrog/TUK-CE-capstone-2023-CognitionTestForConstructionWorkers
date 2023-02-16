@@ -94,6 +94,14 @@ public class AdminSecurityConfig {
     }
 
     @Bean
+    SecurityFilterChain site(HttpSecurity http) throws Exception {
+        http.securityMatcher("/site/**")
+                .authorizeHttpRequests().anyRequest().hasRole("ADMIN");
+        return http.build();
+
+    }
+
+    @Bean
     SecurityFilterChain h2console(HttpSecurity http) throws Exception {
         http.securityMatcher("/h2-console/**")
                 .authorizeHttpRequests().anyRequest().permitAll()
@@ -108,7 +116,7 @@ public class AdminSecurityConfig {
     @Bean
     SecurityFilterChain basic(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/admin/**", "/subject/**")
+                .securityMatcher("/admin/**", "/subject/**", "/site/**")
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
