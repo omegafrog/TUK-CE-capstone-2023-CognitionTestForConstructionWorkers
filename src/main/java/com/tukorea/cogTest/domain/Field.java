@@ -1,5 +1,6 @@
 package com.tukorea.cogTest.domain;
 
+import com.tukorea.cogTest.dto.FieldDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,5 +53,12 @@ public class Field {
         this.name = field.getName();
         this.numOfWorkers = field.getNumOfWorkers();
         return this;
+    }
+
+    public FieldDTO toDTO(){
+        return FieldDTO.builder()
+                .name(name)
+                .numOfWorkers(numOfWorkers)
+                .build();
     }
 }

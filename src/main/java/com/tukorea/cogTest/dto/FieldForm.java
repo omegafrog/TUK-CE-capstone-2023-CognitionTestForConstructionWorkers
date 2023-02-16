@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.dtos;
+package com.tukorea.cogTest.dto;
 
 import lombok.Builder;
 import lombok.Data;
