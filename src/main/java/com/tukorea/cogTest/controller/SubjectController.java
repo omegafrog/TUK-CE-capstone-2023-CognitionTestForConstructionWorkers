@@ -2,6 +2,7 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
+import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.service.SubjectService;
 import com.tukorea.cogTest.service.TestResultService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class SubjectController {
         Subject subject = subjectService.findSubject(id);
         testResult.assignTarget(subject);
         return testResultService.save(testResult);
+
     }
 
 }

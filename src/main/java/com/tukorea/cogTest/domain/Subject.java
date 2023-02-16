@@ -23,10 +23,10 @@ public class Subject {
     private Long id;
     private String name;
     private int age;
-    private DetailedJob detailedJob;
+    private DetailedJob detailedJob=DetailedJob.COMMON;
     private int career;
     private String remarks;
-    private Risk risk;
+    private Risk risk=Risk.NORMAL;
 
     @ManyToOne
     @JoinColumn(name="field_id")
