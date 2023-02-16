@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -20,8 +22,12 @@ public class TestResult {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="subject")
+    @JoinColumn(name="target_id")
     private Subject target;
+
+    @CreatedDate
+    @Temporal(TemporalType.DATE)
+    private LocalDate date = LocalDate.now();
 
     @Column(name = "TWO_HAND")
     @Embedded
@@ -44,15 +50,13 @@ public class TestResult {
         return id.intValue();
     }
     @Builder
-    public TestResult(Long id, Subject target, Twohand twohandResult, Pvt pvtResult) {
+    public TestResult(Long id, Subject target, Twohand twohandResult, Pvt pvtResult, LocalDate date) {
         this.id = id;
         this.target = target;
         this.twohandResult = twohandResult;
         this.pvtResult = pvtResult;
+        this.date = date;
     }
-
-
-
 
     public TestResult update(TestResult item){
         this.target = item.getTarget();
@@ -60,4 +64,13 @@ public class TestResult {
         this.pvtResult = item.getPvtResult();
         return this;
     }
+
+    /**
+     * 테스트 결과에 테스트를 진행한 피험자를 할당한다.
+     * @param target : 테스트를 진행한 피험자 객체
+     */
+    public void assignTarget(Subject target){
+        this.target = target;
+    }
+
 }

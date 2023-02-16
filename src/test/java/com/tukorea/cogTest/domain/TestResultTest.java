@@ -13,28 +13,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SpringBootTest
+@Transactional
 class TestResultTest {
 
     @Autowired
     private TestResultRepository testResultRepository;
 
     @Autowired
+    private FieldRepository fieldRepository;
+    @Autowired
     private SubjectRepository subjectRepository;
 
     @PersistenceUnit
     private EntityManagerFactory emf;
     @Test
-    @Transactional
     void saveTest(){
         EntityManager em = emf.createEntityManager();
         Field field = Field.builder()
                 .name("field1")
                 .numOfWorkers(0)
                 .build();
-        em.persist(field);
+        Field savedField = fieldRepository.save(field);
         Subject subject = Subject.builder()
                 .name("testname")
                 .age(10)
@@ -42,7 +47,7 @@ class TestResultTest {
                 .detailedJob(DetailedJob.COMMON)
                 .risk(Risk.HIGH_RISK)
                 .remarks("")
-                .field(field)
+                .field(savedField)
                 .build();
         Subject savedSubject = subjectRepository.save(subject);
         TestResult result = TestResult.builder()
@@ -54,7 +59,65 @@ class TestResultTest {
     }
 
     @Test
-    @Transactional
+    void findByUserIdAndDate(){
+        Field field = Field.builder()
+                .name("field1")
+                .numOfWorkers(0)
+                .build();
+        Field savedField = fieldRepository.save(field);
+        Subject subject = Subject.builder()
+                .name("testname")
+                .age(10)
+                .career(10)
+                .detailedJob(DetailedJob.COMMON)
+                .risk(Risk.HIGH_RISK)
+                .remarks("")
+                .field(savedField)
+                .build();
+        Subject savedSubject = subjectRepository.save(subject);
+        TestResult result = TestResult.builder()
+                .target(savedSubject)
+                .build();
+        TestResult savedResult = testResultRepository.save(result);
+        TestResult foundedTestResult = testResultRepository.findByUserIdAndDate(savedResult.getId(), LocalDate.now());
+        Assertions.assertThat(foundedTestResult).isEqualTo(savedResult);
+    }
+
+    @Test
+    void findByUserId(){
+        Field field = Field.builder()
+                .name("field1")
+                .numOfWorkers(0)
+                .build();
+        Field savedField = fieldRepository.save(field);
+        Subject subject1 = Subject.builder()
+                .name("testname")
+                .age(10)
+                .career(10)
+                .detailedJob(DetailedJob.COMMON)
+                .risk(Risk.HIGH_RISK)
+                .remarks("")
+                .field(savedField)
+                .build();
+        Subject savedSubject1 = subjectRepository.save(subject1);
+        TestResult result1 = TestResult.builder()
+                .target(savedSubject1)
+                .build();
+        testResultRepository.save(result1);
+        TestResult result2 = TestResult.builder()
+                .target(savedSubject1)
+                .date(LocalDate.of(2023, 2, 8))
+                .build();
+        testResultRepository.save(result2);
+        List<TestResult> foundedResult = testResultRepository.findByUserId(savedSubject1.getId());
+        List<TestResult> expected = new ArrayList<>();
+        expected.add(result1);
+        expected.add(result2);
+        Assertions.assertThat(foundedResult).isEqualTo(expected);
+
+    }
+
+    @Test
     void updateTest(){
         EntityManager em = emf.createEntityManager();
         Field field = Field.builder()

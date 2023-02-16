@@ -6,7 +6,8 @@ import com.tukorea.cogTest.domain.TestResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.List;
 
 
 @Repository
@@ -36,5 +37,16 @@ public class TestResultRepositoryImpl implements TestResultRepository {
     public TestResult findById(Long id) throws RuntimeException{
         return simpleTestResultRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("그런 테스트 결과는 없습니다." + id));
+    }
+
+    @Override
+    public TestResult findByUserIdAndDate(Long userId, LocalDate date) throws RuntimeException {
+        return simpleTestResultRepository.findByTarget_idAndDate(userId, date)
+                .orElseThrow(() -> new IllegalArgumentException("id:" + userId + " 피험자의 " + date + "의 테스트 결과는 없습니다."));
+    }
+
+    @Override
+    public List<TestResult> findByUserId(Long userId) {
+        return simpleTestResultRepository.findByTarget_Id(userId);
     }
 }
