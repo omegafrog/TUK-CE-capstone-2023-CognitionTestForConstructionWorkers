@@ -1,7 +1,5 @@
 package com.tukorea.cogTest.controller;
 
-import com.tukorea.cogTest.domain.Subject;
-import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
@@ -29,7 +27,7 @@ public class SubjectController {
 
     @PostMapping("/{id}/test-result")
     public TestResultDTO saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult){
-        SubjectDTO subjectDTO = subjectService.findSubject(id).toDTO();
+        SubjectDTO subjectDTO = subjectService.findSubject(id);
         return testResultService.save(testResult, subjectDTO);
     }
 
