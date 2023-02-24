@@ -17,7 +17,6 @@ public class Admin {
     @Id
     @GeneratedValue
     Long id;
-
     String name;
     String username;
     String password;
