@@ -1,10 +1,13 @@
 package com.tukorea.cogTest.response;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class ResponseUtil {
     /**
      * ResponseEntity body를 만들어주는 메소드
@@ -22,4 +25,9 @@ public class ResponseUtil {
         }
         return body;
     }
+    public static ResponseEntity<Map<String, Object>> setWrongResponse(Exception e){
+        log.error(e.getMessage());
+        return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+    }
+
 }

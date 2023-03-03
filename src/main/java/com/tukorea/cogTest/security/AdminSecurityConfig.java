@@ -64,7 +64,7 @@ public class AdminSecurityConfig {
     @Bean
     SecurityFilterChain web(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/admin/**")
+                .securityMatcher("/admin/**", "/site/**")
                 .authenticationProvider(adminAuthenticationProvider)
                 .authorizeHttpRequests()
                 .anyRequest().hasRole("USER")

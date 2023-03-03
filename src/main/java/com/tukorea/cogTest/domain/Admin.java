@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.dto.AdminDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,6 @@ public class Admin {
     @Id
     @GeneratedValue
     Long id;
-
     String name;
     String username;
     String password;
@@ -29,12 +29,14 @@ public class Admin {
     private Field field;
 
     @Builder
-    public Admin(Long id, String name, String position, Field field, Role role) {
+    public Admin(Long id, String name, String username, String password, Role role, String position, Field field) {
         this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
+        this.role = role;
         this.position = position;
         this.field = field;
-        this.role = role;
     }
 
     @Override
@@ -57,5 +59,17 @@ public class Admin {
         this.position = admin.getPosition();
         this.role = admin.getRole();
         return this;
+    }
+
+    public AdminDTO toDTO(){
+        return AdminDTO.builder()
+                .id(id)
+                .name(name)
+                .field(field)
+                .username(username)
+                .password(password)
+                .position(position)
+                .role(role)
+                .build();
     }
 }

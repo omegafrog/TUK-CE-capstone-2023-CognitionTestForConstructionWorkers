@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Objects;
 
@@ -89,5 +90,9 @@ public class Subject {
                 .remarks(this.remarks)
                 .risk(this.risk)
                 .build();
+    }
+
+    public void encodePassword(PasswordEncoder encoder){
+        this.password = encoder.encode(password);
     }
 }

@@ -1,9 +1,9 @@
 package com.tukorea.cogTest.service;
 
 
-import com.tukorea.cogTest.domain.Subject;
-import com.tukorea.cogTest.domain.SubjectRepository;
-import com.tukorea.cogTest.domain.TestResultRepository;
+import com.tukorea.cogTest.domain.*;
+import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +23,8 @@ public class SubjectService implements UserDetailsService{
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
 
+
+    private final FieldRepository fieldRepository;
     /**
      * 피험자의 id를 받아서 피험자를 검색한 후 그 피험자의 모든 테스트 내용을 가져온다.
      * @param subjectId : 피험자의 id
@@ -44,8 +46,8 @@ public class SubjectService implements UserDetailsService{
      * @return Subject : 피험자 객체
      * @throws RuntimeException : 피험자의 id에 해당하는 피험자를 찾지 못했을 경우 IllegalArgumentException을 throw한다.
      */
-    public Subject findSubject(Long subjectId) throws RuntimeException{
-        return subjectRepository.findById(subjectId);
+    public SubjectDTO findSubject(Long subjectId) throws RuntimeException{
+        return subjectRepository.findById(subjectId).toDTO();
     }
      @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,6 +60,25 @@ public class SubjectService implements UserDetailsService{
          } catch (IllegalArgumentException e) {
              throw new UsernameNotFoundException(e.getMessage());
          }
-     }
+    }
 
+    public SubjectDTO update(Long id, SubjectForm subjectDTO){
+        Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
+
+        Subject subject = Subject.builder()
+                .name(subjectDTO.getName())
+                .age(subjectDTO.getAge())
+                .field(foundedField)
+                .risk(subjectDTO.getRisk())
+                .remarks(subjectDTO.getRemarks())
+                .career(subjectDTO.getCareer())
+                .build();
+        return subjectRepository.update(id, subject).toDTO();
+    }
+
+    public void delete(Long id){
+        List<TestResult> foundedTestResults = testResultRepository.findByUserId(id);
+        testResultRepository.deleteAll(foundedTestResults);
+        subjectRepository.delete(id);
+    }
 }
