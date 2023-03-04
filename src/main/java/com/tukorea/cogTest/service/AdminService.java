@@ -111,4 +111,13 @@ public class AdminService implements UserDetailsService {
                 .build();
         return adminRepository.save(admin).toDTO();
     }
+
+    public AdminDTO updateAdmin(Long id, AdminDTO adminDTO){
+        Admin founded = adminRepository.findById(id);
+        return founded.update(adminDTO).toDTO();
+    }
+
+    public void deleteAdmin(Long id){
+        adminRepository.delete(id);
+    }
 }

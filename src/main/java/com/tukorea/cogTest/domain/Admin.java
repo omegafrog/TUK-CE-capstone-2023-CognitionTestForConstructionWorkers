@@ -53,7 +53,7 @@ public class Admin {
         return id.intValue();
     }
 
-    public Admin update(Admin admin){
+    public Admin update(AdminDTO admin){
         this.name = admin.getName();
         this.field = admin.getField();
         this.position = admin.getPosition();

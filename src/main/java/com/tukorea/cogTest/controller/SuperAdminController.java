@@ -31,5 +31,29 @@ public class SuperAdminController {
         return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
     }
 
+    @PostMapping("/admin/:id")
+    public ResponseEntity<Map<String, Object>> updateAdmin(
+            @PathVariable Long id,
+            @RequestParam AdminForm adminForm
+    ){
+        AdminDTO adminDTO = AdminDTO.builder()
+                .name(adminForm.getName())
+                .position(adminForm.getPosition())
+                .role(adminForm.getRole())
+                .username(adminForm.getUsername())
+                .password(adminForm.getPassword())
+                .build();
+        AdminDTO updated = adminService.updateAdmin(id, adminDTO);
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("admin", adminDTO);
+        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);
+    }
 
+    @DeleteMapping("/admin/:id")
+    public ResponseEntity<Map<String ,Object>> deleteAdmin(
+            @PathVariable Long id
+    ){
+        adminService.deleteAdmin(id);
+        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delte common admin success", null), HttpStatus.OK);
+    }
 }
