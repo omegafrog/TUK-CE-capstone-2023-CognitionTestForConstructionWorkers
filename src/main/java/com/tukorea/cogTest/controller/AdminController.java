@@ -39,8 +39,7 @@ public class AdminController {
     @Autowired
     private FieldService fieldService;
 
-    @Autowired
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.

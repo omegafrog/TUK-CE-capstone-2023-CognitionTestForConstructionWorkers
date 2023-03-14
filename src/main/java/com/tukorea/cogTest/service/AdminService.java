@@ -8,6 +8,7 @@ import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +37,7 @@ public class AdminService implements UserDetailsService {
     private AdminRepository adminRepository;
 
     @Autowired
+    @Lazy
     private PasswordEncoder encoder;
     @Autowired
     private FieldRepository fieldRepository;
