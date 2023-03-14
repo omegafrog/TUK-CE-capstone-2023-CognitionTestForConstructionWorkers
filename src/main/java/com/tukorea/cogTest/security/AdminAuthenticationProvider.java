@@ -1,5 +1,6 @@
 package com.tukorea.cogTest.security;
 
+import com.tukorea.cogTest.security.domain.SecurityAdmin;
 import com.tukorea.cogTest.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         log.info("username={}", username);
         log.info("password={}", password);
         try {
-            UserDetails foundedUser = adminService.loadUserByUsername(username);
+            SecurityAdmin foundedUser = adminService.loadUserByUsername(username);
             log.info("encoded={}",passwordEncoder.encode(foundedUser.getPassword()));
 
             log.info("foundedUser = {}", foundedUser);
