@@ -6,13 +6,15 @@ import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
-import com.tukorea.cogTest.security.domain.SecurityAdmin;
-import com.tukorea.cogTest.security.domain.SecurityAdminRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,8 +36,7 @@ public class AdminService implements UserDetailsService {
     private AdminRepository adminRepository;
 
     @Autowired
-    private SecurityAdminRepository securityAdminRepository;
-
+    private PasswordEncoder encoder;
     @Autowired
     private FieldRepository fieldRepository;
     @Autowired
@@ -43,10 +44,13 @@ public class AdminService implements UserDetailsService {
 
 
     @Override
-    public SecurityAdmin loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try{
             Admin foundedAdmin = adminRepository.findByUsername(username);
-            SecurityAdmin securityAdmin = securityAdminRepository.findByUsername(username);
+            UserDetails securityAdmin = User.withUsername(username)
+                    .password(foundedAdmin.getPassword())
+                    .authorities(foundedAdmin.getRole().value)
+                    .build();
             return securityAdmin;
         }catch (IllegalArgumentException e){
             log.error("msg={}", e.getMessage());
@@ -110,12 +114,12 @@ public class AdminService implements UserDetailsService {
     public AdminDTO addAdmin(AdminForm adminForm) {
         Admin admin = Admin.builder()
                 .name(adminForm.getName())
+                .username(adminForm.getUsername())
+                .password(encoder.encode(adminForm.getPassword()))
                 .role(Role.ROLE_ADMIN)
                 .position(adminForm.getPosition())
                 .build();
-        SecurityAdmin securityAdmin = new SecurityAdmin(adminForm.getUsername(), adminForm.getPassword(),
-                AuthorityUtils.createAuthorityList(Role.ROLE_ADMIN.value), admin);
-        securityAdminRepository.save(securityAdmin);
+
         return adminRepository.save(admin).toDTO();
     }
 

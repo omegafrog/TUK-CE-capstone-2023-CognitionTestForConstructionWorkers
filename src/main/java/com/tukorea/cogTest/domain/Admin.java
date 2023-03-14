@@ -17,6 +17,9 @@ public class Admin {
     @Id
     @GeneratedValue
     Long id;
+
+    String username;
+    String password;
     String name;
     Role role;
     private String position;
@@ -27,9 +30,11 @@ public class Admin {
     private Field field;
 
     @Builder
-    public Admin(Long id, String name, Role role, String position, Field field) {
+    public Admin(Long id, String name, String username, String password, Role role, String position, Field field) {
         this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
         this.role = role;
         this.position = position;
         this.field = field;
