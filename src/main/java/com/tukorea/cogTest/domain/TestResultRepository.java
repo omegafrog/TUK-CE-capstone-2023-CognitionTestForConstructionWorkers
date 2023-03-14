@@ -15,4 +15,5 @@ public interface TestResultRepository {
     TestResult findByUserIdAndDate(Long userId, LocalDate date);
 
     List<TestResult> findByUserId(Long userId);
+    void deleteAllBySubjectId(Long subjectId);
 }

@@ -1,6 +1,6 @@
 package com.tukorea.cogTest.domain;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface SubjectRepository {
      Subject save(Subject subject);
@@ -10,5 +10,6 @@ public interface SubjectRepository {
 
      Subject findByUsername(String username);
 
+     List<Subject> findByField_id(Long adminId);
 }
 

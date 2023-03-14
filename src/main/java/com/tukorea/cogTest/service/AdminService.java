@@ -6,10 +6,11 @@ import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
+import com.tukorea.cogTest.security.domain.SecurityAdmin;
+import com.tukorea.cogTest.security.domain.SecurityAdminRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -33,20 +34,20 @@ public class AdminService implements UserDetailsService {
     private AdminRepository adminRepository;
 
     @Autowired
+    private SecurityAdminRepository securityAdminRepository;
+
+    @Autowired
     private FieldRepository fieldRepository;
     @Autowired
     private SubjectRepository subjectRepository;
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public SecurityAdmin loadUserByUsername(String username) throws UsernameNotFoundException {
         try{
             Admin foundedAdmin = adminRepository.findByUsername(username);
-
-            return User.withUsername(foundedAdmin.getUsername())
-                    .password(foundedAdmin.getPassword())
-                    .authorities(foundedAdmin.getRole().value)
-                    .build();
+            SecurityAdmin securityAdmin = securityAdminRepository.findByUsername(username);
+            return securityAdmin;
         }catch (IllegalArgumentException e){
             log.error("msg={}", e.getMessage());
             throw new UsernameNotFoundException(e.getMessage());
@@ -55,6 +56,10 @@ public class AdminService implements UserDetailsService {
     public AdminDTO findById(Long id){
         Admin foundedAdmin = adminRepository.findById(id);
         return foundedAdmin.toDTO();
+    }
+
+    public AdminDTO findByUsername(String username){
+        return adminRepository.findByUsername(username).toDTO();
     }
 
     public Map<String, Object> addWorkerByFile(Long id, MultipartFile file) throws IOException {
@@ -105,10 +110,28 @@ public class AdminService implements UserDetailsService {
     public AdminDTO addAdmin(AdminForm adminForm) {
         Admin admin = Admin.builder()
                 .name(adminForm.getName())
-                .username(adminForm.getUsername())
                 .role(Role.ROLE_ADMIN)
                 .position(adminForm.getPosition())
                 .build();
+        SecurityAdmin securityAdmin = new SecurityAdmin(adminForm.getUsername(), adminForm.getPassword(),
+                AuthorityUtils.createAuthorityList(Role.ROLE_ADMIN.value), admin);
+        securityAdminRepository.save(securityAdmin);
         return adminRepository.save(admin).toDTO();
+    }
+
+    public AdminDTO updateAdmin(Long id, AdminDTO adminDTO){
+        Admin founded = adminRepository.findById(id);
+        return founded.update(adminDTO).toDTO();
+    }
+
+    public void deleteAdmin(Long id){
+        adminRepository.delete(id);
+    }
+
+    public List<AdminDTO> findAll(){
+        List<AdminDTO> founded = adminRepository.findAll()
+                .stream().map(Admin::toDTO)
+                .toList();
+        return founded;
     }
 }
