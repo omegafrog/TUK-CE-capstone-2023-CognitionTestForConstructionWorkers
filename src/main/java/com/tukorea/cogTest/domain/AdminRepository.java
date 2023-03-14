@@ -1,6 +1,6 @@
 package com.tukorea.cogTest.domain;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface AdminRepository {
     Admin save(Admin admin);
@@ -11,4 +11,5 @@ public interface AdminRepository {
     Admin update(Long id, Admin admin);
     void delete(Long id);
 
+    List<Admin> findAll();
 }

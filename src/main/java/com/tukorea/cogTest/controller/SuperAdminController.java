@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +30,24 @@ public class SuperAdminController {
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("admin", adminDTO);
         return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/:id")
+    public ResponseEntity<Map<String, Object>> getAdmin(
+            @PathVariable Long id
+    ){
+        AdminDTO adminDTO = adminService.findById(id);
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("admin", adminDTO);
+        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin success", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/admins")
+    public ResponseEntity<Map<String, Object>> getAdmins(){
+        List<AdminDTO> all = adminService.findAll();
+        Map<String, Object> result = new ConcurrentHashMap<>();
+        result.put("admins", all);
+        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
     }
 
     @PostMapping("/admin/:id")

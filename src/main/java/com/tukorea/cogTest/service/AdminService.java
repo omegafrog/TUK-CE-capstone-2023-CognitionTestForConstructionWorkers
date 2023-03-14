@@ -58,6 +58,10 @@ public class AdminService implements UserDetailsService {
         return foundedAdmin.toDTO();
     }
 
+    public AdminDTO findByUsername(String username){
+        return adminRepository.findByUsername(username).toDTO();
+    }
+
     public Map<String, Object> addWorkerByFile(Long id, MultipartFile file) throws IOException {
         Field foundedField = fieldRepository.findById(id);
 

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface JpaSimpleTestResultRepository extends JpaRepository<TestResult, Long> {
+    void deleteByTarget_id(Long targetId);
     List<TestResult> findByTarget_Id(Long id);
     Optional<TestResult> findByTarget_idAndDate(Long userId, LocalDate date);
 }

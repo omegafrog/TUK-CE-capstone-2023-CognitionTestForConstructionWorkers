@@ -49,6 +49,11 @@ public class SubjectService implements UserDetailsService{
     public SubjectDTO findSubject(Long subjectId) throws RuntimeException{
         return subjectRepository.findById(subjectId).toDTO();
     }
+    public List<SubjectDTO> findSubjectInField(Long fieldId){
+        return subjectRepository.findByField_id(fieldId).stream().map(
+                subject -> subject.toDTO()).toList();
+    }
+
      @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
          try {
@@ -78,7 +83,7 @@ public class SubjectService implements UserDetailsService{
 
     public void delete(Long id){
         List<TestResult> foundedTestResults = testResultRepository.findByUserId(id);
-        testResultRepository.deleteAll(foundedTestResults);
+        testResultRepository.deleteAllBySubjectId(id);
         subjectRepository.delete(id);
     }
 }
