@@ -22,39 +22,57 @@ public class SuperAdminController {
 
     private final AdminService adminService;
 
+
     @PostMapping("/admin")
     public ResponseEntity<Map<String, Object>> addAdmin(
-            @RequestParam AdminForm adminForm
-            ){
-        AdminDTO adminDTO = adminService.addAdmin(adminForm);
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("admin", adminDTO);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
+            @ModelAttribute AdminForm adminForm
+    ) {
+        try {
+            log.info("input adminForm : {}", adminForm);
+            AdminDTO adminDTO = adminService.addAdmin(adminForm);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("admin", adminDTO);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
-    @GetMapping("/admin/:id")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<Map<String, Object>> getAdmin(
-            @PathVariable Long id
-    ){
-        AdminDTO adminDTO = adminService.findById(id);
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("admin", adminDTO);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin success", result), HttpStatus.OK);
+            @PathVariable Long id) {
+        try {
+            AdminDTO adminDTO = adminService.findById(id);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("admin", adminDTO);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
     @GetMapping("/admins")
-    public ResponseEntity<Map<String, Object>> getAdmins(){
-        List<AdminDTO> all = adminService.findAll();
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("admins", all);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> getAdmins() {
+        try {
+            List<AdminDTO> all = adminService.findAll();
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("admins", all);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
-    @PostMapping("/admin/:id")
+    @PostMapping("/admin/{id}")
     public ResponseEntity<Map<String, Object>> updateAdmin(
             @PathVariable Long id,
-            @RequestParam AdminForm adminForm
-    ){
+            @ModelAttribute AdminForm adminForm) {
         AdminDTO adminDTO = AdminDTO.builder()
                 .name(adminForm.getName())
                 .position(adminForm.getPosition())
@@ -62,17 +80,30 @@ public class SuperAdminController {
                 .username(adminForm.getUsername())
                 .password(adminForm.getPassword())
                 .build();
-        AdminDTO updated = adminService.updateAdmin(id, adminDTO);
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("admin", adminDTO);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);
+        log.info("adminDTO : {}", adminDTO);
+        try {
+            AdminDTO updated = adminService.updateAdmin(id, adminDTO);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("admin", updated);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
-    @DeleteMapping("/admin/:id")
-    public ResponseEntity<Map<String ,Object>> deleteAdmin(
-            @PathVariable Long id
-    ){
-        adminService.deleteAdmin(id);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delte common admin success", null), HttpStatus.OK);
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Map<String, Object>> deleteAdmin(
+            @PathVariable Long id) {
+        try {
+            adminService.deleteAdmin(id);
+
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete common admin success", null), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 }

@@ -15,6 +15,7 @@ public class SubjectRepositoryImpl implements SubjectRepository {
         return simpleSubjectRepository.findByField_Id(fieldId);
     }
 
+
     public final JpaSimpleSubjectRepository simpleSubjectRepository;
     @Override
     public Subject update(Long id, Subject updateArgument) throws RuntimeException{

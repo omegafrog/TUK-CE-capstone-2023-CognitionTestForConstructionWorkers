@@ -7,7 +7,6 @@ import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
-import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
-import static com.tukorea.cogTest.response.ResponseUtil.setWrongResponse;
+import static com.tukorea.cogTest.response.ResponseUtil.setWrongRequestErrorResponse;
 
 @RestController
 @Slf4j
@@ -36,8 +35,6 @@ public class AdminController {
     @Autowired
     private SubjectService subjectService;
 
-    @Autowired
-    private FieldService fieldService;
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -83,11 +80,17 @@ public class AdminController {
         String username = (String) authentication.getPrincipal();
         AdminDTO byUsername = adminService.findByUsername(username);
 
-        Long fieldId = byUsername.getField().getId();
-        List<SubjectDTO> subjectList = subjectService.findSubjectInField(fieldId);
-        Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("subjects", subjectList);
-        return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
+        try {
+            Long fieldId = byUsername.getField().getId();
+            List<SubjectDTO> subjectList = subjectService.findSubjectInField(fieldId);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("subjects", subjectList);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
     /**
@@ -124,8 +127,10 @@ public class AdminController {
             };
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
                     body), HttpStatus.OK);
-        } catch (NullPointerException | IOException e) {
-            return ResponseUtil.setWrongResponse(e);
+        } catch (NullPointerException | IOException | IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        }catch (RuntimeException e){
+            return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 
@@ -154,7 +159,7 @@ public class AdminController {
             List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
             long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
             if(count == 0){
-                return setWrongResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
+                return setWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
 
             // 피험자 정보 업데이트
@@ -164,8 +169,10 @@ public class AdminController {
             Map<String, Object> body = setResponseBody(HttpStatus.OK, "Update subject success", result);
             return new ResponseEntity<>(body, HttpStatus.OK);
 
-        } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongResponse(e);
+        } catch (IllegalArgumentException e){
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        }catch (RuntimeException e){
+            return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 
@@ -182,8 +189,10 @@ public class AdminController {
         try {
             subjectService.delete(id);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete subject success", null), HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return ResponseUtil.setWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
-            return ResponseUtil.setWrongResponse(e);
+            return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 }

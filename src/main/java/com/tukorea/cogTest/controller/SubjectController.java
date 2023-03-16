@@ -3,13 +3,18 @@ package com.tukorea.cogTest.controller;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
+import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.SubjectService;
 import com.tukorea.cogTest.service.TestResultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @Slf4j
@@ -21,14 +26,31 @@ public class SubjectController {
     private final TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
-    public List<TestResultDTO> lookupSubjectTestResult(@PathVariable Long id) {
-        return subjectService.findTestResult(id);
+    public ResponseEntity<Map<String, Object>> lookupSubjectTestResult(@PathVariable Long id) {
+        try {
+            List<TestResultDTO> testResult = subjectService.findTestResult(id);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("testResults", testResult);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject " + id + "'s result success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
     @PostMapping("/{id}/test-result")
-    public TestResultDTO saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult){
-        SubjectDTO subjectDTO = subjectService.findSubject(id);
-        return testResultService.save(testResult, subjectDTO);
+    public ResponseEntity<Map<String, Object>> saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult) {
+        try{
+            SubjectDTO subjectDTO = subjectService.findSubject(id);
+            Map<String, Object> result = new ConcurrentHashMap<>();
+            result.put("subject", subjectDTO);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
+            return ResponseUtil.setInternalErrorResponse(e);
+        }
     }
 
 }

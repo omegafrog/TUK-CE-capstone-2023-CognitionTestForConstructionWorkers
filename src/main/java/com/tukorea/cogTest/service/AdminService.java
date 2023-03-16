@@ -9,13 +9,11 @@ import com.tukorea.cogTest.dto.AdminForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,17 +47,16 @@ public class AdminService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try{
             Admin foundedAdmin = adminRepository.findByUsername(username);
-            UserDetails securityAdmin = User.withUsername(username)
+            return User.withUsername(username)
                     .password(foundedAdmin.getPassword())
                     .authorities(foundedAdmin.getRole().value)
                     .build();
-            return securityAdmin;
         }catch (IllegalArgumentException e){
             log.error("msg={}", e.getMessage());
             throw new UsernameNotFoundException(e.getMessage());
         }
     }
-    public AdminDTO findById(Long id){
+    public AdminDTO findById(Long id) throws RuntimeException{
         Admin foundedAdmin = adminRepository.findById(id);
         return foundedAdmin.toDTO();
     }
@@ -98,7 +95,7 @@ public class AdminService implements UserDetailsService {
         Field foundedField = fieldRepository.findById(id);
         for (Subject subject : subjects) {
             subject.assignField(foundedField);
-            Subject savedSubject = subjectRepository.save(subject);
+            subjectRepository.save(subject);
         }
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("subjects", subjects);
@@ -121,23 +118,36 @@ public class AdminService implements UserDetailsService {
                 .role(Role.ROLE_ADMIN)
                 .position(adminForm.getPosition())
                 .build();
+        AdminDTO saved = adminRepository.save(admin).toDTO();
+        log.info("id : {}, username : {}, password : {}", saved.getId(), saved.getUsername(), saved.getPassword());
 
-        return adminRepository.save(admin).toDTO();
+        return saved;
     }
 
     public AdminDTO updateAdmin(Long id, AdminDTO adminDTO){
         Admin founded = adminRepository.findById(id);
-        return founded.update(adminDTO).toDTO();
+        log.info("founded : {}", founded);
+        log.info("dto : {}", adminDTO);
+        AdminDTO updated = founded.update(adminDTO).toDTO();
+        log.info("updated : {}", updated);
+        return updated;
     }
 
-    public void deleteAdmin(Long id){
+    public void deleteAdmin(Long id) throws RuntimeException{
+        Admin byId = adminRepository.findById(id);
+        Field field = byId.getField();
+        if(field!=null){
+            List<Subject> byFieldId = subjectRepository.findByField_id(field.getId());
+            for (Subject subject : byFieldId) {
+                subjectRepository.delete(subject.getId());
+            }
+        }
         adminRepository.delete(id);
     }
 
     public List<AdminDTO> findAll(){
-        List<AdminDTO> founded = adminRepository.findAll()
+        return adminRepository.findAll()
                 .stream().map(Admin::toDTO)
                 .toList();
-        return founded;
     }
 }

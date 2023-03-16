@@ -3,6 +3,7 @@ package com.tukorea.cogTest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.FieldForm;
+import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,9 @@ public class FieldController {
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
         } catch (IllegalArgumentException e){
-            log.error(e.getMessage());
-            ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.BAD_REQUEST, "Wrong user request", null);
-            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+            return ResponseUtil.setWrongRequestErrorResponse(e);
+        }catch (RuntimeException e){
+            return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 

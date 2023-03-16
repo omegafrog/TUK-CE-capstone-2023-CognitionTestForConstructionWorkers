@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class ResponseUtil {
+
+    private ResponseUtil(){}
     /**
      * ResponseEntity body를 만들어주는 메소드
      * @param statusCode : HttpStatus
@@ -25,9 +27,14 @@ public class ResponseUtil {
         }
         return body;
     }
-    public static ResponseEntity<Map<String, Object>> setWrongResponse(Exception e){
+    public static ResponseEntity<Map<String, Object>> setWrongRequestErrorResponse(Exception e){
         log.error(e.getMessage());
         return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+    }
+
+    public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(Exception e){
+        log.error(e.getMessage());
+        return new ResponseEntity<>(setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

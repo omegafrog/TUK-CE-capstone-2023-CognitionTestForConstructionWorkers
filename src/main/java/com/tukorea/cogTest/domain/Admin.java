@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -13,9 +14,10 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 @Getter
+@ToString
 public class Admin {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     String username;
@@ -55,10 +57,12 @@ public class Admin {
     }
 
     public Admin update(AdminDTO admin){
-        this.name = admin.getName();
-        this.field = admin.getField();
-        this.position = admin.getPosition();
-        this.role = admin.getRole();
+        this.name = (admin.getName()==null)?this.name:admin.getName();
+        this.username = (admin.getUsername()=="")?this.username:admin.getUsername();
+        this.password = (admin.getPassword()==null)?this.password:admin.getPassword();
+        this.field = (admin.getField()==null)?this.field:admin.getField();
+        this.position = (admin.getPosition()==null)?this.position:admin.getPosition();
+        this.role = (admin.getRole()==null)?this.role:admin.getRole();
         return this;
     }
 
@@ -66,6 +70,8 @@ public class Admin {
         return AdminDTO.builder()
                 .id(id)
                 .name(name)
+                .username(username)
+                .password(password)
                 .field(field)
                 .position(position)
                 .role(role)

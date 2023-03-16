@@ -11,5 +11,6 @@ public interface SubjectRepository {
      Subject findByUsername(String username);
 
      List<Subject> findByField_id(Long adminId);
+
 }
 

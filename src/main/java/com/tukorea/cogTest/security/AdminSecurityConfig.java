@@ -55,9 +55,7 @@ public class AdminSecurityConfig {
                 .passwordParameter("password")
                 .and()
                 .csrf()
-                .ignoringRequestMatchers("/subject/login")
-                .and()
-                .httpBasic();
+                .ignoringRequestMatchers("/subject/login");
         return http.build();
     }
 
@@ -85,10 +83,7 @@ public class AdminSecurityConfig {
                 })
                 .and()
                 .csrf()
-                .ignoringRequestMatchers("/admin/login")
-                .and()
-                .httpBasic();
-
+                .ignoringRequestMatchers("/admin/login");
         return http.build();
     }
 

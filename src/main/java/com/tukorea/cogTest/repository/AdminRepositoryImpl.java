@@ -12,6 +12,7 @@ import java.util.List;
 public class AdminRepositoryImpl implements AdminRepository {
     private final JpaSimpleAdminRepository simpleAdminRepository;
 
+
     @Override
     public Admin save(Admin admin) {
         return simpleAdminRepository.save(admin);
