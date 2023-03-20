@@ -20,7 +20,7 @@ public class ResponseUtil {
      */
     public static ConcurrentHashMap<String, Object> setResponseBody(HttpStatus statusCode, String msg, Map<String, Object> results) {
         ConcurrentHashMap<String, Object> body= new ConcurrentHashMap<>();
-        body.put("statusCode", statusCode);
+        body.put("statusCode", statusCode.value());
         body.put("msg", msg);
         if(results!=null){
             body.put("results", results);

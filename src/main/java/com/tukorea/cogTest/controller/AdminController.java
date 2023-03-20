@@ -5,6 +5,7 @@ import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
+import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
 import com.tukorea.cogTest.service.SubjectService;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.tukorea.cogTest.paging.Page.getPage;
 import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
 import static com.tukorea.cogTest.response.ResponseUtil.setWrongRequestErrorResponse;
 
@@ -66,25 +68,39 @@ public class AdminController {
     }
 
     /**
-     * 관리자가 관리하는 모든 피험자 정보를 검색한다.
+     * 관리자가 관리하는 피험자들을 가져온다.
+     * @param curPageNum : 현재 페이지 번호
+     * @param contentPerPage : 페이지당 컨텐츠 갯수
      * @return {
      *     statusCode : 200,
-     *     msg : Get subjects success,
-     *     results : {
-     *         검색한 피험자 객체
+     *     msg : "Get subjects success",
+     *     page : {
+     *         curPageNum : 현재 페이지 번호,
+     *         allPageNum : 전체 페이지 개수,
+     *         startPageNum : 시작 페이지 번호,
+     *         endPageNum : 끝 페이지 번호,
+     *         contentPerPage : 페이지 당 보여줄 컨텐츠,
+     *         prev : 이전 화살표 버튼 ( boolean )
+     *         next : 다음 화살표 버튼 ( boolean )
      *     }
      * }
      */
     @GetMapping("/subjects")
-    public ResponseEntity<Map<String, Object>> getSubjects() {
-        String username = (String) authentication.getPrincipal();
-        AdminDTO byUsername = adminService.findByUsername(username);
-
+    public ResponseEntity<Map<String, Object>> getSubjects(
+            @RequestParam int curPageNum,
+            @RequestParam int contentPerPage
+    ) {
         try {
+            String username = (String) authentication.getPrincipal();
+            AdminDTO byUsername = adminService.findByUsername(username);
+
             Long fieldId = byUsername.getField().getId();
             List<SubjectDTO> subjectList = subjectService.findSubjectInField(fieldId);
+
+            Page page = getPage(curPageNum, contentPerPage, "subject", subjectList);
+
             Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("subjects", subjectList);
+            result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.setWrongRequestErrorResponse(e);
@@ -92,6 +108,8 @@ public class AdminController {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
+
+
 
     /**
      * 피험자의 개인정보를 추가한다.
@@ -136,8 +154,8 @@ public class AdminController {
 
     /**
      * 피험자의 정보를 수정한다.
-     * @param id
-     * @param subjectForm
+     * @param id : 피험자의 id
+     * @param subjectForm : 피험자 정보 폼
      * @return {
      *     statusCode : 200,
      *     msg : update subject success.
@@ -181,7 +199,6 @@ public class AdminController {
      * @param id 노동자의 id
      * @return
      */
-
     @DeleteMapping("/subject/{id}")
     public ResponseEntity<Map<String ,Object>> deleteWorker(
             @PathVariable Long id
@@ -195,4 +212,6 @@ public class AdminController {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
+
+
 }

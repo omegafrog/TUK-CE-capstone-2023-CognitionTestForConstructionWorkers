@@ -3,6 +3,7 @@ package com.tukorea.cogTest.controller;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
+import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.SubjectService;
 import com.tukorea.cogTest.service.TestResultService;
@@ -26,11 +27,18 @@ public class SubjectController {
     private final TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
-    public ResponseEntity<Map<String, Object>> lookupSubjectTestResult(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> lookupSubjectTestResult(
+            @PathVariable Long id,
+            @RequestParam int curPageNum,
+            @RequestParam int contentPerPage
+    ) {
         try {
             List<TestResultDTO> testResult = subjectService.findTestResult(id);
+
+            Page page = Page.getPage(curPageNum, contentPerPage, "testResult", testResult);
+
             Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("testResults", testResult);
+            result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject " + id + "'s result success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.setWrongRequestErrorResponse(e);

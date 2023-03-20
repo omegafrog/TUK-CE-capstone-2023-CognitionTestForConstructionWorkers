@@ -2,6 +2,7 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
+import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -56,11 +57,15 @@ public class SuperAdminController {
     }
 
     @GetMapping("/admins")
-    public ResponseEntity<Map<String, Object>> getAdmins() {
+    public ResponseEntity<Map<String, Object>> getAdmins(
+            @RequestParam int curPageNum,
+            @RequestParam int contentsPerPage
+    ) {
         try {
             List<AdminDTO> all = adminService.findAll();
+            Page page = Page.getPage(curPageNum, contentsPerPage, "admin", all);
             Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("admins", all);
+            result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.setWrongRequestErrorResponse(e);
