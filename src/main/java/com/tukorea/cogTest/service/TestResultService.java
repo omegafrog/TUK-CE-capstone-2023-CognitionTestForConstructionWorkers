@@ -4,6 +4,7 @@ package com.tukorea.cogTest.service;
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.domain.TestResultRepository;
+import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class TestResultService {
      * @return TestResult 저장한 테스트 결과 객체
      * @throws IllegalArgumentException 테스트 결과 객체의 target이 유효하지 않을 때 발생
      */
-    public TestResult save(TestResultForm testResultForm, Subject subject)throws IllegalArgumentException{
+    public TestResultDTO save(TestResultForm testResultForm, Subject subject)throws IllegalArgumentException{
         TestResult testResult = TestResult.builder()
                 .date(testResultForm.getDate())
                 .pvtResult(testResultForm.getPvtResult())
@@ -44,4 +45,6 @@ public class TestResultService {
     }
 
 
+    public TestResult save(TestResult testResult) {
+    }
 }

@@ -20,17 +20,17 @@ public class SubjectController {
     private final SubjectService subjectService;
     private final TestResultService testResultService;
 
+    // TODO : 리턴값 ResponseEntity<Map<String, Object>> 형식으로 변환하기
     @GetMapping("/{id}/test-result")
     public List<TestResult> lookupSubjectTestResult(@PathVariable Long id) {
         return subjectService.findTestResult(id);
     }
 
+    // TODO : 리턴값 ResponseEntity<Map<String, Object>> 형식으로 변환하기
     @PostMapping("/{id}/test-result")
     public TestResult saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResult testResult){
         Subject subject = subjectService.findSubject(id);
         testResult.assignTarget(subject);
         return testResultService.save(testResult);
-
     }
-
 }
