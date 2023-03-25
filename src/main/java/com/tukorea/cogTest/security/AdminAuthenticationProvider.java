@@ -44,6 +44,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             log.info("encode={}",foundedUser.getPassword());
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
+                log.info("provider login success");
                 return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
             } else {
                 // 인증 실패

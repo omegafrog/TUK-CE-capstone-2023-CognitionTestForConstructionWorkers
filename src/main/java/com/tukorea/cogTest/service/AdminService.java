@@ -49,7 +49,7 @@ public class AdminService implements UserDetailsService {
             Admin foundedAdmin = adminRepository.findByUsername(username);
             return User.withUsername(username)
                     .password(foundedAdmin.getPassword())
-                    .authorities(foundedAdmin.getRole().value)
+                    .authorities("ROLE_"+foundedAdmin.getRole().value)
                     .build();
         }catch (IllegalArgumentException e){
             log.error("msg={}", e.getMessage());

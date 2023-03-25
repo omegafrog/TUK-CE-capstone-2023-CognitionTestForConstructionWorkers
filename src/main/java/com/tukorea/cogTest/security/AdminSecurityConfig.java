@@ -4,6 +4,8 @@ package com.tukorea.cogTest.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationSuccessHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
-import java.io.PrintWriter;
 import java.util.Map;
 
 @Configuration
@@ -72,15 +71,18 @@ public class AdminSecurityConfig {
                 .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
                 .and()
                 .formLogin().permitAll()
-                .loginProcessingUrl("/admin/login")
+                .loginProcessingUrl("/super/admin/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
+                .successHandler(superAdminAuthenticationSuccessHandler())
+                .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(superAdminAccessDeniedHandler())
+                .headers()
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf()
                 .disable();
+
         return http.build();
     }
 
@@ -96,14 +98,17 @@ public class AdminSecurityConfig {
                 .loginProcessingUrl("/admin/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .successHandler(adminAuthenticationSuccessHandler())
+//                .successHandler(adminAuthenticationSuccessHandler())
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
                 .csrf()
                 .ignoringRequestMatchers("/admin/login")
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(customAccessDeniedHandler());
+                .headers()
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
+//                .and()
+//                .exceptionHandling()
+//                .accessDeniedHandler(customAccessDeniedHandler());
         return http.build();
     }
 
@@ -151,8 +156,8 @@ public class AdminSecurityConfig {
 //        return http.build();
 //    }
     @Bean
-    AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler(){
-        return new AdminAuthenticationSuccessHandler();
+    SuperAdminAuthenticationSuccessHandler superAdminAuthenticationSuccessHandler(){
+        return new SuperAdminAuthenticationSuccessHandler(objectMapper);
     }
 
     @Bean
@@ -163,6 +168,13 @@ public class AdminSecurityConfig {
     AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
         return new AdminAuthenticationFailureHandler();
     }
+
+    @Bean
+    SuperAdminAuthenticationFailureHandler superAdminAuthenticationFailureHandler(){
+        return new SuperAdminAuthenticationFailureHandler(objectMapper);
+    }
+
+
 
     @Data
     @AllArgsConstructor

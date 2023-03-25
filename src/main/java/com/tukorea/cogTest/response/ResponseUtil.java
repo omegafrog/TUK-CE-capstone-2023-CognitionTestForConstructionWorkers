@@ -1,9 +1,15 @@
 package com.tukorea.cogTest.response;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,12 +35,28 @@ public class ResponseUtil {
     }
     public static ResponseEntity<Map<String, Object>> setWrongRequestErrorResponse(Exception e){
         log.error(e.getMessage());
-        return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null),
+                HttpStatus.BAD_REQUEST);
     }
 
     public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(Exception e){
         log.error(e.getMessage());
-        return new ResponseEntity<>(setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public static void writeObjectOnResponse(HttpServletResponse response,
+                                      ConcurrentHashMap<String, Object> result,
+                                      ObjectMapper objectMapper) throws IOException {
+        Writer writer = response.getWriter();
+        writer.write(objectMapper.writeValueAsString(result));
+        writer.flush();
+    }
+
+    public static void setRestResponseHeader(HttpServletResponse response){
+        response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+    }
 }

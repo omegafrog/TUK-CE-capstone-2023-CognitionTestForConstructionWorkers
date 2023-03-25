@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +41,15 @@ public class SuperAdminController {
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
+    }
+    @GetMapping("/admin/greetings")
+    public ResponseEntity<Map<String, Object>> greetings(){
+        Map<String, Object> body = new ConcurrentHashMap<>();
+        body.put("result", "welcome");
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        log.info("authentication : {}", authentication);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
