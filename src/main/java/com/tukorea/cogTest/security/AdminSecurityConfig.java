@@ -3,8 +3,10 @@ package com.tukorea.cogTest.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class AdminSecurityConfig {
     @Value ("${password.secret}")
     private String secret;
@@ -37,6 +40,8 @@ public class AdminSecurityConfig {
 
     @Autowired
     private SubjectAuthenticationProvider subjectAuthenticationProvider;
+
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -58,11 +63,31 @@ public class AdminSecurityConfig {
                 .ignoringRequestMatchers("/subject/login");
         return http.build();
     }
+    @Bean
+    SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/super/admin/**", "/super/admins/**")
+                .authenticationProvider(adminAuthenticationProvider)
+                .authorizeHttpRequests()
+                .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
+                .and()
+                .formLogin().permitAll()
+                .loginProcessingUrl("/admin/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(superAdminAccessDeniedHandler())
+                .and()
+                .csrf()
+                .disable();
+        return http.build();
+    }
 
     @Bean
     SecurityFilterChain web(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/admin/**", "/site/**")
+                .securityMatcher( "/admin/**", "/site/**")
                 .authenticationProvider(adminAuthenticationProvider)
                 .authorizeHttpRequests()
                 .anyRequest().hasRole("USER")
@@ -71,19 +96,14 @@ public class AdminSecurityConfig {
                 .loginProcessingUrl("/admin/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-                    JsonResponse body = new JsonResponse(exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
-                    String stringBody = objectMapper.writeValueAsString(body);
-                    PrintWriter writer = response.getWriter();
-                    writer.write(stringBody);
-                    writer.flush();
-                })
+                .successHandler(adminAuthenticationSuccessHandler())
+                .failureHandler(adminAuthenticationFailureHandler())
                 .and()
                 .csrf()
-                .ignoringRequestMatchers("/admin/login");
+                .ignoringRequestMatchers("/admin/login")
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler());
         return http.build();
     }
 
@@ -93,6 +113,11 @@ public class AdminSecurityConfig {
                 .authorizeHttpRequests().anyRequest().hasRole("ADMIN");
         return http.build();
 
+    }
+
+    @Bean
+    SuperAdminAccessDeniedHandler superAdminAccessDeniedHandler(){
+        return new SuperAdminAccessDeniedHandler(objectMapper);
     }
 
     @Bean
@@ -107,37 +132,42 @@ public class AdminSecurityConfig {
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
         return http.build();
     }
+//    @Bean
+//    SecurityFilterChain basic(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/admin/**", "/subject/**", "/site/**")
+//                .exceptionHandling()
+//                .authenticationEntryPoint((request, response, authException) -> {
+//                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                    JsonResponse body = new JsonResponse(authException.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
+//                    String stringBody = objectMapper.writeValueAsString(body);
+//                    PrintWriter writer = response.getWriter();
+//                    writer.write(stringBody);
+//                    writer.flush();
+//                })
+//                .accessDeniedHandler(customAccessDeniedHandler());
+//
+//        return http.build();
+//    }
     @Bean
-    SecurityFilterChain basic(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/admin/**", "/subject/**", "/site/**")
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler(){
+        return new AdminAuthenticationSuccessHandler();
+    }
 
-                    JsonResponse body = new JsonResponse(authException.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
-                    String stringBody = objectMapper.writeValueAsString(body);
-                    PrintWriter writer = response.getWriter();
-                    writer.write(stringBody);
-                    writer.flush();
-                })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    JsonResponse body = new JsonResponse(accessDeniedException.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
-                    String stringBody = objectMapper.writeValueAsString(body);
-                    PrintWriter writer = response.getWriter();
-                    writer.write(stringBody);
-                    writer.flush();
-
-                });
-        return http.build();
+    @Bean
+    CustomAccessDeniedHandler customAccessDeniedHandler(){
+        return new CustomAccessDeniedHandler(objectMapper);
+    }
+    @Bean
+    AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
+        return new AdminAuthenticationFailureHandler();
     }
 
     @Data
     @AllArgsConstructor
-    private class JsonResponse{
+    public static
+    class JsonResponse{
         String msg;
         int statusCode;
         Map<String, Object> results;
