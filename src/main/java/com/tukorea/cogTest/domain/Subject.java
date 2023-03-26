@@ -30,9 +30,9 @@ public class Subject {
 
     Role role;
 
-    private int age;
+    private Integer age;
     private DetailedJob detailedJob=DetailedJob.COMMON;
-    private int career;
+    private Integer career;
     private String remarks;
     private Risk risk=Risk.NORMAL;
 

@@ -2,6 +2,7 @@ package com.tukorea.cogTest.security.provider;
 
 import com.tukorea.cogTest.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.buf.Utf8Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -12,6 +13,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.CharsetEncoder;
 
 
 @Component
@@ -36,22 +39,22 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         log.info("password={}", password);
         try {
             UserDetails foundedUser = adminService.loadUserByUsername(username);
-            log.info("encoded={}",passwordEncoder.encode(foundedUser.getPassword()));
+            log.info("encoded={}", passwordEncoder.encode(foundedUser.getPassword()));
 
             log.info("foundedUser = {}", foundedUser);
             log.info("foundedUser.username={}, foundedUser.password={}", foundedUser.getUsername(), foundedUser.getPassword());
             log.info("foundedUser.authorities = {}", foundedUser.getAuthorities());
-            log.info("encode={}",foundedUser.getPassword());
+            log.info("encode={}", foundedUser.getPassword());
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
                 log.info("provider login success");
                 return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
             } else {
                 // 인증 실패
-                throw new AuthenticationCredentialsNotFoundException("인증 실패");
+                throw new AuthenticationCredentialsNotFoundException("authentication failed");
             }
-        }catch (RuntimeException e){
-            log.error("msg={}",e.getMessage());
+        } catch (RuntimeException e) {
+            log.error("msg={}", e.getMessage());
             throw e;
         }
     }

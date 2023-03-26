@@ -5,22 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.handler.AdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.CustomAccessDeniedHandler;
-import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
-import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationFailureHandler;
-import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
-import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
@@ -30,49 +26,24 @@ import java.util.Map;
 @EnableWebSecurity
 @Slf4j
 public class AdminSecurityConfig {
-    @Value ("${password.secret}")
-    private String secret;
 
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new Pbkdf2PasswordEncoder(secret, 256, 30, Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512);
-    }
 
     @Autowired
     private AdminAuthenticationProvider adminAuthenticationProvider;
 
     @Autowired
-    private SubjectAuthenticationProvider subjectAuthenticationProvider;
-
-
-    @Autowired
     private ObjectMapper objectMapper;
 
 
-    @Bean
-    SecurityFilterChain subject(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/subject/**")
-                .authenticationProvider(subjectAuthenticationProvider)
-                .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_USER.value)
-                .and()
-                .formLogin().permitAll()
-                .loginProcessingUrl("/subject/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .and()
-                .csrf()
-                .ignoringRequestMatchers("/subject/login");
-        return http.build();
-    }
+
     @Bean
     SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
+
         http
                 .securityMatcher("/super/admin/**", "/super/admins/**")
                 .authenticationProvider(adminAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
+                .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
                 .formLogin().permitAll()
                 .loginProcessingUrl("/super/admin/login")

@@ -31,7 +31,7 @@ public class SubjectAuthenticationProvider implements AuthenticationProvider {
         if(passwordEncoder.matches(password, foundedSubject.getPassword())){
             return new UsernamePasswordAuthenticationToken(username, password, foundedSubject.getAuthorities());
         }else {
-            throw new AuthenticationCredentialsNotFoundException("인증 실패");
+            throw new AuthenticationCredentialsNotFoundException("authentication failed");
         }
     }
 

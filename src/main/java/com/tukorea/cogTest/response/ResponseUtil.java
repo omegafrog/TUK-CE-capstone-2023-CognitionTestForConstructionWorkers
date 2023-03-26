@@ -36,8 +36,16 @@ public class ResponseUtil {
     public static ResponseEntity<Map<String, Object>> setWrongRequestErrorResponse(Exception e){
         log.error(e.getMessage());
         return new ResponseEntity<>(
-                setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null),
+                setResponseBody(HttpStatus.BAD_REQUEST, e.getMessage(), null),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    public static ResponseEntity<Map<String, Object>> setUnAuthenticatedErrorResponse(Exception e){
+        log.error(e.getMessage());
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.UNAUTHORIZED, e.getMessage(), null),
+                HttpStatus.UNAUTHORIZED
+        );
     }
 
     public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(Exception e){
@@ -48,7 +56,7 @@ public class ResponseUtil {
     }
 
     public static void writeObjectOnResponse(HttpServletResponse response,
-                                      ConcurrentHashMap<String, Object> result,
+                                      Map<String, Object> result,
                                       ObjectMapper objectMapper) throws IOException {
         Writer writer = response.getWriter();
         writer.write(objectMapper.writeValueAsString(result));
