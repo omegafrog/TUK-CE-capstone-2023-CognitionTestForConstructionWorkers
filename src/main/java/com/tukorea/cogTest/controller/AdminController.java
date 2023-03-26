@@ -53,6 +53,7 @@ public class AdminController {
     @GetMapping("/subject/{id}")
     public ResponseEntity<Map<String, Object>> getSubject(
             @PathVariable(name = "id") Long id) {
+        // TODO : 관리자가 관리하는 피험자만 조회할 수 있어야 한다.
         try {
             SubjectDTO foundedSubject = subjectService.findSubject(id);
             Map<String, Object> result = new ConcurrentHashMap<>();

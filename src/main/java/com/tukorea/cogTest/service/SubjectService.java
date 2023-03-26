@@ -66,7 +66,10 @@ public class SubjectService implements UserDetailsService{
              throw new UsernameNotFoundException(e.getMessage());
          }
     }
-
+    public SubjectDTO findByUsername(String username){
+        Subject byUsername = subjectRepository.findByUsername(username);
+        return byUsername.toDTO();
+    }
     public SubjectDTO update(Long id, SubjectForm subjectDTO){
         Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
 
