@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.security;
+package com.tukorea.cogTest.security.provider;
 
 import com.tukorea.cogTest.service.AdminService;
 import lombok.extern.slf4j.Slf4j;

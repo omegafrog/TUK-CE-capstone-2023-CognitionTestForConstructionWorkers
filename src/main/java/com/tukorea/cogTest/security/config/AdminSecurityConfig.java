@@ -1,11 +1,15 @@
-package com.tukorea.cogTest.security;
+package com.tukorea.cogTest.security.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.security.handler.AdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.CustomAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
+import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

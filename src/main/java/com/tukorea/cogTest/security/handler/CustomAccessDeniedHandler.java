@@ -1,6 +1,7 @@
-package com.tukorea.cogTest.security;
+package com.tukorea.cogTest.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.security.config.AdminSecurityConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

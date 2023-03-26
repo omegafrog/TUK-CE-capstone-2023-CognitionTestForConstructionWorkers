@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.security;
+package com.tukorea.cogTest.security.provider;
 
 import com.tukorea.cogTest.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
