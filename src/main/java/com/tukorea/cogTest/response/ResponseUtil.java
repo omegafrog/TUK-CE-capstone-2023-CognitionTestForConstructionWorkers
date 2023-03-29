@@ -33,10 +33,10 @@ public class ResponseUtil {
         }
         return body;
     }
-    public static ResponseEntity<Map<String, Object>> setWrongRequestErrorResponse(Exception e){
+    public static ResponseEntity<Map<String, Object>> returnWrongRequestErrorResponse(Exception e){
         log.error(e.getMessage());
         return new ResponseEntity<>(
-                setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null),
+                setResponseBody(HttpStatus.BAD_REQUEST, e.getMessage(), null),
                 HttpStatus.BAD_REQUEST);
     }
 
@@ -48,7 +48,7 @@ public class ResponseUtil {
     }
 
     public static void writeObjectOnResponse(HttpServletResponse response,
-                                      ConcurrentHashMap<String, Object> result,
+                                      Map<String, Object> result,
                                       ObjectMapper objectMapper) throws IOException {
         Writer writer = response.getWriter();
         writer.write(objectMapper.writeValueAsString(result));

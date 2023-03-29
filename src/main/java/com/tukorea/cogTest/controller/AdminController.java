@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
-import static com.tukorea.cogTest.response.ResponseUtil.setWrongRequestErrorResponse;
+import static com.tukorea.cogTest.response.ResponseUtil.returnWrongRequestErrorResponse;
 
 @RestController
 @Slf4j
@@ -87,7 +87,7 @@ public class AdminController {
             result.put("subjects", subjectList);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -128,7 +128,7 @@ public class AdminController {
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
                     body), HttpStatus.OK);
         } catch (NullPointerException | IOException | IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -159,7 +159,7 @@ public class AdminController {
             List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
             long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
             if(count == 0){
-                return setWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
+                return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
 
             // 피험자 정보 업데이트
@@ -170,7 +170,7 @@ public class AdminController {
             return new ResponseEntity<>(body, HttpStatus.OK);
 
         } catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -190,7 +190,7 @@ public class AdminController {
             subjectService.delete(id);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete subject success", null), HttpStatus.OK);
         }catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);
         }

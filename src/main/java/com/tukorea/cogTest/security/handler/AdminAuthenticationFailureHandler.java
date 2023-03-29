@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.response.JsonResponse;
 import com.tukorea.cogTest.security.config.AdminSecurityConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +24,10 @@ public class AdminAuthenticationFailureHandler implements AuthenticationFailureH
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
             log.info("admin login failure");
-        System.out.println("hi");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-            AdminSecurityConfig.JsonResponse body = new AdminSecurityConfig.JsonResponse(exception.getLocalizedMessage()+"hi", HttpStatus.UNAUTHORIZED.value(), null);
+            JsonResponse body = new JsonResponse(exception.getLocalizedMessage()+"hi", HttpStatus.UNAUTHORIZED.value(), null);
             String stringBody = objectMapper.writeValueAsString(body);
             PrintWriter writer = response.getWriter();
             writer.write(stringBody);

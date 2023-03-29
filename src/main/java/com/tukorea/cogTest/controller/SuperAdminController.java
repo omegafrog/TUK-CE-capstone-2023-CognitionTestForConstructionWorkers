@@ -37,7 +37,7 @@ public class SuperAdminController {
             result.put("admin", adminDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -61,7 +61,7 @@ public class SuperAdminController {
             result.put("admin", adminDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -75,7 +75,7 @@ public class SuperAdminController {
             result.put("admins", all);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -99,7 +99,7 @@ public class SuperAdminController {
             result.put("admin", updated);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -113,7 +113,7 @@ public class SuperAdminController {
 
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete common admin success", null), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }

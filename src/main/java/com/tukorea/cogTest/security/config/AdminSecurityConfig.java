@@ -3,15 +3,13 @@ package com.tukorea.cogTest.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.handler.AdminAuthenticationFailureHandler;
-import com.tukorea.cogTest.security.handler.CustomAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +22,6 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
-import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -81,6 +78,9 @@ public class AdminSecurityConfig {
                 .successHandler(superAdminAuthenticationSuccessHandler())
                 .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
+                .and()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
@@ -125,11 +125,6 @@ public class AdminSecurityConfig {
     }
 
     @Bean
-    SuperAdminAccessDeniedHandler superAdminAccessDeniedHandler(){
-        return new SuperAdminAccessDeniedHandler(objectMapper);
-    }
-
-    @Bean
     SecurityFilterChain h2console(HttpSecurity http) throws Exception {
         http.securityMatcher("/h2-console/**")
                 .authorizeHttpRequests().anyRequest().permitAll()
@@ -164,10 +159,7 @@ public class AdminSecurityConfig {
         return new SuperAdminAuthenticationSuccessHandler(objectMapper);
     }
 
-    @Bean
-    CustomAccessDeniedHandler customAccessDeniedHandler(){
-        return new CustomAccessDeniedHandler(objectMapper);
-    }
+
     @Bean
     AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
         return new AdminAuthenticationFailureHandler();
@@ -178,16 +170,14 @@ public class AdminSecurityConfig {
         return new SuperAdminAuthenticationFailureHandler(objectMapper);
     }
 
-
-
-    @Data
-    @AllArgsConstructor
-    public static
-    class JsonResponse{
-        String msg;
-        int statusCode;
-        Map<String, Object> results;
-
+    @Bean
+    SuperAdminAccessDeniedHandler superAdminAccessDeniedHandler(){
+        return new SuperAdminAccessDeniedHandler(objectMapper);
     }
+
+
+
+
+
 
 }

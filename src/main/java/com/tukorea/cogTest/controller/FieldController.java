@@ -39,7 +39,7 @@ public class FieldController {
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
         } catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);
         }

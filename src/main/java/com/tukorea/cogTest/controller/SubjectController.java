@@ -33,7 +33,7 @@ public class SubjectController {
             result.put("testResults", testResult);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject " + id + "'s result success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -47,7 +47,7 @@ public class SubjectController {
             result.put("subject", subjectDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
