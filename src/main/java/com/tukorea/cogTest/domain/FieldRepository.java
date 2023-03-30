@@ -1,6 +1,5 @@
 package com.tukorea.cogTest.domain;
 
-import java.util.Optional;
 
 public interface FieldRepository {
 

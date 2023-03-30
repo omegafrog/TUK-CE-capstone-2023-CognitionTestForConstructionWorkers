@@ -27,115 +27,68 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 @EnableWebSecurity
 @Slf4j
 public class AdminSecurityConfig {
-    @Value ("${password.secret}")
-    private String secret;
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new Pbkdf2PasswordEncoder(secret, 256, 30, Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512);
-    }
-
-    @Autowired
-    private AdminAuthenticationProvider adminAuthenticationProvider;
-
-    @Autowired
-    private SubjectAuthenticationProvider subjectAuthenticationProvider;
-
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
-    @Bean
-    SecurityFilterChain subject(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/subject/**")
-                .authenticationProvider(subjectAuthenticationProvider)
-                .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_USER.value)
-                .and()
-                .formLogin().permitAll()
-                .loginProcessingUrl("/subject/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .and()
-                .csrf()
-                .ignoringRequestMatchers("/subject/login");
-        return http.build();
-    }
-    @Bean
-    SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/super/admin/**", "/super/admins/**")
-                .authenticationProvider(adminAuthenticationProvider)
-                .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
-                .and()
-                .formLogin().permitAll()
-                .loginProcessingUrl("/super/admin/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(superAdminAuthenticationSuccessHandler())
-                .failureHandler(superAdminAuthenticationFailureHandler())
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
-                .and()
-                .headers()
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
-                .and()
-                .csrf()
-                .disable();
-
-        return http.build();
-    }
-
-    @Bean
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher( "/admin/**", "/site/**")
-                .authenticationProvider(adminAuthenticationProvider)
-                .authorizeHttpRequests()
-                .anyRequest().hasRole("USER")
-                .and()
-                .formLogin().permitAll()
-                .loginProcessingUrl("/admin/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-//                .successHandler(adminAuthenticationSuccessHandler())
-                .failureHandler(adminAuthenticationFailureHandler())
-                .and()
-                .csrf()
-                .ignoringRequestMatchers("/admin/login")
-                .and()
-                .headers()
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
+//
+//
+//
+//
+//
+//
+//    @Autowired
+//    private SubjectAuthenticationProvider subjectAuthenticationProvider;
+//
+//
+//    @Autowired
+//    private ObjectMapper objectMapper;
+//
+//
+//    @Bean
+//    SecurityFilterChain subject(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/subject/**")
+//                .authenticationProvider(subjectAuthenticationProvider)
+//                .authorizeHttpRequests()
+//                .anyRequest().hasRole(Role.ROLE_USER.value)
 //                .and()
-//                .exceptionHandling()
-//                .accessDeniedHandler(customAccessDeniedHandler());
-        return http.build();
-    }
+//                .formLogin().permitAll()
+//                .loginProcessingUrl("/subject/login")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//                .and()
+//                .csrf()
+//                .ignoringRequestMatchers("/subject/login");
+//        return http.build();
+//    }
 
-    @Bean
-    SecurityFilterChain site(HttpSecurity http) throws Exception {
-        http.securityMatcher("/site/**")
-                .authorizeHttpRequests().anyRequest().hasRole("ADMIN");
-        return http.build();
 
-    }
+//    @Bean
+//    SecurityFilterChain web(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher( "/admin/**", "/site/**")
+//                .authenticationProvider(adminAuthenticationProvider)
+//                .authorizeHttpRequests()
+//                .anyRequest().hasRole("USER")
+//                .and()
+//                .formLogin().permitAll()
+//                .loginProcessingUrl("/admin/login")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+////                .successHandler(adminAuthenticationSuccessHandler())
+//                .failureHandler(adminAuthenticationFailureHandler())
+//                .and()
+//                .csrf()
+//                .ignoringRequestMatchers("/admin/login")
+//                .and()
+//                .headers()
+//                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
+////                .and()
+////                .exceptionHandling()
+////                .accessDeniedHandler(customAccessDeniedHandler());
+//        return http.build();
+//    }
 
-    @Bean
-    SecurityFilterChain h2console(HttpSecurity http) throws Exception {
-        http.securityMatcher("/h2-console/**")
-                .authorizeHttpRequests().anyRequest().permitAll()
-                .and()
-                .csrf()
-                .ignoringRequestMatchers("/h2-console/**")
-                .and()
-                .headers()
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
-        return http.build();
-    }
+
+
+
 //    @Bean
 //    SecurityFilterChain basic(HttpSecurity http) throws Exception {
 //        http
@@ -154,30 +107,10 @@ public class AdminSecurityConfig {
 //
 //        return http.build();
 //    }
-    @Bean
-    SuperAdminAuthenticationSuccessHandler superAdminAuthenticationSuccessHandler(){
-        return new SuperAdminAuthenticationSuccessHandler(objectMapper);
-    }
-
 
     @Bean
     AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
         return new AdminAuthenticationFailureHandler();
     }
-
-    @Bean
-    SuperAdminAuthenticationFailureHandler superAdminAuthenticationFailureHandler(){
-        return new SuperAdminAuthenticationFailureHandler(objectMapper);
-    }
-
-    @Bean
-    SuperAdminAccessDeniedHandler superAdminAccessDeniedHandler(){
-        return new SuperAdminAccessDeniedHandler(objectMapper);
-    }
-
-
-
-
-
 
 }

@@ -3,10 +3,12 @@ package com.tukorea.cogTest.controller;
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.dto.AdminDTO;
+import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
+import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class AdminController {
     private AdminService adminService;
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private FieldService fieldService;
 
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,7 +128,7 @@ public class AdminController {
                 case "file" -> adminService.addWorkerByFile(id, file);
                 case "multi" -> adminService.addMultiWorkers(id, subjects);
                 case "sole" -> adminService.addSoleWorker(id, subject);
-                default -> null;
+                default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
             };
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
                     body), HttpStatus.OK);
