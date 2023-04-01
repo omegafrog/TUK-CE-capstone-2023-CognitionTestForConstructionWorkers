@@ -36,10 +36,8 @@ public class AdminController {
     private AdminService adminService;
     @Autowired
     private SubjectService subjectService;
-
     @Autowired
     private FieldService fieldService;
-
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -72,13 +70,10 @@ public class AdminController {
 
     /**
      * 관리자가 관리하는 모든 피험자 정보를 검색한다.
-     * @return {
+     * @return
      *     statusCode : 200,
      *     msg : Get subjects success,
-     *     results : {
-     *         검색한 피험자 객체
-     *     }
-     * }
+     *     results : 검색한 피험자 객체
      */
     @GetMapping("/subjects")
     public ResponseEntity<Map<String, Object>> getSubjects() {
@@ -119,20 +114,18 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> addWorker(
             @RequestParam String mode,
             @PathVariable Long id,
-            @RequestParam MultipartFile file,
             @RequestParam List<Subject> subjects,
             @ModelAttribute Subject subject
     ) {
         try {
             Map<String, Object> body = switch (mode) {
-                case "file" -> adminService.addWorkerByFile(id, file);
                 case "multi" -> adminService.addMultiWorkers(id, subjects);
                 case "sole" -> adminService.addSoleWorker(id, subject);
                 default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
             };
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
                     body), HttpStatus.OK);
-        } catch (NullPointerException | IOException | IllegalArgumentException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);

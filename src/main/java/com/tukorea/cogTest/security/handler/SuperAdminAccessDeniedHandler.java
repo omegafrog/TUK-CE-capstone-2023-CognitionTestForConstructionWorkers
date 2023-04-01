@@ -24,7 +24,7 @@ public class SuperAdminAccessDeniedHandler implements AccessDeniedHandler {
         log.info("super admin accessDeniedHandler working");
         if (accessDeniedException != null){
             log.info("super admin accessDeniedHandler working");
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             JsonResponse body = new JsonResponse(accessDeniedException.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
             String stringBody = objectMapper.writeValueAsString(body);

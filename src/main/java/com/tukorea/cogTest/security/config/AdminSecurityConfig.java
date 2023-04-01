@@ -107,10 +107,4 @@ public class AdminSecurityConfig {
 //
 //        return http.build();
 //    }
-
-    @Bean
-    AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
-        return new AdminAuthenticationFailureHandler();
-    }
-
 }

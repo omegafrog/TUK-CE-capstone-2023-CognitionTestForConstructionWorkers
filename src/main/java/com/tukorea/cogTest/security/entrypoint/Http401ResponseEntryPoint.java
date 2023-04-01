@@ -25,7 +25,10 @@ public class Http401ResponseEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("Unauthorized access.");
         setRestResponseHeader(response);
-        Map<String, Object> body = returnWrongRequestErrorResponse(authException).getBody();
-        writeObjectOnResponse(response, body, objectMapper);
+        ResponseUtil.setJsonResponse(
+                response,
+                authException,
+                objectMapper
+        );
     }
 }

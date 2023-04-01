@@ -34,14 +34,14 @@ public class SuperAdminAuthenticationSuccessHandler implements AuthenticationSuc
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("super admin authentication success");
 
-        response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        ResponseUtil.setRestResponseHeader(response);
 
         Map<String, Object> body = new ConcurrentHashMap<>();
         body.put("username", authentication.getName());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "super admin authentication success", body);
-
         writeObjectOnResponse(response, result, objectMapper);
+        response.setStatus(HttpStatus.OK.value());
+
     }
 
 

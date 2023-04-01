@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,10 +47,26 @@ public class ResponseUtil {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public static ResponseEntity<Map<String, Object>> setUnauthorizedResponse(Exception e){
+        log.error(e.getMessage());
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.UNAUTHORIZED,
+                        e.getMessage(),
+                        null),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    public static void setJsonResponse(HttpServletResponse response, Exception exception, ObjectMapper objectMapper) throws IOException {
+        JsonResponse body = new JsonResponse(exception.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value(), null);
+        PrintWriter writer = response.getWriter();
+        writer.write(objectMapper.writeValueAsString(body));
+        writer.flush();
+    }
     public static void writeObjectOnResponse(HttpServletResponse response,
                                       Map<String, Object> result,
                                       ObjectMapper objectMapper) throws IOException {
-        Writer writer = response.getWriter();
+        PrintWriter writer = response.getWriter();
         writer.write(objectMapper.writeValueAsString(result));
         writer.flush();
     }
