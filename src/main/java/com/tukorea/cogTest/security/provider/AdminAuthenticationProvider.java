@@ -48,7 +48,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
             } else {
                 // 인증 실패
-                throw new AuthenticationCredentialsNotFoundException("인증 실패");
+                throw new AuthenticationCredentialsNotFoundException("login failed");
             }
         }catch (RuntimeException e){
             log.error("msg={}",e.getMessage());

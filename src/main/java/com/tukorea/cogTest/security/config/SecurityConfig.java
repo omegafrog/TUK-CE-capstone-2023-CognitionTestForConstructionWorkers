@@ -3,9 +3,7 @@ package com.tukorea.cogTest.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
-import com.tukorea.cogTest.security.handler.SuperAdminAccessDeniedHandler;
-import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationFailureHandler;
-import com.tukorea.cogTest.security.handler.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.*;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +51,21 @@ public class SecurityConfig {
     }
 
     @Bean
+    AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler(){
+        return new AdminAuthenticationSuccessHandler(objectMapper);
+    }
+
+    @Bean
+    AdminAuthenticationFailureHandler adminAuthenticationFailureHandler(){
+        return new AdminAuthenticationFailureHandler(objectMapper);
+    }
+
+    @Bean
+    AdminAccessDeniedHandler adminAccessDeniedHandler(){
+        return new AdminAccessDeniedHandler(objectMapper);
+    }
+
+    @Bean
     SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/super/admin/**", "/super/admins/**")
@@ -78,6 +91,33 @@ public class SecurityConfig {
 
         return http.build();
     }
+    @Bean
+    SecurityFilterChain admin(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/admin/**")
+                .authenticationProvider(adminAuthenticationProvider)
+                .authorizeHttpRequests()
+                .anyRequest().hasRole(Role.ROLE_ADMIN.value)
+                .and()
+                .formLogin().permitAll()
+                .loginProcessingUrl("/admin/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(adminAuthenticationSuccessHandler())
+                .failureHandler(adminAuthenticationFailureHandler())
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(adminAccessDeniedHandler())
+                .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
+                .and()
+                .headers()
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+                .and()
+                .csrf()
+                .disable();
+        return http.build();
+    }
+
     @Bean
     SecurityFilterChain site(HttpSecurity http) throws Exception {
         http
