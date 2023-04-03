@@ -6,6 +6,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Maze extends Test {
-    private boolean LT;
-    private boolean FT;
+    private Double meanLT;
+    private Double meanFT;
 }

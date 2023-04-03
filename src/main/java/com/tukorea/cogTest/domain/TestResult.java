@@ -18,7 +18,7 @@ import java.util.Objects;
 public class TestResult {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -29,20 +29,21 @@ public class TestResult {
     @Temporal(TemporalType.DATE)
     private LocalDate date = LocalDate.now();
 
-    @Column(name = "TWO_HAND")
     @Embedded
     private Twohand twoHandResult;
-    @Column(name="PVT")
     @Embedded
     private Pvt pvtResult;
-    @Column(name = "CRANE")
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "responseTime", column = @Column(name = "CRANE_RESPONSE_TIME"))
+    })
     private Crane craneResult;
-    @Column(name = "MAZE")
     @Embedded
     private Maze mazeResult;
-    @Column(name = "TOVA")
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "responseTime", column = @Column(name = "TOVA_RESPONSE_TIME"))
+    })
     private Tova tovaResult;
 
     @Builder
