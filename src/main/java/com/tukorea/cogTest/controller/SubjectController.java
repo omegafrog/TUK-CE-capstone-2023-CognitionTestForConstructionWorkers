@@ -1,6 +1,5 @@
 package com.tukorea.cogTest.controller;
 
-import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.response.ResponseUtil;
