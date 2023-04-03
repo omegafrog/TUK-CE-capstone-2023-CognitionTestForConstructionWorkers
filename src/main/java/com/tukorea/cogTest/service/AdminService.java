@@ -6,9 +6,12 @@ import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
+import com.tukorea.cogTest.dto.SubjectForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,8 @@ public class AdminService implements UserDetailsService {
     private FieldRepository fieldRepository;
     @Autowired
     private SubjectRepository subjectRepository;
+
+    private SecurityContext context = SecurityContextHolder.getContext();
 
 
     @Override
@@ -78,7 +84,6 @@ public class AdminService implements UserDetailsService {
             Subject subject = Subject.builder()
                     .name(split[0])
                     .age(Integer.parseInt(split[1]))
-                    .detailedJob(DetailedJob.values()[Integer.parseInt(split[2])])
                     .career(Integer.parseInt(split[3]))
                     .remarks(split[4])
                     .risk(Risk.values()[Integer.parseInt(split[5])])
@@ -91,19 +96,36 @@ public class AdminService implements UserDetailsService {
         result.put("subjects", subjectList);
         return result;
     }
-    public Map<String, Object> addMultiWorkers(Long id, List<Subject> subjects){
+    public Map<String, Object> addMultiWorkers(Long id, List<SubjectForm> subjects){
         Field foundedField = fieldRepository.findById(id);
-        for (Subject subject : subjects) {
-            subject.assignField(foundedField);
+        for (SubjectForm subjectForm : subjects) {
+            Subject subject = Subject.builder()
+                    .name(subjectForm.getName())
+                    .username(subjectForm.getUsername())
+                    .password(encoder.encode(subjectForm.getPassword()))
+                    .role(Role.ROLE_USER)
+                    .risk(Risk.NORMAL)
+                    .age(subjectForm.getAge())
+                    .career(subjectForm.getCareer())
+                    .field(foundedField)
+                    .build();
             subjectRepository.save(subject);
         }
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("subjects", subjects);
         return result;
     }
-    public Map<String, Object> addSoleWorker(Long id, Subject subject){
-        Field foundedField = fieldRepository.findById(id);
-        subject.assignField(foundedField);
+    public Map<String, Object> addSoleWorker( Long fieldId, SubjectForm subjectForm){
+        Field foundedField = fieldRepository.findById(fieldId);
+        Subject subject = Subject.builder()
+                .name(subjectForm.getName())
+                .age(subjectForm.getAge())
+                .username(subjectForm.getUsername())
+                .password(encoder.encode(subjectForm.getPassword()))
+                .role(Role.ROLE_ADMIN)
+                .risk(Risk.NORMAL)
+                .field(foundedField)
+                .build();
         Subject savedSubject = subjectRepository.save(subject);
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("subject", savedSubject);
@@ -111,11 +133,13 @@ public class AdminService implements UserDetailsService {
     }
 
     public AdminDTO addAdmin(AdminForm adminForm) {
+        Field selectedField = fieldRepository.findById(adminForm.getFieldId());
         Admin admin = Admin.builder()
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())
                 .password(encoder.encode(adminForm.getPassword()))
                 .role(Role.ROLE_ADMIN)
+                .field(selectedField)
                 .position(adminForm.getPosition())
                 .build();
         AdminDTO saved = adminRepository.save(admin).toDTO();

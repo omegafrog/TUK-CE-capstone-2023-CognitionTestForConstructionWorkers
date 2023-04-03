@@ -19,7 +19,7 @@ public class FieldRepositoryImpl implements FieldRepository {
 
     @Override
     public Field findById(Long id) throws IllegalArgumentException  {
-        return simpleFieldRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("그런 현장은 없습니다." + id));
+        return simpleFieldRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is no such field." + id));
     }
 
     @Override

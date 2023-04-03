@@ -10,16 +10,19 @@ import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
 import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +41,8 @@ public class AdminController {
     private SubjectService subjectService;
     @Autowired
     private FieldService fieldService;
+
+    private final SecurityContext securityContext = SecurityContextHolder.getContext();
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -112,15 +117,18 @@ public class AdminController {
      */
     @PostMapping(value = "/subject")
     public ResponseEntity<Map<String, Object>> addWorker(
-            @RequestParam String mode,
-            @PathVariable Long id,
-            @RequestParam List<Subject> subjects,
-            @ModelAttribute Subject subject
+            @RequestParam @Nullable String mode,
+            @RequestBody @Nullable List<SubjectForm> subjects,
+            @ModelAttribute SubjectForm subject,
+            Principal principal
     ) {
         try {
+
+            String username =  principal.getName();
+            Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {
-                case "multi" -> adminService.addMultiWorkers(id, subjects);
-                case "sole" -> adminService.addSoleWorker(id, subject);
+                case "multi" -> adminService.addMultiWorkers( adminId, subjects);
+                case "sole" -> adminService.addSoleWorker(adminId, subject);
                 default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
             };
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
