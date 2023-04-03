@@ -1,7 +1,6 @@
 package com.tukorea.cogTest.domain;
 
-import com.tukorea.cogTest.domain.test.Pvt;
-import com.tukorea.cogTest.domain.test.Twohand;
+import com.tukorea.cogTest.domain.test.*;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -32,10 +31,39 @@ public class TestResult {
 
     @Column(name = "TWO_HAND")
     @Embedded
-    private Twohand twohandResult;
+    private Twohand twoHandResult;
     @Column(name="PVT")
     @Embedded
     private Pvt pvtResult;
+    @Column(name = "CRANE")
+    @Embedded
+    private Crane craneResult;
+    @Column(name = "MAZE")
+    @Embedded
+    private Maze mazeResult;
+    @Column(name = "TOVA")
+    @Embedded
+    private Tova tovaResult;
+
+    @Builder
+    public TestResult(
+            Long id,
+            Subject target,
+            LocalDate date,
+            Twohand twoHandResult,
+            Pvt pvtResult,
+            Crane craneResult,
+            Maze mazeResult,
+            Tova tovaResult) {
+        this.id = id;
+        this.target = target;
+        this.date = date;
+        this.twoHandResult = twoHandResult;
+        this.pvtResult = pvtResult;
+        this.craneResult = craneResult;
+        this.mazeResult = mazeResult;
+        this.tovaResult = tovaResult;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -50,18 +78,11 @@ public class TestResult {
     public int hashCode() {
         return id.intValue();
     }
-    @Builder
-    public TestResult(Long id, Subject target, Twohand twohandResult, Pvt pvtResult, LocalDate date) {
-        this.id = id;
-        this.target = target;
-        this.twohandResult = twohandResult;
-        this.pvtResult = pvtResult;
-        this.date = date;
-    }
+
 
     public TestResult update(TestResult item){
         this.target = item.getTarget();
-        this.twohandResult = item.getTwohandResult();
+        this.twoHandResult = item.getTwoHandResult();
         this.pvtResult = item.getPvtResult();
         return this;
     }
@@ -77,10 +98,13 @@ public class TestResult {
     public TestResultDTO toDTO(){
         return TestResultDTO.builder()
                 .id(id)
-                .date(date)
                 .target(target)
-                .twohandResult(twohandResult)
+                .date(date)
+                .twoHandResult(twoHandResult)
                 .pvtResult(pvtResult)
+                .craneResult(craneResult)
+                .mazeResult(mazeResult)
+                .tovaResult(tovaResult)
                 .build();
     }
 }

@@ -53,7 +53,7 @@ public class SubjectService implements UserDetailsService{
                 subject -> subject.toDTO()).toList();
     }
 
-     @Override
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
          try {
              Subject foundedSubject = subjectRepository.findByUsername(username);
