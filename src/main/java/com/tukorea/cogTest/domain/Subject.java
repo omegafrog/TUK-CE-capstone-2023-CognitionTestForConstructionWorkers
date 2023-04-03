@@ -2,6 +2,7 @@ package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Objects;
 
@@ -19,12 +21,17 @@ import java.util.Objects;
 public class Subject {
 
     @Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-    private int age;
-    private DetailedJob detailedJob=DetailedJob.COMMON;
-    private int career;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    String name;
+    String username;
+    String password;
+
+    Role role;
+
+    private Integer age;
+    private Integer career;
     private String remarks;
     private Risk risk=Risk.NORMAL;
 
@@ -33,16 +40,29 @@ public class Subject {
     private Field field;
 
     @Builder
-    public Subject(Long id, String name, int age, DetailedJob detailedJob, int career, String remarks, Risk risk, Field field) {
+    public Subject(
+            Long id,
+            String name,
+            String username,
+            String password,
+            Role role,
+            Integer age,
+            Integer career,
+            String remarks,
+            Risk risk,
+            Field field) {
         this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
+        this.role = role;
         this.age = age;
-        this.detailedJob = detailedJob;
         this.career = career;
         this.remarks = remarks;
         this.risk = risk;
         this.field = field;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,10 +81,13 @@ public class Subject {
         this.name = subject.getName();
         this.age = subject.getAge();
         this.career = subject.getCareer();
-        this.detailedJob = subject.getDetailedJob();
         this.field = subject.getField();
         this.remarks = subject.getRemarks();
         return this;
+    }
+
+    public void assignField(Field field){
+        this.field = field;
     }
 
     public SubjectDTO toDTO(){
@@ -73,10 +96,13 @@ public class Subject {
                 .age(this.age)
                 .name(this.name)
                 .career(this.career)
-                .detailedJob(this.detailedJob)
                 .field(this.field)
                 .remarks(this.remarks)
                 .risk(this.risk)
                 .build();
+    }
+
+    public void encodePassword(PasswordEncoder encoder){
+        this.password = encoder.encode(password);
     }
 }

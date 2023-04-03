@@ -2,6 +2,7 @@ package com.tukorea.cogTest.repository;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.FieldRepository;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -12,17 +13,17 @@ public class FieldRepositoryImpl implements FieldRepository {
 
     private final JpaSimpleFieldRepository simpleFieldRepository;
     @Override
-    public Field save(Field field) {
-        return simpleFieldRepository.save(field);
+    public Field save(Field field) throws IllegalArgumentException{
+            return simpleFieldRepository.save(field);
     }
 
     @Override
-    public Field findById(Long id) throws RuntimeException{
-        return simpleFieldRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("그런 현장은 없습니다." + id));
+    public Field findById(Long id) throws IllegalArgumentException  {
+        return simpleFieldRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("There is no such field." + id));
     }
 
     @Override
-    public Field update(Long id, Field field) throws RuntimeException{
+    public Field update(Long id, Field field) throws IllegalArgumentException {
         Field foundedField = findById(id);
         return foundedField.update(field);
     }

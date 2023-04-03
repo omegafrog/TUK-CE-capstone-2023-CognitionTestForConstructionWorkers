@@ -5,12 +5,13 @@ import com.tukorea.cogTest.domain.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class AdminRepositoryImpl implements AdminRepository {
     private final JpaSimpleAdminRepository simpleAdminRepository;
+
 
     @Override
     public Admin save(Admin admin) {
@@ -25,15 +26,26 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
+    public List<Admin> findAll() {
+        return simpleAdminRepository.findAll();
+    }
+
+    @Override
     public Admin findById(Long id) throws RuntimeException{
         return simpleAdminRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("그런 관리자는 없습니다." + id));
+                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. " + id));
     }
 
     @Override
     public Admin update(Long id, Admin admin) {
         Admin foundedAdmin = simpleAdminRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("그런 admin은 없습니다." + id));
-        return foundedAdmin.update(admin);
+                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. " + id));
+        return foundedAdmin.update(admin.toDTO());
+    }
+
+    @Override
+    public Admin findByUsername(String username) {
+        return simpleAdminRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. "+username));
     }
 }

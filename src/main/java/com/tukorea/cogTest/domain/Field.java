@@ -1,8 +1,8 @@
 package com.tukorea.cogTest.domain;
 
+import com.tukorea.cogTest.dto.FieldDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
@@ -16,12 +16,12 @@ import java.util.Objects;
 public class Field {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private int numOfWorkers;
+    private int numOfWorkers=0;
 
     @Builder
     public Field(Long id, String name, int numOfWorkers) {
@@ -53,5 +53,13 @@ public class Field {
         this.name = field.getName();
         this.numOfWorkers = field.getNumOfWorkers();
         return this;
+    }
+
+    public FieldDTO toDTO(){
+        return FieldDTO.builder()
+                .id(id)
+                .name(name)
+                .numOfWorkers(numOfWorkers)
+                .build();
     }
 }

@@ -5,11 +5,16 @@ import com.tukorea.cogTest.domain.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepository {
+    @Override
+    public List<Subject> findByField_id(Long fieldId) {
+        return simpleSubjectRepository.findByField_Id(fieldId);
+    }
+
 
     public final JpaSimpleSubjectRepository simpleSubjectRepository;
     @Override
@@ -35,5 +40,11 @@ public class SubjectRepositoryImpl implements SubjectRepository {
         Subject foundedSubject = simpleSubjectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
         simpleSubjectRepository.delete(foundedSubject);
+    }
+
+    @Override
+    public Subject findByUsername(String username) {
+        return simpleSubjectRepository.findByUsername(username)
+                .orElseThrow(()->new IllegalArgumentException("그런 피험자는 없습니다."+username));
     }
 }

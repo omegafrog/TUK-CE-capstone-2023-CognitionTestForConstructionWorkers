@@ -46,6 +46,11 @@ public class TestResultRepositoryImpl implements TestResultRepository {
     }
 
     @Override
+    public void deleteAllBySubjectId(Long subjectId) {
+         simpleTestResultRepository.deleteByTarget_id(subjectId);
+    }
+
+    @Override
     public List<TestResult> findByUserId(Long userId) {
         return simpleTestResultRepository.findByTarget_Id(userId);
     }
