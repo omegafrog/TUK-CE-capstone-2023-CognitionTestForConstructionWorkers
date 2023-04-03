@@ -59,7 +59,7 @@ public class SubjectService implements UserDetailsService{
              Subject foundedSubject = subjectRepository.findByUsername(username);
              return User.withUsername(foundedSubject.getUsername())
                      .password(foundedSubject.getPassword())
-                     .roles("ROLE_"+foundedSubject.getRole().value)
+                     .roles(foundedSubject.getRole().value)
                      .build();
          } catch (IllegalArgumentException e) {
              throw new UsernameNotFoundException(e.getMessage());
