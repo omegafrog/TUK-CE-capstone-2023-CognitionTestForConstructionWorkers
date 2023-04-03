@@ -5,6 +5,7 @@ import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.handler.*;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
+import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +64,22 @@ public class SecurityConfig {
     @Bean
     AdminAccessDeniedHandler adminAccessDeniedHandler(){
         return new AdminAccessDeniedHandler(objectMapper);
+    }
+
+    @Autowired
+    SubjectAuthenticationProvider subjectAuthenticationProvider;
+
+    @Bean
+    SubjectAuthenticationSuccessHandler subjectAuthenticationSuccessHandler(){
+        return new SubjectAuthenticationSuccessHandler(objectMapper);
+    }
+    @Bean
+    SubjectAuthenticationFailureHandler subjectAuthenticationFailureHandler(){
+        return new SubjectAuthenticationFailureHandler(objectMapper);
+    }
+    @Bean
+    SubjectAccessDeniedHandler subjectAccessDeniedHandler(){
+        return new SubjectAccessDeniedHandler(objectMapper);
     }
 
     @Bean
@@ -127,6 +144,33 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
+                .and()
+                .headers()
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+                .and()
+                .csrf()
+                .disable();
+        return http.build();
+    }
+
+    @Bean
+    SecurityFilterChain subject(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/subject/**")
+                .authenticationProvider(subjectAuthenticationProvider)
+                .authorizeHttpRequests()
+                .anyRequest().hasRole(Role.ROLE_USER.value)
+                .and()
+                .formLogin().permitAll()
+                .loginProcessingUrl("/subject/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(subjectAuthenticationSuccessHandler())
+                .failureHandler(subjectAuthenticationFailureHandler())
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
+                .accessDeniedHandler(subjectAccessDeniedHandler())
                 .and()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
