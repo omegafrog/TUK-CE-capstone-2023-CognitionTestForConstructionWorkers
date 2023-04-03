@@ -41,7 +41,7 @@ public class SubjectController {
     @PostMapping("/{id}/test-result")
     public ResponseEntity<Map<String, Object>> saveSubjectTestResult(
             @PathVariable Long id,
-            @ModelAttribute TestResultForm testResult) {
+            @RequestBody TestResultForm testResult) {
         try{
             TestResultDTO saved = testResultService.save(testResult, id);
             Map<String, Object> result = new ConcurrentHashMap<>();
