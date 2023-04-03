@@ -54,6 +54,11 @@ public class ResponseUtil {
                 setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(){
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     public static void writeObjectOnResponse(HttpServletResponse response,
                                       Map<String, Object> result,

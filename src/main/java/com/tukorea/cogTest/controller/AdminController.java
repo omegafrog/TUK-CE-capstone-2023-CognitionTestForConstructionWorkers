@@ -20,10 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
-import static com.tukorea.cogTest.response.ResponseUtil.setWrongRequestErrorResponse;
+import static com.tukorea.cogTest.response.ResponseUtil.*;
 
 @RestController
 @Slf4j
@@ -53,16 +53,21 @@ public class AdminController {
     @GetMapping("/subject/{id}")
     public ResponseEntity<Map<String, Object>> getSubject(
             @PathVariable(name = "id") Long id) {
-        // TODO : 관리자가 관리하는 피험자만 조회할 수 있어야 한다.
         try {
-            SubjectDTO foundedSubject = subjectService.findSubject(id);
-            Map<String, Object> result = new ConcurrentHashMap<>();
+            String s = "abcd";
+            AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
+            if(byUsername!=null){
+                SubjectDTO foundedSubject = subjectService.findSubject(id);
+                Map<String, Object> result = new ConcurrentHashMap<>();
 
-            result.put("subject", foundedSubject);
-            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject success", result), HttpStatus.OK);
+                result.put("subject", foundedSubject);
+                return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject success", result), HttpStatus.OK);
+            }else{
+                throw new IllegalArgumentException("You can only access a subjects that you are managing.");
+            }
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Requset", null), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.BAD_REQUEST, "Wrong requset", null), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -153,16 +158,18 @@ public class AdminController {
             SubjectForm subjectForm
     ){
         try {
-            AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
-            Field field = byUsername.getField();
-
             // 관리자가 관리하는 피험자인지 검사
-            List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
-            long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
-            if(count == 0){
-                return setWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
+            AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
+            if(byUsername!=null){
+                List<SubjectDTO> inField = subjectService.findSubjectInField(byUsername.getField().getId());
+                Optional<SubjectDTO> founded = inField.stream()
+                        .filter(subjectDTO -> subjectDTO.getId().equals(id)).findFirst();
+                if(founded.isEmpty()){
+                    return setWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
+                }
+            }else{
+                return setInternalErrorResponse();
             }
-
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();
