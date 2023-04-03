@@ -21,8 +21,8 @@ import java.util.List;
 @Transactional
 public class TestResultService {
 
-    private TestResultRepository testResultRepository;
-    private SubjectRepository subjectRepository;
+    private final TestResultRepository testResultRepository;
+    private final SubjectRepository subjectRepository;
 
     /**
      * 테스트 결과를 저장한다.
