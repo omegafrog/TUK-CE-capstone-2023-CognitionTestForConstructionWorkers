@@ -103,8 +103,6 @@ public class AdminController {
      * @param mode "file" : csv 파일로 추가
      *             "multi" : json 형식의 body로 추가
      *             "sole" : form 형식의 값으로 추가
-     * @param id : 추가할 현장 id
-     * @param file : csv 파일
      * @param subjects : json으로 전달된 피험자 정보
      * @param subject : 피험자 정보
      * @return {
@@ -187,7 +185,6 @@ public class AdminController {
      * @param id 노동자의 id
      * @return
      */
-
     @DeleteMapping("/subject/{id}")
     public ResponseEntity<Map<String ,Object>> deleteWorker(
             @PathVariable Long id

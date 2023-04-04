@@ -80,9 +80,19 @@ public class SubjectService implements UserDetailsService{
         return subjectRepository.update(id, subject).toDTO();
     }
 
-    public void delete(Long id){
-        List<TestResult> foundedTestResults = testResultRepository.findByUserId(id);
-        testResultRepository.deleteAllBySubjectId(id);
-        subjectRepository.delete(id);
+    /**
+     * subjectId를 가지는 피험자의 모든 test result와 피험자를 삭제한다.
+     * @param subjectId
+     * @throws IllegalArgumentException : 피험자가 test result를 가지고 있지 않으면 발생한다.
+     */
+    public void delete(Long subjectId)throws IllegalArgumentException{
+        List<TestResult> byUserId = testResultRepository.findByUserId(subjectId);
+        if(byUserId!=null){
+            if(byUserId.isEmpty()){
+                throw new IllegalArgumentException("Not available test results for this subject.");
+            }
+            testResultRepository.deleteAllBySubjectId(subjectId);
+            subjectRepository.delete(subjectId);
+        }
     }
 }
