@@ -1,6 +1,5 @@
 package com.tukorea.cogTest.domain;
 
-import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.test.Pvt;
 import com.tukorea.cogTest.domain.test.Twohand;
@@ -44,7 +43,6 @@ class TestResultTest {
                 .name("testname")
                 .age(10)
                 .career(10)
-                .detailedJob(DetailedJob.COMMON)
                 .risk(Risk.HIGH_RISK)
                 .remarks("")
                 .field(savedField)
@@ -69,7 +67,6 @@ class TestResultTest {
                 .name("testname")
                 .age(10)
                 .career(10)
-                .detailedJob(DetailedJob.COMMON)
                 .risk(Risk.HIGH_RISK)
                 .remarks("")
                 .field(savedField)
@@ -94,7 +91,6 @@ class TestResultTest {
                 .name("testname")
                 .age(10)
                 .career(10)
-                .detailedJob(DetailedJob.COMMON)
                 .risk(Risk.HIGH_RISK)
                 .remarks("")
                 .field(savedField)
@@ -129,7 +125,6 @@ class TestResultTest {
                 .name("testname")
                 .age(10)
                 .career(10)
-                .detailedJob(DetailedJob.COMMON)
                 .risk(Risk.HIGH_RISK)
                 .remarks("")
                 .field(field)
@@ -137,7 +132,7 @@ class TestResultTest {
         Subject savedSubject = subjectRepository.save(subject);
         TestResult result = TestResult.builder()
                 .target(savedSubject)
-                .twohandResult(
+                .twoHandResult(
                         Twohand.builder()
                                 .totalMeanDuration(123.4)
                                 .totalMeanError(2.34)
@@ -147,7 +142,7 @@ class TestResultTest {
         TestResult savedResult = testResultRepository.save(result);
         TestResult afterResult = TestResult.builder()
                 .target(savedSubject)
-                .twohandResult(Twohand.builder()
+                .twoHandResult(Twohand.builder()
                         .totalMeanError(1.23)
                         .totalMeanDuration(1234.0)
                         .build())
@@ -155,7 +150,7 @@ class TestResultTest {
                 .build();
         TestResult updatedResult = testResultRepository.update(savedResult.getId(), afterResult);
         Assertions.assertThat(savedResult).isEqualTo(updatedResult);
-        Assertions.assertThat(updatedResult.getTwohandResult().getTotalMeanDuration())
-                .isEqualTo(afterResult.getTwohandResult().getTotalMeanDuration());
+        Assertions.assertThat(updatedResult.getTwoHandResult().getTotalMeanDuration())
+                .isEqualTo(afterResult.getTwoHandResult().getTotalMeanDuration());
     }
 }

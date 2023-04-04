@@ -1,9 +1,7 @@
 package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Field;
-import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.dto.AdminDTO;
-import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.response.ResponseUtil;
@@ -155,10 +153,11 @@ public class AdminController {
     @PostMapping("/subject/{id}")
     public ResponseEntity<Map<String, Object>> updateWorker(
             @PathVariable Long id,
-            SubjectForm subjectForm
+            SubjectForm subjectForm,
+            Principal principal
     ) {
         try {
-            AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
+            AdminDTO byUsername = adminService.findByUsername( principal.getName());
             Field field = byUsername.getField();
 
             // 관리자가 관리하는 피험자인지 검사
@@ -167,7 +166,7 @@ public class AdminController {
             if (count == 0) {
                 return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
-
+            subjectForm.setFieldDTO(field.toDTO());
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();

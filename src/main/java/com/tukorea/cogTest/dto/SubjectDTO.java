@@ -8,17 +8,17 @@ import lombok.Data;
 
 @Data
 public class SubjectDTO {
-    private Long id;
-    private String name;
-    private int age;
-    private DetailedJob detailedJob;
-    private int career;
-    private String remarks;
-    private Risk risk;
-    private Field field;
+     Long id;
+     String name;
+     Integer age;
+     DetailedJob detailedJob;
+     Integer career;
+     String remarks;
+     Risk risk;
+     Field field;
 
     @Builder
-    public SubjectDTO(Long id, String name, int age, DetailedJob detailedJob, int career, String remarks, Risk risk, Field field) {
+    public SubjectDTO(Long id, String name, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, Field field) {
         this.id = id;
         this.name = name;
         this.age = age;
