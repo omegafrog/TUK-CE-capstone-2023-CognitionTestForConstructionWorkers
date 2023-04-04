@@ -4,6 +4,7 @@ import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
+import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
 import com.tukorea.cogTest.service.FieldService;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.tukorea.cogTest.paging.Page.getPage;
 import static com.tukorea.cogTest.response.ResponseUtil.*;
 
 @RestController
@@ -41,11 +43,11 @@ public class AdminController {
      *
      * @param id : 피험자의 아이디
      * @return {
-     * statusCode : 200,
-     * msg : Get subject success,
-     * results : {
-     * 검색한 피험자 객체
-     * }
+     *     statusCode : 200,
+     *     msg : Get subject success,
+     *     results : {
+     *         검색한 피험자 객체
+     *     }
      * }
      */
     @GetMapping("/subject/{id}")
@@ -64,15 +66,28 @@ public class AdminController {
     }
 
     /**
-     * 관리자가 관리하는 모든 피험자 정보를 검색한다.
-     *
-     * @return statusCode : 200,
-     * msg : Get subjects success,
-     * results : 검색한 피험자 객체
+     * 관리자가 관리하는 피험자들을 가져온다.
+     * @param curPageNum : 현재 페이지 번호
+     * @param contentPerPage : 페이지당 컨텐츠 갯수
+     * @return {
+     *     statusCode : 200,
+     *     msg : "Get subjects success",
+     *     page : {
+     *         curPageNum : 현재 페이지 번호,
+     *         allPageNum : 전체 페이지 개수,
+     *         startPageNum : 시작 페이지 번호,
+     *         endPageNum : 끝 페이지 번호,
+     *         contentPerPage : 페이지 당 보여줄 컨텐츠,
+     *         prev : 이전 화살표 버튼 ( boolean )
+     *         next : 다음 화살표 버튼 ( boolean )
+     *     }
+     * }
      */
     @GetMapping("/subjects")
     public ResponseEntity<Map<String, Object>> getSubjects(
-            Principal principal
+            Principal principal,
+            @RequestParam int curPageNum,
+            @RequestParam int contentPerPage
     ) {
         String username =  principal.getName();
         AdminDTO byUsername = adminService.findByUsername(username);
@@ -80,8 +95,11 @@ public class AdminController {
         try {
             Long fieldId = byUsername.getField().getId();
             List<SubjectDTO> subjectList = subjectService.findSubjectInField(fieldId);
+
+            Page page = getPage(curPageNum, contentPerPage, "subject", subjectList);
+
             Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("subjects", subjectList);
+            result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
@@ -92,18 +110,16 @@ public class AdminController {
 
     /**
      * 피험자의 개인정보를 추가한다.
-     *
-     * @param mode     "file" : csv 파일로 추가
-     *                 "multi" : json 형식의 body로 추가
-     *                 "sole" : form 형식의 값으로 추가
+     * @param mode "multi" : json 형식의 body로 추가
+     *             "sole" : form 형식의 값으로 추가
      * @param subjects : json으로 전달된 피험자 정보
      * @param subject  : 피험자 정보
      * @return {
-     * statusCode : 200,
-     * msg : Add subject by &lt;mode&gt; success.
-     * results : {
-     * 추가한 피험자 객체
-     * }
+     *     statusCode : 200,
+     *     msg : Add subject by &lt;mode&gt; success.
+     *     results : {
+     *         추가한 피험자 객체
+     *     }
      * }
      */
     @PostMapping(value = "/subject")
@@ -133,15 +149,14 @@ public class AdminController {
 
     /**
      * 피험자의 정보를 수정한다.
-     *
-     * @param id
-     * @param subjectForm
+     * @param id : 피험자의 id
+     * @param subjectForm : 피험자 정보 폼
      * @return {
-     * statusCode : 200,
-     * msg : update subject success.
-     * results : {
-     * 수정한 피험자 객체
-     * }
+     *     statusCode : 200,
+     *     msg : update subject success.
+     *     results : {
+     *         수정한 피험자 객체
+     *     }
      * }
      */
     @PostMapping("/subject/{id}")
@@ -177,7 +192,6 @@ public class AdminController {
 
     /**
      * 피험자를 삭제한다. 피험자와 포함된 시험 결과도 삭제한다.
-     *
      * @param id 노동자의 id
      * @return
      */
