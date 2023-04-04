@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +37,6 @@ public class AdminController {
     private SubjectService subjectService;
     @Autowired
     private FieldService fieldService;
-
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
