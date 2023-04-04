@@ -40,8 +40,6 @@ public class AdminController {
     @Autowired
     private FieldService fieldService;
 
-    private final SecurityContext securityContext = SecurityContextHolder.getContext();
-
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     /**
@@ -79,8 +77,10 @@ public class AdminController {
      * results : 검색한 피험자 객체
      */
     @GetMapping("/subjects")
-    public ResponseEntity<Map<String, Object>> getSubjects() {
-        String username = (String) authentication.getPrincipal();
+    public ResponseEntity<Map<String, Object>> getSubjects(
+            Principal principal
+    ) {
+        String username =  principal.getName();
         AdminDTO byUsername = adminService.findByUsername(username);
 
         try {
