@@ -1,6 +1,5 @@
 package com.tukorea.cogTest.controller;
 
-import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.response.ResponseUtil;
@@ -40,11 +39,13 @@ public class SubjectController {
     }
 
     @PostMapping("/{id}/test-result")
-    public ResponseEntity<Map<String, Object>> saveSubjectTestResult(@PathVariable Long id, @ModelAttribute TestResultForm testResult) {
+    public ResponseEntity<Map<String, Object>> saveSubjectTestResult(
+            @PathVariable Long id,
+            @RequestBody TestResultForm testResult) {
         try{
-            SubjectDTO subjectDTO = subjectService.findSubject(id);
+            TestResultDTO saved = testResultService.save(testResult, id);
             Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("subject", subjectDTO);
+            result.put("testResult", saved);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
@@ -52,5 +53,4 @@ public class SubjectController {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
-
 }

@@ -2,9 +2,9 @@ package com.tukorea.cogTest.service;
 
 
 import com.tukorea.cogTest.domain.Subject;
+import com.tukorea.cogTest.domain.SubjectRepository;
 import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.domain.TestResultRepository;
-import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 
@@ -21,23 +21,28 @@ import java.util.List;
 @Transactional
 public class TestResultService {
 
-    private TestResultRepository testResultRepository;
+    private final TestResultRepository testResultRepository;
+    private final SubjectRepository subjectRepository;
 
     /**
      * 테스트 결과를 저장한다.
-
+     *
      * @param testResultForm 테스트 결과 폼 dto
-     * @param subjectDTO 피험자 DTO 객체
      * @return TestResult 저장한 테스트 결과 객체
      * @throws IllegalArgumentException 테스트 결과 객체의 target이 유효하지 않을 때 발생
      */
-    public TestResultDTO save(TestResultForm testResultForm, SubjectDTO subjectDTO)throws IllegalArgumentException{
+    public TestResultDTO save(TestResultForm testResultForm, Long subjectId) throws IllegalArgumentException {
+        Subject foundedSubject = subjectRepository.findById(subjectId);
         TestResult testResult = TestResult.builder()
+                .target(foundedSubject)
                 .date(testResultForm.getDate())
+                .twoHandResult(testResultForm.getTwoHandResult())
+                .craneResult(testResultForm.getCraneResult())
+                .mazeResult(testResultForm.getMazeResult())
+                .tovaResult(testResultForm.getTovaResult())
                 .pvtResult(testResultForm.getPvtResult())
-                .twohandResult(testResultForm.getTwohandResult())
                 .build();
-        testResultForm.setTarget(subjectDTO);
+
         return testResultRepository.save(testResult).toDTO();
     }
 

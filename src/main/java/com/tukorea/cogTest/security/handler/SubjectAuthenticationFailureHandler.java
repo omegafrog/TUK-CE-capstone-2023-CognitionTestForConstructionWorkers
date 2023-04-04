@@ -13,16 +13,16 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 import java.io.IOException;
 
-import static com.tukorea.cogTest.response.ResponseUtil.*;
+import static com.tukorea.cogTest.response.ResponseUtil.setRestResponseHeader;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AdminAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class SubjectAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("admin authentication failed");
+        log.info("subject authentication failed");
         setRestResponseHeader(response);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         ResponseUtil.setJsonResponse(
