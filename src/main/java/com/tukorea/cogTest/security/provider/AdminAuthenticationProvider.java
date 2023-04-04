@@ -36,22 +36,22 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         log.info("password={}", password);
         try {
             UserDetails foundedUser = adminService.loadUserByUsername(username);
-            log.info("encoded={}",passwordEncoder.encode(foundedUser.getPassword()));
+            log.info("encoded={}", passwordEncoder.encode(foundedUser.getPassword()));
 
             log.info("foundedUser = {}", foundedUser);
             log.info("foundedUser.username={}, foundedUser.password={}", foundedUser.getUsername(), foundedUser.getPassword());
             log.info("foundedUser.authorities = {}", foundedUser.getAuthorities());
-            log.info("encode={}",foundedUser.getPassword());
+            log.info("encode={}", foundedUser.getPassword());
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
                 log.info("provider login success");
                 return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
             } else {
                 // 인증 실패
-                throw new AuthenticationCredentialsNotFoundException("login failed");
+                throw new AuthenticationCredentialsNotFoundException("authentication failed");
             }
-        }catch (RuntimeException e){
-            log.error("msg={}",e.getMessage());
+        } catch (RuntimeException e) {
+            log.error("msg={}", e.getMessage());
             throw e;
         }
     }

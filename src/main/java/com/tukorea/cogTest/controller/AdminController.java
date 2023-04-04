@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
-import static com.tukorea.cogTest.response.ResponseUtil.returnWrongRequestErrorResponse;
+import static com.tukorea.cogTest.response.ResponseUtil.*;
 
 @RestController
 @Slf4j

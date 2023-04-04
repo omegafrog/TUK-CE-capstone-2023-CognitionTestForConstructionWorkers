@@ -1,7 +1,6 @@
 package com.tukorea.cogTest.service;
 
 import com.tukorea.cogTest.domain.*;
-import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
@@ -10,8 +9,6 @@ import com.tukorea.cogTest.dto.SubjectForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +41,6 @@ public class AdminService implements UserDetailsService {
     private FieldRepository fieldRepository;
     @Autowired
     private SubjectRepository subjectRepository;
-
-    private SecurityContext context = SecurityContextHolder.getContext();
 
 
     @Override

@@ -13,7 +13,7 @@ CREATE TABLE subject (
    `role` INT NULL,
    age INT  NULL,
    detailed_job INT NULL,
-   career INT  NULL,
+   career INT NULL,
    remarks VARCHAR(255) NULL,
    risk INT NULL,
    field_id BIGINT NULL,

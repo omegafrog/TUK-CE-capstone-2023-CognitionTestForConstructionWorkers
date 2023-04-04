@@ -40,8 +40,21 @@ public class ResponseUtil {
                 HttpStatus.BAD_REQUEST);
     }
 
+    public static ResponseEntity<Map<String, Object>> setUnAuthenticatedErrorResponse(Exception e){
+        log.error(e.getMessage());
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.UNAUTHORIZED, e.getMessage(), null),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
     public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(Exception e){
         log.error(e.getMessage());
+        return new ResponseEntity<>(
+                setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(){
         return new ResponseEntity<>(
                 setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
                 HttpStatus.INTERNAL_SERVER_ERROR);
