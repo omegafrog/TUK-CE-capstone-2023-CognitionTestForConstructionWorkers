@@ -18,10 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import static com.tukorea.cogTest.response.ResponseUtil.returnWrongRequestErrorR
 @RestController
 @Slf4j
 @RequestMapping("/admin")
+@Transactional
 public class AdminController {
 
     @Autowired
@@ -51,11 +51,11 @@ public class AdminController {
      *
      * @param id : 피험자의 아이디
      * @return {
-     *     statusCode : 200,
-     *     msg : Get subject success,
-     *     results : {
-     *         검색한 피험자 객체
-     *     }
+     * statusCode : 200,
+     * msg : Get subject success,
+     * results : {
+     * 검색한 피험자 객체
+     * }
      * }
      */
     @GetMapping("/subject/{id}")
@@ -75,10 +75,10 @@ public class AdminController {
 
     /**
      * 관리자가 관리하는 모든 피험자 정보를 검색한다.
-     * @return
-     *     statusCode : 200,
-     *     msg : Get subjects success,
-     *     results : 검색한 피험자 객체
+     *
+     * @return statusCode : 200,
+     * msg : Get subjects success,
+     * results : 검색한 피험자 객체
      */
     @GetMapping("/subjects")
     public ResponseEntity<Map<String, Object>> getSubjects() {
@@ -100,17 +100,18 @@ public class AdminController {
 
     /**
      * 피험자의 개인정보를 추가한다.
-     * @param mode "file" : csv 파일로 추가
-     *             "multi" : json 형식의 body로 추가
-     *             "sole" : form 형식의 값으로 추가
+     *
+     * @param mode     "file" : csv 파일로 추가
+     *                 "multi" : json 형식의 body로 추가
+     *                 "sole" : form 형식의 값으로 추가
      * @param subjects : json으로 전달된 피험자 정보
-     * @param subject : 피험자 정보
+     * @param subject  : 피험자 정보
      * @return {
-     *     statusCode : 200,
-     *     msg : Add subject by &lt;mode&gt; success.
-     *     results : {
-     *         추가한 피험자 객체
-     *     }
+     * statusCode : 200,
+     * msg : Add subject by &lt;mode&gt; success.
+     * results : {
+     * 추가한 피험자 객체
+     * }
      * }
      */
     @PostMapping(value = "/subject")
@@ -122,39 +123,40 @@ public class AdminController {
     ) {
         try {
 
-            String username =  principal.getName();
+            String username = principal.getName();
             Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {
-                case "multi" -> adminService.addMultiWorkers( adminId, subjects);
+                case "multi" -> adminService.addMultiWorkers(adminId, subjects);
                 case "sole" -> adminService.addSoleWorker(adminId, subject);
                 default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
             };
-            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add subject by " + mode + " success.",
                     body), HttpStatus.OK);
         } catch (NullPointerException | IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 
     /**
      * 피험자의 정보를 수정한다.
+     *
      * @param id
      * @param subjectForm
      * @return {
-     *     statusCode : 200,
-     *     msg : update subject success.
-     *     results : {
-     *         수정한 피험자 객체
-     *     }
+     * statusCode : 200,
+     * msg : update subject success.
+     * results : {
+     * 수정한 피험자 객체
+     * }
      * }
      */
     @PostMapping("/subject/{id}")
     public ResponseEntity<Map<String, Object>> updateWorker(
             @PathVariable Long id,
             SubjectForm subjectForm
-    ){
+    ) {
         try {
             AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
             Field field = byUsername.getField();
@@ -162,7 +164,7 @@ public class AdminController {
             // 관리자가 관리하는 피험자인지 검사
             List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
             long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
-            if(count == 0){
+            if (count == 0) {
                 return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
 
@@ -173,28 +175,29 @@ public class AdminController {
             Map<String, Object> body = setResponseBody(HttpStatus.OK, "Update subject success", result);
             return new ResponseEntity<>(body, HttpStatus.OK);
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 
     /**
      * 피험자를 삭제한다. 피험자와 포함된 시험 결과도 삭제한다.
+     *
      * @param id 노동자의 id
      * @return
      */
     @DeleteMapping("/subject/{id}")
-    public ResponseEntity<Map<String ,Object>> deleteWorker(
+    public ResponseEntity<Map<String, Object>> deleteWorker(
             @PathVariable Long id
-    ){
+    ) {
         try {
             subjectService.delete(id);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete subject success", null), HttpStatus.OK);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }

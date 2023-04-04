@@ -88,9 +88,6 @@ public class SubjectService implements UserDetailsService{
     public void delete(Long subjectId)throws IllegalArgumentException{
         List<TestResult> byUserId = testResultRepository.findByUserId(subjectId);
         if(byUserId!=null){
-            if(byUserId.isEmpty()){
-                throw new IllegalArgumentException("Not available test results for this subject.");
-            }
             testResultRepository.deleteAllBySubjectId(subjectId);
             subjectRepository.delete(subjectId);
         }
