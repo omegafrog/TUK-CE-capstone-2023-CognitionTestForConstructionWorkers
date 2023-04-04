@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +38,19 @@ public class SuperAdminController {
             result.put("admin", adminDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
+    }
+    @GetMapping("/admin/greetings")
+    public ResponseEntity<Map<String, Object>> greetings(){
+        Map<String, Object> body = new ConcurrentHashMap<>();
+        body.put("result", "welcome");
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        log.info("authentication : {}", authentication);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
@@ -50,7 +62,7 @@ public class SuperAdminController {
             result.put("admin", adminDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -68,7 +80,7 @@ public class SuperAdminController {
             result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get common admin list success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -92,7 +104,7 @@ public class SuperAdminController {
             result.put("admin", updated);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -106,7 +118,7 @@ public class SuperAdminController {
 
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete common admin success", null), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }

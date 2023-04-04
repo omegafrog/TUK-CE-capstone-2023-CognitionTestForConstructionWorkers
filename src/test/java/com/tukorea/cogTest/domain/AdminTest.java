@@ -58,7 +58,7 @@ class AdminTest {
                 .name("updatedname")
                 .position("updatedPosition")
                 .field(field)
-                .role(Role.ROLE_ADMIN)
+                .role(Role.ADMIN)
                 .build();
         Admin updatedAdmin = adminRepository.update(savedAdmin.getId(), afterAdmin);
         Assertions.assertThat(updatedAdmin).isEqualTo(savedAdmin);

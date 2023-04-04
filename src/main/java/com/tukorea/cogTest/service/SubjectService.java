@@ -23,7 +23,6 @@ public class SubjectService implements UserDetailsService{
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
 
-
     private final FieldRepository fieldRepository;
     /**
      * 피험자의 id를 받아서 피험자를 검색한 후 그 피험자의 모든 테스트 내용을 가져온다.
@@ -54,7 +53,7 @@ public class SubjectService implements UserDetailsService{
                 subject -> subject.toDTO()).toList();
     }
 
-     @Override
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
          try {
              Subject foundedSubject = subjectRepository.findByUsername(username);
@@ -66,7 +65,10 @@ public class SubjectService implements UserDetailsService{
              throw new UsernameNotFoundException(e.getMessage());
          }
     }
-
+    public SubjectDTO findByUsername(String username){
+        Subject byUsername = subjectRepository.findByUsername(username);
+        return byUsername.toDTO();
+    }
     public SubjectDTO update(Long id, SubjectForm subjectDTO){
         Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
 
@@ -81,9 +83,16 @@ public class SubjectService implements UserDetailsService{
         return subjectRepository.update(id, subject).toDTO();
     }
 
-    public void delete(Long id){
-        List<TestResult> foundedTestResults = testResultRepository.findByUserId(id);
-        testResultRepository.deleteAllBySubjectId(id);
-        subjectRepository.delete(id);
+    /**
+     * subjectId를 가지는 피험자의 모든 test result와 피험자를 삭제한다.
+     * @param subjectId
+     * @throws IllegalArgumentException : 피험자가 test result를 가지고 있지 않으면 발생한다.
+     */
+    public void delete(Long subjectId)throws IllegalArgumentException{
+        List<TestResult> byUserId = testResultRepository.findByUserId(subjectId);
+        if(byUserId!=null){
+            testResultRepository.deleteAllBySubjectId(subjectId);
+            subjectRepository.delete(subjectId);
+        }
     }
 }

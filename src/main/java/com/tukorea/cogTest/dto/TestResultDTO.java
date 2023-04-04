@@ -1,8 +1,7 @@
 package com.tukorea.cogTest.dto;
 
 import com.tukorea.cogTest.domain.Subject;
-import com.tukorea.cogTest.domain.test.Pvt;
-import com.tukorea.cogTest.domain.test.Twohand;
+import com.tukorea.cogTest.domain.test.*;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,12 +10,15 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class TestResultDTO {
-    private Long id;
+    Long id;
 
-    private Subject target;
+    Subject target;
 
-    private LocalDate date = LocalDate.now();
+    LocalDate date;
 
-    private Twohand twohandResult;
-    private Pvt pvtResult;
+    Twohand twoHandResult;
+    Pvt pvtResult;
+    Crane craneResult;
+    Maze mazeResult;
+    Tova tovaResult;
 }

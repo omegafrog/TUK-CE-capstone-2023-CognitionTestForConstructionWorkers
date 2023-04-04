@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Field {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -57,6 +57,7 @@ public class Field {
 
     public FieldDTO toDTO(){
         return FieldDTO.builder()
+                .id(id)
                 .name(name)
                 .numOfWorkers(numOfWorkers)
                 .build();

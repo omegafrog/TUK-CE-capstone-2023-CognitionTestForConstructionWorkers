@@ -1,44 +1,42 @@
 package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Field;
-import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
+import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tukorea.cogTest.paging.Page.getPage;
-import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
-import static com.tukorea.cogTest.response.ResponseUtil.setWrongRequestErrorResponse;
+import static com.tukorea.cogTest.response.ResponseUtil.*;
 
 @RestController
 @Slf4j
 @RequestMapping("/admin")
+@Transactional
 public class AdminController {
 
     @Autowired
     private AdminService adminService;
     @Autowired
     private SubjectService subjectService;
-
-
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @Autowired
+    private FieldService fieldService;
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
@@ -87,13 +85,14 @@ public class AdminController {
      */
     @GetMapping("/subjects")
     public ResponseEntity<Map<String, Object>> getSubjects(
+            Principal principal,
             @RequestParam int curPageNum,
             @RequestParam int contentPerPage
     ) {
-        try {
-            String username = (String) authentication.getPrincipal();
-            AdminDTO byUsername = adminService.findByUsername(username);
+        String username =  principal.getName();
+        AdminDTO byUsername = adminService.findByUsername(username);
 
+        try {
             Long fieldId = byUsername.getField().getId();
             List<SubjectDTO> subjectList = subjectService.findSubjectInField(fieldId);
 
@@ -103,23 +102,18 @@ public class AdminController {
             result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subjects success", result), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
 
-
-
     /**
      * 피험자의 개인정보를 추가한다.
-     * @param mode "file" : csv 파일로 추가
-     *             "multi" : json 형식의 body로 추가
+     * @param mode "multi" : json 형식의 body로 추가
      *             "sole" : form 형식의 값으로 추가
-     * @param id : 추가할 현장 id
-     * @param file : csv 파일
      * @param subjects : json으로 전달된 피험자 정보
-     * @param subject : 피험자 정보
+     * @param subject  : 피험자 정보
      * @return {
      *     statusCode : 200,
      *     msg : Add subject by &lt;mode&gt; success.
@@ -130,24 +124,25 @@ public class AdminController {
      */
     @PostMapping(value = "/subject")
     public ResponseEntity<Map<String, Object>> addWorker(
-            @RequestParam String mode,
-            @PathVariable Long id,
-            @RequestParam MultipartFile file,
-            @RequestParam List<SubjectForm> subjects,
-            @ModelAttribute Subject subject
+            @RequestParam @Nullable String mode,
+            @RequestBody @Nullable List<SubjectForm> subjects,
+            @ModelAttribute SubjectForm subject,
+            Principal principal
     ) {
         try {
+
+            String username = principal.getName();
+            Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {
-                case "file" -> adminService.addWorkerByFile(id, file);
-                case "multi" -> adminService.addMultiWorkers(id, subjects);
-                case "sole" -> adminService.addSoleWorker(id, subject);
-                default -> null;
+                case "multi" -> adminService.addMultiWorkers(adminId, subjects);
+                case "sole" -> adminService.addSoleWorker(adminId, subject);
+                default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
             };
-            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK,"Add subject by "+mode+" success.",
+            return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add subject by " + mode + " success.",
                     body), HttpStatus.OK);
-        } catch (NullPointerException | IOException | IllegalArgumentException e) {
-            return ResponseUtil.setWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (NullPointerException | IllegalArgumentException e) {
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
@@ -167,19 +162,20 @@ public class AdminController {
     @PostMapping("/subject/{id}")
     public ResponseEntity<Map<String, Object>> updateWorker(
             @PathVariable Long id,
-            SubjectForm subjectForm
-    ){
+            SubjectForm subjectForm,
+            Principal principal
+    ) {
         try {
-            AdminDTO byUsername = adminService.findByUsername((String) authentication.getPrincipal());
+            AdminDTO byUsername = adminService.findByUsername( principal.getName());
             Field field = byUsername.getField();
 
             // 관리자가 관리하는 피험자인지 검사
             List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
             long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
-            if(count == 0){
-                return setWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
+            if (count == 0) {
+                return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
-
+            subjectForm.setFieldDTO(field.toDTO());
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();
@@ -187,9 +183,9 @@ public class AdminController {
             Map<String, Object> body = setResponseBody(HttpStatus.OK, "Update subject success", result);
             return new ResponseEntity<>(body, HttpStatus.OK);
 
-        } catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
@@ -200,18 +196,16 @@ public class AdminController {
      * @return
      */
     @DeleteMapping("/subject/{id}")
-    public ResponseEntity<Map<String ,Object>> deleteWorker(
+    public ResponseEntity<Map<String, Object>> deleteWorker(
             @PathVariable Long id
-    ){
+    ) {
         try {
             subjectService.delete(id);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete subject success", null), HttpStatus.OK);
-        }catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
-        }catch (RuntimeException e){
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
+        } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
-
-
 }

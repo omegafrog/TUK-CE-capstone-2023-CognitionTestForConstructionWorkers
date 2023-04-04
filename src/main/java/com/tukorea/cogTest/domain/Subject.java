@@ -21,7 +21,7 @@ import java.util.Objects;
 public class Subject {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     String name;
@@ -30,9 +30,8 @@ public class Subject {
 
     Role role;
 
-    private int age;
-    private DetailedJob detailedJob=DetailedJob.COMMON;
-    private int career;
+    private Integer age;
+    private Integer career;
     private String remarks;
     private Risk risk=Risk.NORMAL;
 
@@ -41,16 +40,29 @@ public class Subject {
     private Field field;
 
     @Builder
-    public Subject(Long id, String name, int age, DetailedJob detailedJob, int career, String remarks, Risk risk, Field field) {
+    public Subject(
+            Long id,
+            String name,
+            String username,
+            String password,
+            Role role,
+            Integer age,
+            Integer career,
+            String remarks,
+            Risk risk,
+            Field field) {
         this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
+        this.role = role;
         this.age = age;
-        this.detailedJob = detailedJob;
         this.career = career;
         this.remarks = remarks;
         this.risk = risk;
         this.field = field;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,7 +81,6 @@ public class Subject {
         this.name = subject.getName();
         this.age = subject.getAge();
         this.career = subject.getCareer();
-        this.detailedJob = subject.getDetailedJob();
         this.field = subject.getField();
         this.remarks = subject.getRemarks();
         return this;
@@ -85,7 +96,6 @@ public class Subject {
                 .age(this.age)
                 .name(this.name)
                 .career(this.career)
-                .detailedJob(this.detailedJob)
                 .field(this.field)
                 .remarks(this.remarks)
                 .risk(this.risk)

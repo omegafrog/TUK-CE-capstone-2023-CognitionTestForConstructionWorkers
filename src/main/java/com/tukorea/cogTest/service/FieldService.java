@@ -21,7 +21,9 @@ public class FieldService {
                 .name(fieldForm.getName())
                 .numOfWorkers(fieldForm.getNumOfWorkers())
                 .build();
-        return fieldRepository.save(field).toDTO();
+        FieldDTO saved = fieldRepository.save(field).toDTO();
+
+        return saved;
     }
 
     public FieldDTO findById(Long id) throws IllegalArgumentException{

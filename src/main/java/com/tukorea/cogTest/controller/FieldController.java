@@ -8,7 +8,9 @@ import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,7 @@ public class FieldController {
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
         } catch (IllegalArgumentException e){
-            return ResponseUtil.setWrongRequestErrorResponse(e);
+            return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
             return ResponseUtil.setInternalErrorResponse(e);
         }
@@ -56,9 +58,19 @@ public class FieldController {
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("field", updatedField);
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Update Field success", result);
-            return new ResponseEntity<>(body, HttpStatus.OK);
+            HttpHeaders httpHeader = new HttpHeaders();
+            httpHeader.setContentType(MediaType.APPLICATION_JSON);
+            return ResponseEntity
+                    .ok()
+                    .headers(httpHeader)
+                    .body(body);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null), HttpStatus.BAD_REQUEST);
+            HttpHeaders httpHeader = new HttpHeaders();
+            httpHeader.setContentType(MediaType.APPLICATION_JSON);
+            return ResponseEntity.
+                    badRequest()
+                    .headers(httpHeader)
+                    .body(setResponseBody(HttpStatus.BAD_REQUEST, e.getMessage(), null));
         }
     }
 

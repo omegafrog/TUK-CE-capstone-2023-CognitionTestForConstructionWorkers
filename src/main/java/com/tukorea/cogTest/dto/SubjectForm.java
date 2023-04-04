@@ -4,19 +4,25 @@ import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class SubjectForm {
     private String name;
-    private int age;
+
+    private String username;
+
+    private String password;
+    private Integer age;
     private DetailedJob detailedJob;
-    private int career;
+    private Integer career;
     private String remarks;
     private Risk risk;
     private FieldDTO fieldDTO;
 
     @Builder
-    public SubjectForm(String name, int age, DetailedJob detailedJob, int career, String remarks, Risk risk, FieldDTO fieldDTO) {
+    public SubjectForm(String name, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, FieldDTO fieldDTO) {
         this.name = name;
         this.age = age;
         this.detailedJob = detailedJob;
