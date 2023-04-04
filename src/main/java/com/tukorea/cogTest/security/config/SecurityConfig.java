@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.handler.*;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +91,7 @@ public class SecurityConfig {
                 .securityMatcher("/super/admin/**", "/super/admins/**")
                 .authenticationProvider(adminAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
+                .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
                 .formLogin().permitAll()
                 .loginProcessingUrl("/super/admin/login")
@@ -114,7 +117,7 @@ public class SecurityConfig {
                 .securityMatcher("/admin/**")
                 .authenticationProvider(adminAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_ADMIN.value)
+                .anyRequest().hasRole(Role.ADMIN.value)
                 .and()
                 .formLogin().permitAll()
                 .loginProcessingUrl("/admin/login")
@@ -140,7 +143,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/site/**")
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_SU_ADMIN.value)
+                .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
@@ -159,7 +162,7 @@ public class SecurityConfig {
                 .securityMatcher("/subject/**")
                 .authenticationProvider(subjectAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.ROLE_USER.value)
+                .anyRequest().hasRole(Role.USER.value)
                 .and()
                 .formLogin().permitAll()
                 .loginProcessingUrl("/subject/login")

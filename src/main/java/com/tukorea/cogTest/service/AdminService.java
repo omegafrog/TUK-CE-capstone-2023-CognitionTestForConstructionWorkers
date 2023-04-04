@@ -97,7 +97,7 @@ public class AdminService implements UserDetailsService {
                     .name(subjectForm.getName())
                     .username(subjectForm.getUsername())
                     .password(encoder.encode(subjectForm.getPassword()))
-                    .role(Role.ROLE_USER)
+                    .role(Role.USER)
                     .risk(Risk.NORMAL)
                     .age(subjectForm.getAge())
                     .career(subjectForm.getCareer())
@@ -116,7 +116,7 @@ public class AdminService implements UserDetailsService {
                 .age(subjectForm.getAge())
                 .username(subjectForm.getUsername())
                 .password(encoder.encode(subjectForm.getPassword()))
-                .role(Role.ROLE_ADMIN)
+                .role(Role.ADMIN)
                 .risk(Risk.NORMAL)
                 .field(foundedField)
                 .build();
@@ -132,7 +132,7 @@ public class AdminService implements UserDetailsService {
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())
                 .password(encoder.encode(adminForm.getPassword()))
-                .role(Role.ROLE_ADMIN)
+                .role(Role.ADMIN)
                 .field(selectedField)
                 .position(adminForm.getPosition())
                 .build();

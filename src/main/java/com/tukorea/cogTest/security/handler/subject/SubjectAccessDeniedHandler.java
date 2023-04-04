@@ -22,6 +22,6 @@ public class SubjectAccessDeniedHandler implements AccessDeniedHandler {
         log.info("subject authorization failed");
 
         ResponseUtil.setRestResponseHeader(response);
-        ResponseUtil.setWrongRequestErrorResponse(accessDeniedException);
+        ResponseUtil.returnWrongRequestErrorResponse(accessDeniedException);
     }
 }

@@ -24,6 +24,6 @@ public class SubjectAuthenticationFailureHandler implements AuthenticationFailur
         log.info("subject authentication failed");
         setRestResponseHeader(response);
 
-        writeObjectOnResponse(response,setWrongRequestErrorResponse(exception).getBody(), objectMapper);
+        writeObjectOnResponse(response,returnWrongRequestErrorResponse(exception).getBody(), objectMapper);
     }
 }
