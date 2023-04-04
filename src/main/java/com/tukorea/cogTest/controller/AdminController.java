@@ -133,7 +133,7 @@ public class AdminController {
             @RequestParam String mode,
             @PathVariable Long id,
             @RequestParam MultipartFile file,
-            @RequestParam List<Subject> subjects,
+            @RequestParam List<SubjectForm> subjects,
             @ModelAttribute Subject subject
     ) {
         try {
