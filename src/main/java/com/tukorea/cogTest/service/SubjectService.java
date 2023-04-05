@@ -50,7 +50,7 @@ public class SubjectService implements UserDetailsService{
     }
     public List<SubjectDTO> findSubjectInField(Long fieldId){
         return subjectRepository.findByField_id(fieldId).stream().map(
-                subject -> subject.toDTO()).toList();
+                Subject::toDTO).toList();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SubjectService implements UserDetailsService{
                      .roles(foundedSubject.getRole().value)
                      .build();
          } catch (IllegalArgumentException e) {
-             throw new UsernameNotFoundException(e.getMessage());
+             throw new UsernameNotFoundException(e.getMessage(), e);
          }
     }
     public SubjectDTO findByUsername(String username){

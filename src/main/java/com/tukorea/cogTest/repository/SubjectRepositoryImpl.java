@@ -32,19 +32,19 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     @Override
     public Subject findById(Long id) throws RuntimeException{
         return simpleSubjectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
+                .orElseThrow(() -> new IllegalArgumentException("No such subject that has id " + id));
     }
 
     @Override
     public void delete(Long id) throws IllegalArgumentException{
         Subject foundedSubject = simpleSubjectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("그런 피험자는 없습니다." + id));
+                .orElseThrow(() -> new IllegalArgumentException("No such subject that has id " + id));
         simpleSubjectRepository.delete(foundedSubject);
     }
 
     @Override
-    public Subject findByUsername(String username) {
+    public Subject findByUsername(String username) throws IllegalArgumentException{
         return simpleSubjectRepository.findByUsername(username)
-                .orElseThrow(()->new IllegalArgumentException("그런 피험자는 없습니다."+username));
+                .orElseThrow(()->new IllegalArgumentException("No such subject that has username "+username));
     }
 }
