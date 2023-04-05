@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +27,15 @@ public class SubjectAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = String.valueOf(authentication.getCredentials());
-
-        UserDetails foundedSubject = subjectService.loadUserByUsername(username);
-        if(passwordEncoder.matches(password, foundedSubject.getPassword())){
-            return new UsernamePasswordAuthenticationToken(username, password, foundedSubject.getAuthorities());
-        }else {
-            throw new AuthenticationCredentialsNotFoundException("authentication failed");
+        try {
+            UserDetails foundedSubject = subjectService.loadUserByUsername(username);
+            if (passwordEncoder.matches(password, foundedSubject.getPassword())) {
+                return new UsernamePasswordAuthenticationToken(username, password, foundedSubject.getAuthorities());
+            } else {
+                throw new AuthenticationCredentialsNotFoundException("authentication failed");
+            }
+        }catch (UsernameNotFoundException e){
+            throw new AuthenticationCredentialsNotFoundException("authentication failed", e);
         }
     }
 
