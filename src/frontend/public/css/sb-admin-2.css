@@ -9611,8 +9611,12 @@ a.text-secondary:hover, a.text-secondary:focus {
   color: #1cc88a !important;
 }
 
+.text-fail {
+  color: #FA8072 !important;
+}
+
 a.text-success:hover, a.text-success:focus {
-  color: #13855c !important;
+  color: #4e73df !important;
 }
 
 .text-info {

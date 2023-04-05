@@ -28,11 +28,17 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 // Bar Chart Example
+const today = new Date(); //today
+const lastday = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+const dates = [];
+for (let d = new Date(today); d <= lastday; d.setDate(d.getDate() + 1)) {
+  dates.push(new Date(d));
+}
 var ctx = document.getElementById("myBarChart");
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: dates,
     datasets: [{
       label: "Revenue",
       backgroundColor: "#4e73df",

@@ -28,13 +28,32 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 // Area Chart Example
+const today = new Date(); //today
+const lastday = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+const dates = [];
+function formatDate(date) {
+  const month = date.toLocaleString('en-US', { month: 'short' }); // 월을 영문 축약형으로 변환
+  const day = date.getDate(); // 일자
+  return `${month}-${day}`; // "mon-day" 형식으로 변환
+}
+
+
+for (let d = new Date(lastday); d <= lastday + 11; d = new Date(d.setDate(d.getDate() + 1))) {
+  dates.push(formatDate(new Date(d))); // "mon-day" 형식으로 변환하여 배열에 추가
+}
+const todayIndex = dates.findIndex(date => date.toDateString() === new Date().toDateString());
+if (todayIndex !== -1) {
+  dates.splice(todayIndex, 1);
+  dates.push(new Date());
+}
+console.log(dates)
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: dates,//["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [{
-      label: "Earnings",
+      label: "미달자",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
@@ -46,7 +65,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+      data: [0, 5, 3, 2, 4, 5, 3, 2, 0, 0, 12],
     }],
   },
   options: {
@@ -78,7 +97,7 @@ var myLineChart = new Chart(ctx, {
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
-            return '$' + number_format(value);
+            return number_format(value) +  '명';
           }
         },
         gridLines: {
@@ -110,7 +129,7 @@ var myLineChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + '명';
         }
       }
     }
