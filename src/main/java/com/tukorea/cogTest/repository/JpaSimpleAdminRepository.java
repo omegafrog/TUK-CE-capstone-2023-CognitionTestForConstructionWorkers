@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface JpaSimpleAdminRepository extends JpaRepository<Admin, Long> {
     Optional<Admin> findByUsername(String username);
 
+    Optional<Admin> findByField_id(Long id);
 }

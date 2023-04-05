@@ -12,4 +12,6 @@ public interface AdminRepository {
     void delete(Long id);
 
     List<Admin> findAll();
+
+    Admin findByFieldId(Long id);
 }

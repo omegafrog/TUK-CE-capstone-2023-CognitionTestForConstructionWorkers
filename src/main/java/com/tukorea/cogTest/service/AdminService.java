@@ -168,4 +168,8 @@ public class AdminService implements UserDetailsService {
                 .stream().map(Admin::toDTO)
                 .toList();
     }
+
+    public AdminDTO findByField_id(Long id){
+        return adminRepository.findByFieldId(id).toDTO();
+    }
 }
