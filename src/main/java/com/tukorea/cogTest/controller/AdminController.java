@@ -113,7 +113,6 @@ public class AdminController {
      * @param mode "multi" : json 형식의 body로 추가
      *             "sole" : form 형식의 값으로 추가
      * @param subjects : json으로 전달된 피험자 정보
-     * @param subject  : 피험자 정보
      * @return {
      *     statusCode : 200,
      *     msg : Add subject by &lt;mode&gt; success.
@@ -126,17 +125,15 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> addWorker(
             @RequestParam @Nullable String mode,
             @RequestBody @Nullable List<SubjectForm> subjects,
-            @ModelAttribute SubjectForm subject,
             Principal principal
     ) {
         try {
-
             String username = principal.getName();
             Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {
                 case "multi" -> adminService.addMultiWorkers(adminId, subjects);
-                case "sole" -> adminService.addSoleWorker(adminId, subject);
-                default -> throw new IllegalArgumentException("잘못된 mode parameter입니다." + mode);
+                case "sole" -> adminService.addSoleWorker(adminId, subjects.get(0));
+                default -> throw new IllegalArgumentException("잘못된 mode parameter 입니다." + mode);
             };
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add subject by " + mode + " success.",
                     body), HttpStatus.OK);
