@@ -115,11 +115,12 @@ public class SuperAdminController {
             @PathVariable Long id) {
         try {
             adminService.deleteAdmin(id);
-
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Delete common admin success", null), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
+            log.error("", e);
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
+            log.error("", e);
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }

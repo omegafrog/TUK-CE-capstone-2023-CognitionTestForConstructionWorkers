@@ -33,9 +33,10 @@ public class SubjectService implements UserDetailsService{
     public List<TestResultDTO> findTestResult(Long subjectId) throws RuntimeException{
         Subject foundedSubject = subjectRepository.findById(subjectId);
         List<TestResultDTO> result = new ArrayList<>();
-        testResultRepository.findByUserId(foundedSubject.getId()).iterator().forEachRemaining(
-                testResult -> result.add(testResult.toDTO())
-        );
+        List<TestResult> byUserId = testResultRepository.findByUserId(foundedSubject.getId());
+        for(TestResult testResult : byUserId){
+            result.add(testResult.toDTO());
+        }
         return result;
     }
 

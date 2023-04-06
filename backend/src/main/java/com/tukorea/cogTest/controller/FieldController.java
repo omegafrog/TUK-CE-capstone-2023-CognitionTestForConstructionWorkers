@@ -41,8 +41,10 @@ public class FieldController {
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
         } catch (IllegalArgumentException e){
+            log.error("", e);
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
+            log.error("", e);
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
@@ -81,12 +83,11 @@ public class FieldController {
             fieldService.delete(id);
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Delete Field success", null);
             return new ResponseEntity<>(body, HttpStatus.OK);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
+            log.error("", e);
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null);
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
 }

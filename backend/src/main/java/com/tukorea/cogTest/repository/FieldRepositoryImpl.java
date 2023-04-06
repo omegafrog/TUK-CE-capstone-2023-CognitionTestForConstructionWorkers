@@ -2,11 +2,10 @@ package com.tukorea.cogTest.repository;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.FieldRepository;
-import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 
-@Controller
+@Repository
 @RequiredArgsConstructor
 public class FieldRepositoryImpl implements FieldRepository {
 
@@ -29,7 +28,7 @@ public class FieldRepositoryImpl implements FieldRepository {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws IllegalArgumentException {
         Field foundedField = findById(id);
         simpleFieldRepository.delete(foundedField);
     }
