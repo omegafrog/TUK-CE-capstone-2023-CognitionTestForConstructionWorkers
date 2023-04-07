@@ -36,7 +36,7 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">피험자 추가</h1>
                             </div>
-                            <form class="user">
+                            <form class="user" id="sub-register" action="/subject/register" method="post">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <input type="text" class="form-control form-control-user" id="exampleFirstName"
@@ -72,14 +72,19 @@
                                         <option value="p">장</option>
                                     </select>
                                 </div>
-                                <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                    regitster subject
-                                </a>
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    피험자 추가
+                                </button>
                             </form>
                             <hr>
                             <div class="text-center">
                                 <a class="small" href="forgot-password.html">Forgot Password?</a>
                             </div>
+                            <!--
+                            <div class="text-center">
+                                <a class="small" href="forgot-password.html">다른 방법으로 추가하기</a>
+                            </div>
+                            미구현 -->
                             <div class="text-center">
                                 <a class="small" href="login.html">Already have an account? Login!</a>
                             </div>
