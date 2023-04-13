@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 리스트 : $.ajax() | JSON</title>
+    <link href="style1.css" rel="stylesheet">
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"> </script>     <!-- 프레임웍은 항상 연결시켜줘야한다. -->
+    <script src="test.js">
+        // html을 안건드리면 안 건드릴수록 좋지만,
+        // javascript, jquery -> 다른 엘리먼트 영향일 가능성이 있음
+        // 해결책 : class (여러개) 또는 id (1개)
+ 
+ 
+    </script>
+</head>
+ 
+<body>
+    <h1>게시판</h1>
+    <div id="container">
+        <form action="">
+ 
+            <table>
+                <caption>게시판의 목록을 출력해 줍니다.</caption> <!-- 시각장애인들 설명용 -->
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" name="chkAll" id="chkAll" /></th> <!-- 체크박스 -->
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>조회수</th>
+                        <th>작성일</th>
+                        <th>admin</th>
+                    </tr>
+                </thead>
+                <tbody id="listArea">
+ 
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <span id="btnNext">목록 더보기</span>
+                            <span id="btnDel">선택 삭제</span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+ 
+        </form>
+    </div>
+</body>
+ 
+</html>
