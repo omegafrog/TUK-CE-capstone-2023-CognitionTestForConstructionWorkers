@@ -2,16 +2,18 @@ package com.tukorea.cogTest.repository;
 
 import com.tukorea.cogTest.domain.Admin;
 import com.tukorea.cogTest.domain.AdminRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@Controller
-@RequiredArgsConstructor
 public class AdminRepositoryImpl implements AdminRepository {
+
     private final JpaSimpleAdminRepository simpleAdminRepository;
 
+    public AdminRepositoryImpl(JpaSimpleAdminRepository simpleAdminRepository) {
+        this.simpleAdminRepository = simpleAdminRepository;
+    }
 
     @Override
     public Admin save(Admin admin) {
@@ -19,7 +21,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
-    public void delete(Long id) throws RuntimeException{
+    public void delete(Long id) throws RuntimeException {
         Admin foundedAdmin = findById(id);
         simpleAdminRepository.delete(foundedAdmin);
 
@@ -31,7 +33,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
-    public Admin findById(Long id) throws RuntimeException{
+    public Admin findById(Long id) throws RuntimeException {
         return simpleAdminRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No such founded admin. " + id));
     }
@@ -52,6 +54,6 @@ public class AdminRepositoryImpl implements AdminRepository {
     @Override
     public Admin findByUsername(String username) {
         return simpleAdminRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. "+username));
+                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. " + username));
     }
 }

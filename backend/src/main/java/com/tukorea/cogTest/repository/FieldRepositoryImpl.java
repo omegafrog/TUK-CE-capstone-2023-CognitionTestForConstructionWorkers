@@ -3,12 +3,11 @@ package com.tukorea.cogTest.repository;
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.FieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class FieldRepositoryImpl implements FieldRepository {
-
 
     private final JpaSimpleFieldRepository simpleFieldRepository;
     @Override

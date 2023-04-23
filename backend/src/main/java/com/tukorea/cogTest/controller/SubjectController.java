@@ -5,9 +5,10 @@ import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.SubjectService;
+import com.tukorea.cogTest.service.SubjectServiceImpl;
 import com.tukorea.cogTest.service.TestResultService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@RestController
 @Slf4j
-@RequiredArgsConstructor
+@ResponseBody
 @RequestMapping("/subject")
+@RestController
 public class SubjectController {
 
-    private final SubjectService subjectService;
-    private final TestResultService testResultService;
+    @Autowired
+    private SubjectService subjectService;
+    @Autowired
+    private  TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
     public ResponseEntity<Map<String, Object>> lookupSubjectTestResult(

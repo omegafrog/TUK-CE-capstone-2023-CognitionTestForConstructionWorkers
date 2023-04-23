@@ -6,10 +6,9 @@ import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
-import com.tukorea.cogTest.service.AdminService;
-import com.tukorea.cogTest.service.FieldService;
-import com.tukorea.cogTest.service.SubjectService;
+import com.tukorea.cogTest.service.*;
 import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,18 +24,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.tukorea.cogTest.paging.Page.getPage;
 import static com.tukorea.cogTest.response.ResponseUtil.*;
 
-@RestController
 @Slf4j
 @RequestMapping("/admin")
+@ResponseBody
 @Transactional
+@RequiredArgsConstructor
+@RestController
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
-    @Autowired
-    private SubjectService subjectService;
-    @Autowired
-    private FieldService fieldService;
+    private final AdminService adminService;
+    private final SubjectService subjectService;
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
