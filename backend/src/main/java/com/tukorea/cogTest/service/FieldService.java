@@ -5,21 +5,17 @@ import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.FieldForm;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
-@Service
+@RequiredArgsConstructor
 public class FieldService {
-    @Autowired
-    private FieldRepository fieldRepository;
-    @Autowired
-    private AdminService adminService;
+    private final FieldRepository fieldRepository;
+    private final AdminService adminService;
 
-    @Autowired
-    private SubjectService subjectService;
+    private final SubjectService subjectService;
 
 
     public FieldDTO save(FieldForm fieldForm) throws RuntimeException{

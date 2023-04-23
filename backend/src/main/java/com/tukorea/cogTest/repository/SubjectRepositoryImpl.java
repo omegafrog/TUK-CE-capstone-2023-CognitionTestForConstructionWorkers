@@ -3,20 +3,21 @@ package com.tukorea.cogTest.repository;
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-@Repository
 @RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepository {
+
+    public final JpaSimpleSubjectRepository simpleSubjectRepository;
     @Override
     public List<Subject> findByField_id(Long fieldId) {
         return simpleSubjectRepository.findByField_Id(fieldId);
     }
 
 
-    public final JpaSimpleSubjectRepository simpleSubjectRepository;
+
     @Override
     public Subject update(Long id, Subject updateArgument) throws RuntimeException{
         Subject foundedSubject = findById(id);

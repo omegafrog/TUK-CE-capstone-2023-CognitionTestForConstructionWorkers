@@ -5,8 +5,10 @@ import com.tukorea.cogTest.dto.AdminForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
+import com.tukorea.cogTest.service.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@RestController
 @Slf4j
-@RequiredArgsConstructor
+@ResponseBody
 @RequestMapping("/super")
+@RequiredArgsConstructor
+@RestController
 public class SuperAdminController {
 
     private final AdminService adminService;
