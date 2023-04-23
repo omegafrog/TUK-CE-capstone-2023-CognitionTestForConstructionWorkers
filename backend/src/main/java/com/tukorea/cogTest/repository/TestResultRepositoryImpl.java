@@ -5,6 +5,7 @@ import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.TestResult;
 import com.tukorea.cogTest.domain.TestResultRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Repository
 @RequiredArgsConstructor
 public class TestResultRepositoryImpl implements TestResultRepository {
 

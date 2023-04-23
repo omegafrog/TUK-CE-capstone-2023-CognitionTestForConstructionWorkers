@@ -6,6 +6,8 @@ import com.tukorea.cogTest.dto.FieldForm;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.FieldService;
 import com.tukorea.cogTest.service.SubjectService;
+import com.tukorea.cogTest.service.SubjectServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,19 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.tukorea.cogTest.response.ResponseUtil.setResponseBody;
 
-@RestController
-@Slf4j
 @RequestMapping("/site")
+@ResponseBody
+@RequiredArgsConstructor
+@RestController
 public class FieldController {
 
-    @Autowired
-    private FieldService fieldService;
-
-    @Autowired
-    private SubjectService subjectService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final FieldService fieldService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> addField( FieldForm field)  {
@@ -41,10 +38,8 @@ public class FieldController {
             result.put("field", savedField);
             return new ResponseEntity<>(setResponseBody(HttpStatus.OK, "Add field successfully", result), HttpStatus.OK);
         } catch (IllegalArgumentException e){
-            log.error("", e);
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         }catch (RuntimeException e){
-            log.error("", e);
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
@@ -84,7 +79,6 @@ public class FieldController {
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Delete Field success", null);
             return new ResponseEntity<>(body, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            log.error("", e);
             ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.BAD_REQUEST, "Wrong Request", null);
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }

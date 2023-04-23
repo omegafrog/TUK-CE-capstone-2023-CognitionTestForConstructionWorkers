@@ -4,6 +4,7 @@ package com.tukorea.cogTest.paging;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,7 @@ public class Page {
      * @return page 객체를 리턴한다.
      * @param <T> page의 컨텐츠 DTO
      */
-    public static <T> Page getPage(int curPageNum, int contentPerPage, String contentType, List<T> contents) {
+    public static <T> Page getPage(int curPageNum, int contentPerPage, String contentType, List<T> contents) throws IndexOutOfBoundsException{
         int allPageNum = contents.size()/ contentPerPage;
         if(contents.size()% contentPerPage != 0){
             allPageNum+=1;
@@ -50,6 +51,19 @@ public class Page {
         if(startPageNum == 0) startPageNum =1;
         int endPageNum = startPageNum+ contentPerPage -1;
         if(endPageNum > contents.size()) endPageNum = contents.size();
+
+        int startIdx = 0;
+        if(curPageNum >0){
+            startIdx = (curPageNum-1)*contentPerPage;
+        }
+
+        int endIdx = 0;
+        if(startIdx+contentPerPage > contents.size()){
+            endIdx = contents.size();
+        }else{
+            endIdx = startIdx+contentPerPage;
+        }
+
 
         boolean prev = startPageNum != 1;
         boolean next = endPageNum != contents.size();
@@ -64,7 +78,8 @@ public class Page {
                 .next(next)
                 .build();
 
-        page.getContents().put(contentType, contents);
+        page.getContents().put(contentType, new ArrayList<>(
+                contents.subList(startIdx, endIdx)));
         return page;
     }
 }

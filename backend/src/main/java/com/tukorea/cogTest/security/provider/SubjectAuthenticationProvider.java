@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.security.provider;
 
 import com.tukorea.cogTest.service.SubjectService;
+import com.tukorea.cogTest.service.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
