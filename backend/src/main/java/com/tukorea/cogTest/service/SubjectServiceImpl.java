@@ -20,8 +20,7 @@ import java.util.List;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
-    @Autowired
-    private FieldRepository fieldRepository;
+    private final FieldRepository fieldRepository;
 
     /**
      * 피험자의 id를 받아서 피험자를 검색한 후 그 피험자의 모든 테스트 내용을 가져온다.

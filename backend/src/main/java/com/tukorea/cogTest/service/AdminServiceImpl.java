@@ -31,14 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
-
-    @Autowired
-    @Lazy
-    private PasswordEncoder encoder;
-    @Autowired
-    private FieldRepository fieldRepository;
-    @Autowired
-    private SubjectRepository subjectRepository;
+    private final PasswordEncoder encoder;
+    private final FieldRepository fieldRepository;
+    private final SubjectRepository subjectRepository;
 
 
     @Override
