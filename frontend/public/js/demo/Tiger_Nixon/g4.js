@@ -37,7 +37,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 //  return `${month}-${day}`; // "mon-day" 형식으로 변환
 //}
 
-var ctx = document.getElementById("Airi_Satoug4c");
+var ctx = document.getElementById("Tiger_Nixong4c");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -55,7 +55,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [391.11, 408.1, 375.5, 383.33, 389.93, 386.13, 350, 374.44, 376.82, 391.57],
+      data: [0.1, 0.09, 0.11, 0.1, 0.11, 0.13, 0.10, 0.11, 0.08, 0.06 ],
     },
   {
       label: "average",
@@ -70,7 +70,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [320, 320, 320, 320, 320, 320, 320, 320, 320, 320],
+      data: [0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08],
   }],
   },
   options: {
@@ -102,7 +102,7 @@ var myLineChart = new Chart(ctx, {
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
-            return number_format(value) +  '명';
+            return number_format(value) +  'ms';
           }
         },
         gridLines: {
@@ -134,7 +134,7 @@ var myLineChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + '명';
+          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + 'ms';
         }
       }
     }

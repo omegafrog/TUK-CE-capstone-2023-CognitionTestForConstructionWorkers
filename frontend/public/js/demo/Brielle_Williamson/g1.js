@@ -47,16 +47,16 @@ if (todayIndex !== -1) {
   dates.push(new Date());
 }
 console.log(dates)
-var ctx = document.getElementById("Airi_Satoug1c");
+var ctx = document.getElementById("Brielle_Williamsong1c");
 var myLineChart = new Chart(ctx, {
   type: 'line',
-  
+  backgroundColor: "rgba(255,0,0,0.05)", 
   data: {
     labels: ["4/18", "4/19", "4/20", "4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"],
     datasets: [{
       label: "result",
       lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      backgroundColor: "rgba(78, 115, 223, 0)",
       borderColor: "rgba(78, 115, 223, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -66,22 +66,23 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [391.11, 408.1, 375.5, 383.33, 389.93, 386.13, 350, 374.44, 376.82, 391.57],
+      data: [40, 38, 37, 39, 35, 34, 39, 35, 38, 40],
     },
   {
       label: "average",
       lineTension: 0.3,
-      backgroundColor: "rgba(255,0,0, 0.05)",
+      backgroundColor: "rgba(78,115,223,0.1)",
       borderColor: "rgba(255,0,0, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
       pointBorderColor: "rgba(78, 115, 223, 1)",
       pointHoverRadius: 3,
+      color: "rgba(255,0,0,0.05)",
       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [320, 320, 320, 320, 320, 320, 320, 320, 320, 320],
+      data: [42, 42, 42, 42, 42, 42, 42, 42, 42, 42],
   }],
   },
   options: {
@@ -113,7 +114,7 @@ var myLineChart = new Chart(ctx, {
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
-            return number_format(value) +  'ms';
+            return number_format(value) +  'second';
           }
         },
         gridLines: {
@@ -145,7 +146,7 @@ var myLineChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + 'ms';
+          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + 'second';
         }
       }
     }

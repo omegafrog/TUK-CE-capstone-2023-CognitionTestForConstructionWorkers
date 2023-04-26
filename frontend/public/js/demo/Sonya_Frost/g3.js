@@ -37,7 +37,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 //  return `${month}-${day}`; // "mon-day" 형식으로 변환
 //}
 
-var ctx = document.getElementById("Airi_Satoug3c");
+var ctx = document.getElementById("Sonya_Frostg3c");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -45,7 +45,7 @@ var myLineChart = new Chart(ctx, {
     datasets: [{
       label: "result",
       lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      backgroundColor: "rgba(78, 115, 223, 0)",
       borderColor: "rgba(78, 115, 223, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -55,12 +55,12 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [391.11, 408.1, 375.5, 383.33, 389.93, 386.13, 350, 374.44, 376.82, 391.57],
+      data: [531.56, 522.13, 533.63, 555.72, 577.11, 586.13, 566.34, 540.00, 543.31, 550],
     },
   {
       label: "average",
       lineTension: 0.3,
-      backgroundColor: "rgba(255,0,0, 0.05)",
+      backgroundColor: "rgba(78, 115, 223, 0.1)",
       borderColor: "rgba(255,0,0, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -70,7 +70,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [320, 320, 320, 320, 320, 320, 320, 320, 320, 320],
+      data: [590, 590, 590, 590, 590, 590, 590, 590, 590, 590],
   }],
   },
   options: {
@@ -102,7 +102,7 @@ var myLineChart = new Chart(ctx, {
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
-            return number_format(value) +  '명';
+            return number_format(value) +  'ms';
           }
         },
         gridLines: {
@@ -134,7 +134,7 @@ var myLineChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + '명';
+          return datasetLabel + " : " + number_format(tooltipItem.yLabel) + 'ms';
         }
       }
     }
