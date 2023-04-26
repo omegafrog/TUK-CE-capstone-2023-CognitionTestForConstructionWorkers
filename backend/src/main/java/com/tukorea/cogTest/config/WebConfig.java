@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tukorea.cogTest.controller.AdminController;
 import com.tukorea.cogTest.controller.FieldController;
 import com.tukorea.cogTest.controller.SubjectController;
