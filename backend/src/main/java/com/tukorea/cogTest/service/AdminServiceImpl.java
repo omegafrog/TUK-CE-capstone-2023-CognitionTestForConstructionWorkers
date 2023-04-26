@@ -109,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
                 .age(subjectForm.getAge())
                 .username(subjectForm.getUsername())
                 .password(encoder.encode(subjectForm.getPassword()))
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .risk(Risk.NORMAL)
                 .field(foundedField)
                 .build();
@@ -125,7 +125,7 @@ public class AdminServiceImpl implements AdminService {
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())
                 .password(encoder.encode(adminForm.getPassword()))
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .field(selectedField)
                 .position(adminForm.getPosition())
                 .build();
