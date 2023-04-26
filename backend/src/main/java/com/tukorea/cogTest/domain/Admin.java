@@ -3,6 +3,7 @@ package com.tukorea.cogTest.domain;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +21,13 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotNull
     String username;
+    @NotNull
     String password;
+    @NotNull
     String name;
+    @NotNull
     Role role;
     private String position;
 
