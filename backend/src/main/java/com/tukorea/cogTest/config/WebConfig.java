@@ -63,7 +63,7 @@ public class WebConfig {
     }
     @Bean
     ObjectMapper objectMapper(){
-        return new ObjectMapper();
+        return new ObjectMapper().registerModule(new JavaTimeModule());
     }
     @Bean
     LogTrace logTrace(){
