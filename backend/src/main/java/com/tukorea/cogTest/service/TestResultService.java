@@ -18,13 +18,12 @@ import java.util.List;
 
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class TestResultService {
 
-    @Autowired
-    private TestResultRepository testResultRepository;
-    @Autowired
+    private final TestResultRepository testResultRepository;
 
-    private SubjectRepository subjectRepository;
+    private final SubjectRepository subjectRepository;
 
     /**
      * 테스트 결과를 저장한다.
