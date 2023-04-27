@@ -3,13 +3,18 @@ package com.tukorea.cogTest.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
-import com.tukorea.cogTest.security.handler.*;
+import com.tukorea.cogTest.security.handler.admin.AdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.subject.SubjectLogoutSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +109,8 @@ public class SecurityConfig {
                 .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
                 .logout()
-                .logoutSuccessUrl("/super/admin/logout")
+                .logoutUrl("/super/admin/logout")
+                .logoutSuccessHandler(new SuperAdminLogoutSuccessHandler(objectMapper))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
@@ -133,7 +139,8 @@ public class SecurityConfig {
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
                 .logout()
-                .logoutSuccessUrl("/admin/logout")
+                .logoutUrl("/admin/logout")
+                .logoutSuccessHandler(new AdminLogoutSuccessHandler(objectMapper))
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(adminAccessDeniedHandler())
@@ -181,7 +188,8 @@ public class SecurityConfig {
                 .failureHandler(subjectAuthenticationFailureHandler())
                 .and()
                 .logout()
-                .logoutSuccessUrl("/subject/logout")
+                .logoutUrl("/subject/logout")
+                .logoutSuccessHandler(new SubjectLogoutSuccessHandler(objectMapper))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
