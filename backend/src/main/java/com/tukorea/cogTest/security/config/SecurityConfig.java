@@ -137,7 +137,8 @@ public class SecurityConfig {
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf()
-                .disable();
+                .disable()
+                .cors();
         return http.build();
     }
 
@@ -155,7 +156,8 @@ public class SecurityConfig {
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf()
-                .disable();
+                .disable()
+                .cors();
         return http.build();
     }
 
@@ -182,7 +184,8 @@ public class SecurityConfig {
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf()
-                .disable();
+                .disable()
+                .cors();
         return http.build();
     }
     @Bean
