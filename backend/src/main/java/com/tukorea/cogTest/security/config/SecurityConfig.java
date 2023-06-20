@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.filter.JwtFilter;
-import com.tukorea.cogTest.security.handler.*;
+import com.tukorea.cogTest.security.handler.admin.AdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
@@ -16,7 +19,6 @@ import com.tukorea.cogTest.security.handler.subject.SubjectLogoutSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import com.tukorea.cogTest.service.AdminService;
-import com.tukorea.cogTest.service.AdminServiceImpl;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
@@ -55,7 +58,7 @@ public class SecurityConfig {
 
     @Bean
     SuperAdminAuthenticationSuccessHandler superAdminAuthenticationSuccessHandler(){
-        return new SuperAdminAuthenticationSuccessHandler(objectMapper);
+        return new SuperAdminAuthenticationSuccessHandler(objectMapper,jwtSecret);
     }
     @Bean
     SuperAdminAuthenticationFailureHandler superAdminAuthenticationFailureHandler(){
@@ -87,7 +90,7 @@ public class SecurityConfig {
 
     @Bean
     SubjectAuthenticationSuccessHandler subjectAuthenticationSuccessHandler(){
-        return new SubjectAuthenticationSuccessHandler(objectMapper);
+        return new SubjectAuthenticationSuccessHandler(objectMapper, jwtSecret);
     }
     @Bean
     SubjectAuthenticationFailureHandler subjectAuthenticationFailureHandler(){
