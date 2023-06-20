@@ -13,16 +13,16 @@ public class TokenUtil {
 
 
     public static TokenInfo generateToken(String payload, String secret){
-        int expirationTime = 10*60*60;
+        int expirationTime = 1000*60*60;
         String token = getToken(payload, expirationTime, secret);
         return TokenInfo.builder()
                 .accessToken(token)
-                .grantType("bearer")
+                .grantType("Bearer")
                 .build();
     }
 
     private static String getToken(String payload, int expirationTime, String secret) {
-        return Jwts.builder().setClaims(Map.of("id", payload))
+        return Jwts.builder().addClaims(Map.of("userId", payload))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .signWith(SignatureAlgorithm.HS256, secret)
