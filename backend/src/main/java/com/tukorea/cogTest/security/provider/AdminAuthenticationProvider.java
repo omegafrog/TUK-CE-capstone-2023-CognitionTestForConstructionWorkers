@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import java.util.Map;
 
 
 @Component
@@ -23,7 +24,6 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
