@@ -3,6 +3,7 @@ package com.tukorea.cogTest.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
+import com.tukorea.cogTest.security.filter.JwtFilter;
 import com.tukorea.cogTest.security.handler.*;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
@@ -12,6 +13,9 @@ import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationFailure
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
+import com.tukorea.cogTest.service.AdminService;
+import com.tukorea.cogTest.service.AdminServiceImpl;
+import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -88,6 +93,12 @@ public class SecurityConfig {
         return new SubjectAccessDeniedHandler(objectMapper);
     }
 
+    @Autowired
+    AdminService adminService;
+
+    @Autowired
+    SubjectService subjectService;
+
     @Bean
     SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
         http
@@ -102,6 +113,10 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .successHandler(superAdminAuthenticationSuccessHandler())
                 .failureHandler(superAdminAuthenticationFailureHandler())
+                .and()
+                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
@@ -129,6 +144,10 @@ public class SecurityConfig {
                 .successHandler(adminAuthenticationSuccessHandler())
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
+                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .exceptionHandling()
                 .accessDeniedHandler(adminAccessDeniedHandler())
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
@@ -149,6 +168,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
+                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
                 .and()
@@ -168,6 +191,10 @@ public class SecurityConfig {
                 .authenticationProvider(subjectAuthenticationProvider)
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.USER.value)
+                .and()
+                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().permitAll()
                 .loginProcessingUrl("/subject/login")
