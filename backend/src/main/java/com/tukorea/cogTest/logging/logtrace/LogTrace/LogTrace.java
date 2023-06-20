@@ -15,14 +15,14 @@ public class LogTrace {
         }
         TraceStatus status = statusHolder.get();
         log.info("[{} : level={} | {}] : {}",
-                status.getTraceId().getId(), status.getTraceId().getLevel(),status.getRequestUrl(), message);
+                status.getTraceId().getId(), status.getTraceId().getLevel(), status.getRequestUrl(), message);
         return new TraceStatus(status.getTraceId(), status.getStartMilli(), message);
     }
 
     public void end(TraceStatus status){
         Long endMilli = System.currentTimeMillis();
         Long elapsed = endMilli - status.getStartMilli();
-        log.info("[{} : level={}] : {} elapsed={}",
+        log.info("[INFO|{} : level={}] : {} elapsed={}",
                 status.getTraceId().getId(), status.getTraceId().getLevel(), status.getMessage(), elapsed);
         status.getTraceId().prevTraceId();
     }
@@ -30,7 +30,7 @@ public class LogTrace {
     public void exception( TraceStatus status, Exception e) {
         Long endMilli = System.currentTimeMillis();
         Long elapsed = endMilli - status.getStartMilli();
-        log.info("[{} : level={}] : {} elapsed={}",
+        log.info("[ERROR|{} : level={}] : {} elapsed={}",
                 status.getTraceId().getId(), status.getTraceId().getLevel(), status.getMessage(), elapsed);
         if(status.getTraceId().getLevel() != 0){
             status.getTraceId().prevTraceId();

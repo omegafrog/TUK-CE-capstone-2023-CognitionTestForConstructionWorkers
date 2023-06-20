@@ -34,14 +34,12 @@ public class ResponseUtil {
         return body;
     }
     public static ResponseEntity<Map<String, Object>> returnWrongRequestErrorResponse(Exception e){
-        log.error(e.getMessage());
         return new ResponseEntity<>(
                 setResponseBody(HttpStatus.BAD_REQUEST, e.getMessage(), null),
                 HttpStatus.BAD_REQUEST);
     }
 
     public static ResponseEntity<Map<String, Object>> setUnAuthenticatedErrorResponse(Exception e){
-        log.error(e.getMessage());
         return new ResponseEntity<>(
                 setResponseBody(HttpStatus.UNAUTHORIZED, e.getMessage(), null),
                 HttpStatus.UNAUTHORIZED
@@ -49,7 +47,6 @@ public class ResponseUtil {
     }
 
     public static ResponseEntity<Map<String, Object>> setInternalErrorResponse(Exception e){
-        log.error(e.getMessage());
         return new ResponseEntity<>(
                 setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error", null),
                 HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,7 +58,6 @@ public class ResponseUtil {
     }
 
     public static ResponseEntity<Map<String, Object>> setUnauthorizedResponse(Exception e){
-        log.error(e.getMessage());
         return new ResponseEntity<>(
                 setResponseBody(HttpStatus.UNAUTHORIZED,
                         e.getMessage(),

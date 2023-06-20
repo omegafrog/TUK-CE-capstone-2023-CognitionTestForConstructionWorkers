@@ -5,10 +5,9 @@ import com.tukorea.cogTest.dto.AdminForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
-import com.tukorea.cogTest.service.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -40,7 +39,7 @@ public class SuperAdminController {
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("admin", adminDTO);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Add common admin success", result), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ConstraintViolationException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
             return ResponseUtil.setInternalErrorResponse(e);

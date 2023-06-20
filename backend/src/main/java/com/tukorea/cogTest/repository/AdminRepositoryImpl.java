@@ -16,7 +16,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
-    public Admin save(Admin admin) {
+    public Admin save(Admin admin) throws RuntimeException{
         return simpleAdminRepository.save(admin);
     }
 
