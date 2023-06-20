@@ -10,6 +10,8 @@ import lombok.Data;
 public class SubjectDTO {
      Long id;
      String name;
+     String username;
+     String password;
      Integer age;
      DetailedJob detailedJob;
      Integer career;
@@ -18,9 +20,11 @@ public class SubjectDTO {
      Field field;
 
     @Builder
-    public SubjectDTO(Long id, String name, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, Field field) {
+    public SubjectDTO(Long id, String name, String username, String password, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, Field field) {
         this.id = id;
         this.name = name;
+        this.username= username;
+        this.password = password;
         this.age = age;
         this.detailedJob = detailedJob;
         this.career = career;
