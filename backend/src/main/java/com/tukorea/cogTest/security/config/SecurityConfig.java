@@ -43,6 +43,9 @@ public class SecurityConfig {
 
     @Value("${password.secret}")
     private String secret;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
     @Bean
     PasswordEncoder passwordEncoder(){
         return new Pbkdf2PasswordEncoder(secret, 256, 30, Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA512);
@@ -64,7 +67,7 @@ public class SecurityConfig {
 
     @Bean
     AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler(){
-        return new AdminAuthenticationSuccessHandler(objectMapper);
+        return new AdminAuthenticationSuccessHandler(objectMapper,jwtSecret);
     }
 
     @Bean
@@ -114,7 +117,7 @@ public class SecurityConfig {
                 .successHandler(superAdminAuthenticationSuccessHandler())
                 .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
-                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -144,7 +147,7 @@ public class SecurityConfig {
                 .successHandler(adminAuthenticationSuccessHandler())
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
-                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -168,7 +171,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
-                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -192,7 +195,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.USER.value)
                 .and()
-                .addFilterBefore(new JwtFilter(adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
