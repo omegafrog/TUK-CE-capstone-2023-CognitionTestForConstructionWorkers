@@ -8,9 +8,11 @@ import com.tukorea.cogTest.security.handler.*;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.subject.SubjectLogoutSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import com.tukorea.cogTest.service.AdminService;
@@ -117,6 +119,10 @@ public class SecurityConfig {
                 .successHandler(superAdminAuthenticationSuccessHandler())
                 .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
+                .logout()
+                .logoutUrl("/super/admin/logout")
+                .logoutSuccessHandler(new SuperAdminLogoutSuccessHandler(objectMapper))
+                .and()
                 .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -150,6 +156,10 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout()
+                .logoutUrl("/admin/logout")
+                .logoutSuccessHandler(new AdminLogoutSuccessHandler(objectMapper))
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(adminAccessDeniedHandler())
@@ -205,6 +215,10 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .successHandler(subjectAuthenticationSuccessHandler())
                 .failureHandler(subjectAuthenticationFailureHandler())
+                .and()
+                .logout()
+                .logoutUrl("/subject/logout")
+                .logoutSuccessHandler(new SubjectLogoutSuccessHandler(objectMapper))
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))

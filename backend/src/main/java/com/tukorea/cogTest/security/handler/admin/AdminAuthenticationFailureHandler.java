@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.security.handler;
+package com.tukorea.cogTest.security.handler.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.response.ResponseUtil;
