@@ -74,7 +74,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         // 로그아웃 체크
 
-        if (mainResource.equals("admin")) {
+        if (mainResource.equals("admin") || mainResource.equals("super")) {
             AdminDTO byId = adminService.findById(Long.valueOf(id));
             UserDetails user = adminService.loadUserByUsername(byId.getUsername());
 
