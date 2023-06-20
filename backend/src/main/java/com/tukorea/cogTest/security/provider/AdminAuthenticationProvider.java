@@ -45,7 +45,11 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
                 log.info("provider login success");
-                return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
+                UsernamePasswordAuthenticationToken token
+                        = new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
+                Long id = adminService.findByUsername(foundedUser.getUsername()).getId();
+                token.setDetails(Map.of("id", id));
+                return token;
             } else {
                 // 인증 실패
                 throw new AuthenticationCredentialsNotFoundException("authentication failed");
