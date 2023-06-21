@@ -210,7 +210,7 @@ public class SecurityConfig {
                 .securityMatcher("/subject/**")
                 .authenticationProvider(subjectAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.USER.value)
+                .anyRequest().hasAnyRole(Role.USER.value, Role.ADMIN.value)
                 .and()
                 .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
