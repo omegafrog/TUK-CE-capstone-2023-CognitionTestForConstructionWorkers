@@ -44,7 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authorizationHeader == null) {
             // 토큰 헤더 없음.
             log.info("토큰 헤더 없음");
-            filterChain.doFilter(request, response);
             return;
         }
         String[] tokenArray = authorizationHeader.split(" ");
@@ -68,7 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String id = (String) claims.get("userId");
 
         // 만료됨
-        if (expiration.before(new Date(System.currentTimeMillis()))) {
+        if (expiration.after(new Date(System.currentTimeMillis()))) {
             log.info("토큰 만료됨");
             filterChain.doFilter(request, response);
             return;
