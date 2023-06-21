@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -73,25 +74,22 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         // 로그아웃 체크
-
-        if (mainResource.equals("admin") || mainResource.equals("super")) {
+        UserDetails user=null;
+        try {
             AdminDTO byId = adminService.findById(Long.valueOf(id));
-            UserDetails user = adminService.loadUserByUsername(byId.getUsername());
-
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword(), user.getAuthorities()
-            );
-            SecurityContextHolder.getContext().setAuthentication(token);
-        } else if (mainResource.equals("subject")) {
-            SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
-            UserDetails user = subjectService.loadUserByUsername(byId.getUsername());
-
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword(), user.getAuthorities()
-            );
-            token.setAuthenticated(true);
-            SecurityContextHolder.getContext().setAuthentication(token);
+            user = adminService.loadUserByUsername(byId.getUsername());
+        }catch(UsernameNotFoundException e) {
+            try {
+                SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
+                user = subjectService.loadUserByUsername(byId.getUsername());
+            }catch (UsernameNotFoundException e2){
+                filterChain.doFilter(request,response);
+            }
         }
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                user.getUsername(), user.getPassword(), user.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(token);
         filterChain.doFilter(request,response);
     }
 }
