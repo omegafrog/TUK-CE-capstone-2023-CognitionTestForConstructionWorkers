@@ -1,11 +1,14 @@
 package com.tukorea.cogTest.repository;
 
-import com.tukorea.cogTest.domain.User;
+
+import org.springframework.security.core.Authentication;
+
+import java.util.Date;
 
 public interface LogoutRepository {
-    User save(String token, User user);
+    void save(String token, Date expriateionTime);
 
     void deleteByToken(String token);
-    User findByToken(String token);
+    boolean findByToken(String token);
 
 }

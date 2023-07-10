@@ -1,8 +1,10 @@
 package com.tukorea.cogTest.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.User;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.repository.LogoutRepository;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
 import com.tukorea.cogTest.service.AdminService;
@@ -25,6 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final String secret;
     private final AdminService adminService;
     private final SubjectService subjectService;
+    private final LogoutRepository logoutRepository;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("jwt filter 시작");
@@ -80,6 +84,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String id = (String) claims.get("userId");
 
         // 로그아웃 체크
+        if(logoutRepository.findByToken(jwtToken)){
+            log.info("로그아웃된 유저입니다.");
+            request.setAttribute("Throwable", new Exception("로그아웃된 유저의 토큰입니다."));
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         UserDetails user=null;
         try {
             AdminDTO byId = adminService.findById(Long.valueOf(id));

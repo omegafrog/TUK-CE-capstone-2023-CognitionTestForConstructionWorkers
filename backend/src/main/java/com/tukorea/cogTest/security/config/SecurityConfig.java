@@ -2,8 +2,10 @@ package com.tukorea.cogTest.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.repository.LogoutRepository;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.filter.JwtFilter;
+import com.tukorea.cogTest.security.handler.LogoutHandler;
 import com.tukorea.cogTest.security.handler.admin.AdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationSuccessHandler;
@@ -110,9 +112,17 @@ public class SecurityConfig {
     @Autowired
     SubjectService subjectService;
 
+    @Autowired
+    LogoutRepository logoutRepository;
+
     @Bean
     JwtFilter jwtFilter(){
-        return new JwtFilter(jwtSecret, adminService, subjectService);
+        return new JwtFilter(jwtSecret, adminService, subjectService, logoutRepository);
+    }
+
+    @Bean
+    LogoutHandler logoutHandler(){
+        return new LogoutHandler(jwtSecret);
     }
 
     @Bean
@@ -132,6 +142,7 @@ public class SecurityConfig {
                 .and()
                 .logout()
                 .logoutUrl("/super/admin/logout")
+                .addLogoutHandler(logoutHandler())
                 .logoutSuccessHandler(new SuperAdminLogoutSuccessHandler(objectMapper))
                 .and()
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -172,6 +183,7 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/admin/logout")
                 .logoutSuccessHandler(new AdminLogoutSuccessHandler(objectMapper))
+                .addLogoutHandler(logoutHandler())
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(adminAccessDeniedHandler())
@@ -231,6 +243,7 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/subject/logout")
                 .logoutSuccessHandler(new SubjectLogoutSuccessHandler(objectMapper))
+                .addLogoutHandler(logoutHandler())
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))

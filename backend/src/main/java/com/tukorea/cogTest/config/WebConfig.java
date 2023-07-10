@@ -116,6 +116,11 @@ public class WebConfig {
         proxyFactory.addAdvice(new MessageInterceptor(logTrace()));
         return (TestResultService) proxyFactory.getProxy();
     }
+
+    @Bean
+    LogoutRepository logoutRepository(){
+        return new LogoutRepositoryImpl();
+    }
     @Autowired
     JpaSimpleAdminRepository jpaAdminRepository;
     @Autowired
