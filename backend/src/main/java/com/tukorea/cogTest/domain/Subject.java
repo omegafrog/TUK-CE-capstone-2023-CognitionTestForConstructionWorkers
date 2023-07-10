@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
-public class Subject {
+public class Subject extends User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
