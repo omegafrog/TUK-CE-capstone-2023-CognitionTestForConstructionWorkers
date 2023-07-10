@@ -111,6 +111,11 @@ public class SecurityConfig {
     SubjectService subjectService;
 
     @Bean
+    JwtFilter jwtFilter(){
+        return new JwtFilter(jwtSecret, adminService, subjectService);
+    }
+
+    @Bean
     SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/super/admin/**", "/super/admins/**")
@@ -129,7 +134,7 @@ public class SecurityConfig {
                 .logoutUrl("/super/admin/logout")
                 .logoutSuccessHandler(new SuperAdminLogoutSuccessHandler(objectMapper))
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -160,7 +165,7 @@ public class SecurityConfig {
                 .successHandler(adminAuthenticationSuccessHandler())
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -188,7 +193,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -212,7 +217,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasAnyRole(Role.USER.value, Role.ADMIN.value)
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

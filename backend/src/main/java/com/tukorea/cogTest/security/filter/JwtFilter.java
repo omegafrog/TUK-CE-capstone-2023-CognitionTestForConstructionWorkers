@@ -1,17 +1,21 @@
 package com.tukorea.cogTest.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
 import com.tukorea.cogTest.service.AdminService;
 import com.tukorea.cogTest.service.SubjectService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,16 +67,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 맞는지 확인
         String jwtToken = tokenArray[1];
-        Claims claims = TokenUtil.extractClaim(secret, jwtToken);
-        Date expiration = claims.getExpiration();
-        String id = (String) claims.get("userId");
-
-        // 만료됨
-        if (expiration.before(new Date(System.currentTimeMillis()))) {
+        Claims claims;
+        try {
+            claims = TokenUtil.extractClaim(secret, jwtToken);
+        }catch (ExpiredJwtException e){
             log.info("토큰 만료됨");
+            e.printStackTrace();
+            request.setAttribute("Throwable", e);
             filterChain.doFilter(request, response);
             return;
         }
+        String id = (String) claims.get("userId");
+
         // 로그아웃 체크
         UserDetails user=null;
         try {
