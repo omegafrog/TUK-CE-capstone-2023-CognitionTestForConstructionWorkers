@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @ToString
-public class Admin {
+public class Admin extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
