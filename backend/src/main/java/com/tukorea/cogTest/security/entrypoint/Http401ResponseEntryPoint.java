@@ -2,6 +2,7 @@ package com.tukorea.cogTest.security.entrypoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.response.ResponseUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,10 +26,20 @@ public class Http401ResponseEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("Unauthorized access.");
         setRestResponseHeader(response);
-        ResponseUtil.setJsonResponse(
-                response,
-                authException,
-                objectMapper
-        );
+        Exception e = (Exception) request.getAttribute("Throwable");
+        if(e!= null){
+            ResponseUtil.setJsonResponse(
+                    response,
+                    e,
+                    objectMapper
+            );
+        }else{
+            ResponseUtil.setJsonResponse(
+                    response,
+                    authException,
+                    objectMapper
+            );
+        }
+
     }
 }

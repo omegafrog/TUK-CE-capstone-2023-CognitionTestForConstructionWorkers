@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.security.provider;
+package com.tukorea.cogTest.security;
 
 import com.tukorea.cogTest.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.util.Map;
 
 
 @Component
@@ -25,6 +24,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     @Lazy
     private PasswordEncoder passwordEncoder;
 
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // 클라이언트가 입력한 정보
@@ -36,26 +36,21 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         log.info("password={}", password);
         try {
             UserDetails foundedUser = adminService.loadUserByUsername(username);
-            log.info("encoded={}", passwordEncoder.encode(foundedUser.getPassword()));
+            log.info("encoded={}",passwordEncoder.encode(foundedUser.getPassword()));
 
             log.info("foundedUser = {}", foundedUser);
             log.info("foundedUser.username={}, foundedUser.password={}", foundedUser.getUsername(), foundedUser.getPassword());
             log.info("foundedUser.authorities = {}", foundedUser.getAuthorities());
-            log.info("encode={}", foundedUser.getPassword());
+            log.info("encode={}",foundedUser.getPassword());
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
-                log.info("provider login success");
-                UsernamePasswordAuthenticationToken token
-                        = new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
-                Long id = adminService.findByUsername(foundedUser.getUsername()).getId();
-                token.setDetails(Map.of("id", id));
-                return token;
+                return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
             } else {
                 // 인증 실패
-                throw new AuthenticationCredentialsNotFoundException("authentication failed");
+                throw new AuthenticationCredentialsNotFoundException("인증 실패");
             }
-        } catch (RuntimeException e) {
-            log.error("msg={}", e.getMessage());
+        }catch (RuntimeException e){
+            log.error("msg={}",e.getMessage());
             throw e;
         }
     }

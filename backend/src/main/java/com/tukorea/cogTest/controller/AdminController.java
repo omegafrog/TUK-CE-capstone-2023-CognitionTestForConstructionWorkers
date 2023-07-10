@@ -8,7 +8,7 @@ import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.*;
 import jakarta.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -118,13 +118,22 @@ public class AdminController {
      *     }
      * }
      */
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class WorkerInput{
+        private String mode;
+        private List<SubjectForm> subjects;
+    }
     @PostMapping(value = "/subject")
     public ResponseEntity<Map<String, Object>> addWorker(
-            @RequestParam @Nullable String mode,
-            @RequestBody @Nullable List<SubjectForm> subjects,
+            @RequestBody @Nullable WorkerInput workerInput,
             Principal principal
     ) {
         try {
+            String mode = workerInput.getMode();
+            List<SubjectForm> subjects = workerInput.getSubjects();
             String username = principal.getName();
             Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {

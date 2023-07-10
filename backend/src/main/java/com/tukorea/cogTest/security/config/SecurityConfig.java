@@ -2,19 +2,25 @@ package com.tukorea.cogTest.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.repository.LogoutRepository;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
 import com.tukorea.cogTest.security.filter.JwtFilter;
-import com.tukorea.cogTest.security.handler.*;
+import com.tukorea.cogTest.security.handler.LogoutHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAccessDeniedHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationFailureHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.admin.AdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.suadmin.SuperAdminAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.suadmin.SuperAdminLogoutSuccessHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAccessDeniedHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationFailureHandler;
 import com.tukorea.cogTest.security.handler.subject.SubjectAuthenticationSuccessHandler;
+import com.tukorea.cogTest.security.handler.subject.SubjectLogoutSuccessHandler;
 import com.tukorea.cogTest.security.provider.AdminAuthenticationProvider;
 import com.tukorea.cogTest.security.provider.SubjectAuthenticationProvider;
 import com.tukorea.cogTest.service.AdminService;
-import com.tukorea.cogTest.service.AdminServiceImpl;
 import com.tukorea.cogTest.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +33,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -53,7 +63,7 @@ public class SecurityConfig {
 
     @Bean
     SuperAdminAuthenticationSuccessHandler superAdminAuthenticationSuccessHandler(){
-        return new SuperAdminAuthenticationSuccessHandler(objectMapper);
+        return new SuperAdminAuthenticationSuccessHandler(objectMapper,jwtSecret);
     }
     @Bean
     SuperAdminAuthenticationFailureHandler superAdminAuthenticationFailureHandler(){
@@ -85,7 +95,7 @@ public class SecurityConfig {
 
     @Bean
     SubjectAuthenticationSuccessHandler subjectAuthenticationSuccessHandler(){
-        return new SubjectAuthenticationSuccessHandler(objectMapper);
+        return new SubjectAuthenticationSuccessHandler(objectMapper, jwtSecret);
     }
     @Bean
     SubjectAuthenticationFailureHandler subjectAuthenticationFailureHandler(){
@@ -102,6 +112,19 @@ public class SecurityConfig {
     @Autowired
     SubjectService subjectService;
 
+    @Autowired
+    LogoutRepository logoutRepository;
+
+    @Bean
+    JwtFilter jwtFilter(){
+        return new JwtFilter(jwtSecret, adminService, subjectService, logoutRepository);
+    }
+
+    @Bean
+    LogoutHandler logoutHandler(){
+        return new LogoutHandler(jwtSecret);
+    }
+
     @Bean
     SecurityFilterChain suAdmin(HttpSecurity http) throws Exception {
         http
@@ -117,7 +140,12 @@ public class SecurityConfig {
                 .successHandler(superAdminAuthenticationSuccessHandler())
                 .failureHandler(superAdminAuthenticationFailureHandler())
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .logout()
+                .logoutUrl("/super/admin/logout")
+                .addLogoutHandler(logoutHandler())
+                .logoutSuccessHandler(new SuperAdminLogoutSuccessHandler(objectMapper))
+                .and()
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -128,7 +156,8 @@ public class SecurityConfig {
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 .and()
                 .csrf()
-                .disable();
+                .disable()
+                .cors();
 
         return http.build();
     }
@@ -147,9 +176,14 @@ public class SecurityConfig {
                 .successHandler(adminAuthenticationSuccessHandler())
                 .failureHandler(adminAuthenticationFailureHandler())
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout()
+                .logoutUrl("/admin/logout")
+                .logoutSuccessHandler(new AdminLogoutSuccessHandler(objectMapper))
+                .addLogoutHandler(logoutHandler())
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(adminAccessDeniedHandler())
@@ -171,7 +205,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .anyRequest().hasRole(Role.SU_ADMIN.value)
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -193,9 +227,9 @@ public class SecurityConfig {
                 .securityMatcher("/subject/**")
                 .authenticationProvider(subjectAuthenticationProvider)
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.USER.value)
+                .anyRequest().hasAnyRole(Role.USER.value, Role.ADMIN.value)
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecret,adminService, subjectService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -205,6 +239,11 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .successHandler(subjectAuthenticationSuccessHandler())
                 .failureHandler(subjectAuthenticationFailureHandler())
+                .and()
+                .logout()
+                .logoutUrl("/subject/logout")
+                .logoutSuccessHandler(new SubjectLogoutSuccessHandler(objectMapper))
+                .addLogoutHandler(logoutHandler())
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http401ResponseEntryPoint(objectMapper))
@@ -229,5 +268,18 @@ public class SecurityConfig {
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
         return http.build();
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

@@ -2,6 +2,8 @@ package com.tukorea.cogTest.security.handler.suadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.response.ResponseUtil;
+import com.tukorea.cogTest.security.jwt.TokenInfo;
+import com.tukorea.cogTest.security.jwt.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import static com.tukorea.cogTest.response.ResponseUtil.writeObjectOnResponse;
 public class SuperAdminAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
+    private final String secret;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
@@ -37,6 +40,13 @@ public class SuperAdminAuthenticationSuccessHandler implements AuthenticationSuc
         ResponseUtil.setRestResponseHeader(response);
 
         Map<String, Object> body = new ConcurrentHashMap<>();
+
+        Map details = (Map) authentication.getDetails();
+        String id = String.valueOf(details.get("id"));
+        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret);
+
+        body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
+
         body.put("username", authentication.getName());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "super admin authentication success", body);
         writeObjectOnResponse(response, result, objectMapper);

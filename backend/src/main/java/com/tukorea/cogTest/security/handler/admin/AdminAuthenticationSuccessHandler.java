@@ -1,4 +1,4 @@
-package com.tukorea.cogTest.security.handler;
+package com.tukorea.cogTest.security.handler.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.response.ResponseUtil;
@@ -35,11 +35,14 @@ public class AdminAuthenticationSuccessHandler implements AuthenticationSuccessH
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("admin authentication success");
         ResponseUtil.setRestResponseHeader(response);
+
+        Map<String, Object> body = new ConcurrentHashMap<>();
+        body.put("username", authentication.getName());
+
         Map details = (Map) authentication.getDetails();
         String id = String.valueOf(details.get("id"));
         TokenInfo tokenInfo = TokenUtil.generateToken(id, secret);
-        Map<String, Object> body = new ConcurrentHashMap<>();
-        body.put("username", authentication.getName());
+
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "admin authentication success", body);
         writeObjectOnResponse(response, result, objectMapper);

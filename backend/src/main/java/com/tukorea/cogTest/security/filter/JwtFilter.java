@@ -1,25 +1,33 @@
 package com.tukorea.cogTest.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.User;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.repository.LogoutRepository;
+import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
 import com.tukorea.cogTest.service.AdminService;
 import com.tukorea.cogTest.service.SubjectService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final String secret;
     private final AdminService adminService;
     private final SubjectService subjectService;
+    private final LogoutRepository logoutRepository;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("jwt filter 시작");
@@ -62,36 +71,42 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 맞는지 확인
         String jwtToken = tokenArray[1];
-        Claims claims = TokenUtil.extractClaim(secret, jwtToken);
-        Date expiration = claims.getExpiration();
-        String id = (String) claims.get("userId");
-
-        // 만료됨
-        if (expiration.before(new Date(System.currentTimeMillis()))) {
+        Claims claims;
+        try {
+            claims = TokenUtil.extractClaim(secret, jwtToken);
+        }catch (ExpiredJwtException e){
             log.info("토큰 만료됨");
+            e.printStackTrace();
+            request.setAttribute("Throwable", e);
             filterChain.doFilter(request, response);
             return;
         }
+        String id = (String) claims.get("userId");
+
         // 로그아웃 체크
-
-        if (mainResource.equals("admin")) {
-            AdminDTO byId = adminService.findById(Long.valueOf(id));
-            UserDetails user = adminService.loadUserByUsername(byId.getUsername());
-
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword(), user.getAuthorities()
-            );
-            SecurityContextHolder.getContext().setAuthentication(token);
-        } else if (mainResource.equals("subject")) {
-            SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
-            UserDetails user = subjectService.loadUserByUsername(byId.getUsername());
-
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), user.getPassword(), user.getAuthorities()
-            );
-            token.setAuthenticated(true);
-            SecurityContextHolder.getContext().setAuthentication(token);
+        if(logoutRepository.findByToken(jwtToken)){
+            log.info("로그아웃된 유저입니다.");
+            request.setAttribute("Throwable", new Exception("로그아웃된 유저의 토큰입니다."));
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        UserDetails user=null;
+        try {
+            AdminDTO byId = adminService.findById(Long.valueOf(id));
+            user = adminService.loadUserByUsername(byId.getUsername());
+        }catch(UsernameNotFoundException e) {
+            try {
+                SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
+                user = subjectService.loadUserByUsername(byId.getUsername());
+            }catch (UsernameNotFoundException e2){
+                filterChain.doFilter(request,response);
+            }
+        }
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                user.getUsername(), user.getPassword(), user.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(token);
         filterChain.doFilter(request,response);
     }
 }
