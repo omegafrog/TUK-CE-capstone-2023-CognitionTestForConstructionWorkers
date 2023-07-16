@@ -91,16 +91,17 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         UserDetails user=null;
+
         try {
-            AdminDTO byId = adminService.findById(Long.valueOf(id));
-            user = adminService.loadUserByUsername(byId.getUsername());
-        }catch(UsernameNotFoundException e) {
-            try {
+            if(mainResource.equals("super") || mainResource.equals("admin")){
+                AdminDTO byId = adminService.findById(Long.valueOf(id));
+                user = adminService.loadUserByUsername(byId.getUsername());
+            }else if(mainResource.equals("subject")){
                 SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
                 user = subjectService.loadUserByUsername(byId.getUsername());
-            }catch (UsernameNotFoundException e2){
-                filterChain.doFilter(request,response);
             }
+        }catch(UsernameNotFoundException e) {
+            filterChain.doFilter(request,response);
         }
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 user.getUsername(), user.getPassword(), user.getAuthorities()
