@@ -95,6 +95,8 @@ public class Subject extends User{
                 .id(this.id)
                 .age(this.age)
                 .name(this.name)
+                .username(this.getUsername())
+                .password(this.getPassword())
                 .career(this.career)
                 .field(this.field)
                 .remarks(this.remarks)
