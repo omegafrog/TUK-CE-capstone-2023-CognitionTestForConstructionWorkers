@@ -123,6 +123,7 @@ public class AdminServiceImpl implements AdminService {
 
     public AdminDTO addAdmin(AdminForm adminForm) {
         Field selectedField = fieldRepository.findById(adminForm.getFieldId());
+        selectedField.appendWorkerNum();
         Admin admin = Admin.builder()
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())
@@ -147,14 +148,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public void deleteAdmin(Long id) throws RuntimeException{
-        Admin byId = adminRepository.findById(id);
-        Field field = byId.getField();
-        if(field!=null){
-            List<Subject> byFieldId = subjectRepository.findByField_id(field.getId());
-            for (Subject subject : byFieldId) {
-                subjectRepository.delete(subject.getId());
-            }
-        }
         adminRepository.delete(id);
     }
 

@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
@@ -94,10 +96,9 @@ public class SubjectServiceImpl implements SubjectService {
      * @throws IllegalArgumentException : 피험자가 test result를 가지고 있지 않으면 발생한다.
      */
     public void delete(Long subjectId) throws IllegalArgumentException {
-        List<TestResult> byUserId = testResultRepository.findByUserId(subjectId);
-        if (byUserId != null) {
-            testResultRepository.deleteAllBySubjectId(subjectId);
-            subjectRepository.delete(subjectId);
-        }
+        Subject byId = subjectRepository.findById(subjectId);
+        byId.getField().decreaseWorkerNum();
+        subjectRepository.save(byId);
+        subjectRepository.delete(subjectId);
     }
 }
