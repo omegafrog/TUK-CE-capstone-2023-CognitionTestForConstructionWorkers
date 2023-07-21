@@ -123,6 +123,7 @@ public class AdminServiceImpl implements AdminService {
 
     public AdminDTO addAdmin(AdminForm adminForm) {
         Field selectedField = fieldRepository.findById(adminForm.getFieldId());
+        selectedField.appendWorkerNum();
         Admin admin = Admin.builder()
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())

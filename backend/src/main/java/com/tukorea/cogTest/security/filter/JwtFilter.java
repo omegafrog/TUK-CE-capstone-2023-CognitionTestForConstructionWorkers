@@ -93,7 +93,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails user=null;
 
         try {
-            if(mainResource.equals("super") || mainResource.equals("admin")){
+            if(mainResource.equals("super") || mainResource.equals("admin") || mainResource.equals("site")){
                 AdminDTO byId = adminService.findById(Long.valueOf(id));
                 user = adminService.loadUserByUsername(byId.getUsername());
             }else if(mainResource.equals("subject")){

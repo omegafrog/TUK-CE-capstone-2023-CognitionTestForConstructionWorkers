@@ -48,6 +48,9 @@ public class Field {
     public void appendWorkerNum(){
         numOfWorkers++;
     }
+    public void decreaseWorkerNum(){
+        numOfWorkers--;
+    }
 
     public Field update(Field field){
         this.name = field.getName();
