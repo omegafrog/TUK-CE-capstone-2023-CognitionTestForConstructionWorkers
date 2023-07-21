@@ -127,7 +127,7 @@ public class AdminServiceImpl implements AdminService {
                 .name(adminForm.getName())
                 .username(adminForm.getUsername())
                 .password(encoder.encode(adminForm.getPassword()))
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .field(selectedField)
                 .position(adminForm.getPosition())
                 .build();
