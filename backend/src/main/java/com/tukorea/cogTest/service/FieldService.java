@@ -53,5 +53,8 @@ public class FieldService {
         fieldRepository.delete(id);
     }
 
+    public List<FieldDTO> findAll(){
+        return fieldRepository.findAll().stream().map(Field::toDTO).toList();
+    }
 
 }
