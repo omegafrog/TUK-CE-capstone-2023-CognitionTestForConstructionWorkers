@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "subject")
@@ -38,6 +39,9 @@ public class Subject extends User{
     @ManyToOne
     @JoinColumn(name="field_id")
     private Field field;
+
+    @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TestResult> testResults;
 
     @Builder
     public Subject(
