@@ -30,6 +30,17 @@ public class FieldController {
     private final FieldService fieldService;
     private final ObjectMapper objectMapper;
 
+
+    @GetMapping("")
+    public ResponseEntity<Map<String, Object>> getAllFields(){
+        List<FieldDTO> all = fieldService.findAll();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("fields", all);
+        ConcurrentHashMap<String, Object> body = setResponseBody(HttpStatus.OK, "Find all field success", data);
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> addField( FieldForm field)  {
         try {
@@ -43,8 +54,6 @@ public class FieldController {
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }
-
-
 
     @PostMapping("{id}")
     public ResponseEntity<Map<String, Object>> updateField(
@@ -83,5 +92,7 @@ public class FieldController {
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 }
