@@ -99,7 +99,7 @@ public class TestResult {
     public TestResultDTO toDTO(){
         return TestResultDTO.builder()
                 .id(id)
-                .target(target.toDTO())
+                .target(target)
                 .date(date)
                 .twoHandResult(twoHandResult)
                 .pvtResult(pvtResult)
