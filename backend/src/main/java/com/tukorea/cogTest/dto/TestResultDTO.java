@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class TestResultDTO {
     Long id;
 
-    Subject target;
+    SubjectDTO target;
 
     LocalDate date;
 
