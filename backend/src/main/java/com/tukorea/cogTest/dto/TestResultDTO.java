@@ -12,10 +12,8 @@ import java.time.LocalDate;
 public class TestResultDTO {
     Long id;
 
-    Subject target;
-
+    SubjectDTO target;
     LocalDate date;
-
     Twohand twoHandResult;
     Pvt pvtResult;
     Crane craneResult;
