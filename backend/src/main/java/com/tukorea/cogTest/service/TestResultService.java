@@ -10,8 +10,6 @@ import com.tukorea.cogTest.dto.TestResultForm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,12 +34,11 @@ public class TestResultService {
         Subject foundedSubject = subjectRepository.findById(subjectId);
         TestResult testResult = TestResult.builder()
                 .target(foundedSubject)
-                .date(testResultForm.getDate())
                 .twoHandResult(testResultForm.getTwoHandResult())
-                .craneResult(testResultForm.getCraneResult())
+                .conveyorResult(testResultForm.getConveyorResult())
                 .mazeResult(testResultForm.getMazeResult())
-                .tovaResult(testResultForm.getTovaResult())
-                .pvtResult(testResultForm.getPvtResult())
+                .decisionMakingResult(testResultForm.getDecisionMakingResult())
+                .digitSpanResult(testResultForm.getDigitSpanResult())
                 .build();
 
         return testResultRepository.save(testResult).toDTO();
@@ -50,6 +47,4 @@ public class TestResultService {
     public List<TestResult> findBySubjectId(Long id){
         return testResultRepository.findByUserId(id);
     }
-
-
 }

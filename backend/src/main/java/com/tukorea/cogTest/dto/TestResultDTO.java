@@ -1,6 +1,5 @@
 package com.tukorea.cogTest.dto;
 
-import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.test.*;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +16,8 @@ public class TestResultDTO {
     LocalDate date;
 
     Twohand twoHandResult;
-    Pvt pvtResult;
-    Crane craneResult;
+    DigitSpan digitSpanResult;
+    Conveyor conveyorResult;
     Maze mazeResult;
-    Tova tovaResult;
+    DecisionMaking decisionMakingResult;
 }
