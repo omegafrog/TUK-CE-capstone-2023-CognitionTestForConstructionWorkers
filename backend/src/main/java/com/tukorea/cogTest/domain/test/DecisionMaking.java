@@ -1,5 +1,6 @@
 package com.tukorea.cogTest.domain.test;
 
+
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
@@ -8,8 +9,9 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @Embeddable
-public class Maze {
-    private int collisionCount;
+public class DecisionMaking {
     private Boolean isPassed;
-
+    double minResponseTime;
+    int missedGo;
+    int missClickedNoGo;
 }

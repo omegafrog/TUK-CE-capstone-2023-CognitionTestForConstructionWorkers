@@ -55,6 +55,7 @@ public class SubjectController {
             @RequestBody TestResultForm testResult) {
         try{
             TestResultDTO saved = testResultService.save(testResult, id);
+            System.out.println("saved = " + saved);
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("testResult", saved);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);
