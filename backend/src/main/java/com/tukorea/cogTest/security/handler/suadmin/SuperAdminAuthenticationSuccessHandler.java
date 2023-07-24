@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.security.handler.suadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenInfo;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
@@ -43,7 +44,7 @@ public class SuperAdminAuthenticationSuccessHandler implements AuthenticationSuc
 
         Map details = (Map) authentication.getDetails();
         String id = String.valueOf(details.get("id"));
-        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret);
+        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.SU_ADMIN);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
 

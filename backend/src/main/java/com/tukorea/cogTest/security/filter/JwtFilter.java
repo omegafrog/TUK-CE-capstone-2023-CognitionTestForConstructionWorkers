@@ -2,6 +2,7 @@ package com.tukorea.cogTest.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.User;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.repository.LogoutRepository;
@@ -81,7 +82,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         String id = (String) claims.get("userId");
-
+        String audience = claims.getAudience();
         // 로그아웃 체크
         if(logoutRepository.findByToken(jwtToken)){
             log.info("로그아웃된 유저입니다.");
@@ -93,10 +94,10 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails user=null;
 
         try {
-            if(mainResource.equals("super") || mainResource.equals("admin") || mainResource.equals("site")){
+            if(audience.equals(Role.SU_ADMIN.value) || audience.equals(Role.ADMIN.value)){
                 AdminDTO byId = adminService.findById(Long.valueOf(id));
                 user = adminService.loadUserByUsername(byId.getUsername());
-            }else if(mainResource.equals("subject")){
+            }else if(audience.equals(Role.USER.value)){
                 SubjectDTO byId = subjectService.findSubject(Long.valueOf(id));
                 user = subjectService.loadUserByUsername(byId.getUsername());
             }

@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.security.handler.subject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenInfo;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
@@ -34,7 +35,7 @@ public class SubjectAuthenticationSuccessHandler implements AuthenticationSucces
 
         Map details = (Map) authentication.getDetails();
         String id = String.valueOf(details.get("id"));
-        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret);
+        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.USER);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
 
