@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
 @Embeddable
-public class Twohand {
+public class DigitSpan{
     private Boolean isPassed;
-    private int failedCount;
-    private double minResponseTime;
-
-
+    public DigitSpan(boolean isPassed) {
+        this.isPassed = isPassed;
+    }
 }

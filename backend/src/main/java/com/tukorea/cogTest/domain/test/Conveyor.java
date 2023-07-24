@@ -8,8 +8,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @Embeddable
-public class Maze {
-    private int collisionCount;
+public class Conveyor {
     private Boolean isPassed;
-
+    double elapsedTime;
 }
