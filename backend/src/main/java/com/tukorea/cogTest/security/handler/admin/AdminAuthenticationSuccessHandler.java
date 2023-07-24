@@ -1,6 +1,7 @@
 package com.tukorea.cogTest.security.handler.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.security.jwt.TokenInfo;
 import com.tukorea.cogTest.security.jwt.TokenUtil;
@@ -41,7 +42,7 @@ public class AdminAuthenticationSuccessHandler implements AuthenticationSuccessH
 
         Map details = (Map) authentication.getDetails();
         String id = String.valueOf(details.get("id"));
-        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret);
+        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.ADMIN);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "admin authentication success", body);
