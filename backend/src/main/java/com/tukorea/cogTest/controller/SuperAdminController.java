@@ -92,16 +92,9 @@ public class SuperAdminController {
     public ResponseEntity<Map<String, Object>> updateAdmin(
             @PathVariable Long id,
             @ModelAttribute AdminForm adminForm) {
-        AdminDTO adminDTO = AdminDTO.builder()
-                .name(adminForm.getName())
-                .position(adminForm.getPosition())
-                .role(adminForm.getRole())
-                .username(adminForm.getUsername())
-                .password(adminForm.getPassword())
-                .build();
-        log.info("adminDTO : {}", adminDTO);
         try {
-            AdminDTO updated = adminService.updateAdmin(id, adminDTO);
+            System.out.println("adminForm = " + adminForm);
+            AdminDTO updated = adminService.updateAdmin(id, adminForm);
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("admin", updated);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Update common admin success", result), HttpStatus.OK);

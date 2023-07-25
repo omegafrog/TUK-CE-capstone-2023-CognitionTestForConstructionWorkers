@@ -16,7 +16,7 @@ public interface AdminService extends UserDetailsService {
     Map<String, Object> addMultiWorkers(Long id, List<SubjectForm> subjects);
     Map<String, Object> addSoleWorker( Long fieldId, SubjectForm subjectForm);
     AdminDTO addAdmin(AdminForm adminForm);
-    AdminDTO updateAdmin(Long id, AdminDTO adminDTO);
+    AdminDTO updateAdmin(Long id, AdminForm adminForm);
     void deleteAdmin(Long id);
     List<AdminDTO> findAll();
     AdminDTO findByField_id(Long id);
