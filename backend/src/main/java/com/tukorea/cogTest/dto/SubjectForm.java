@@ -19,16 +19,16 @@ public class SubjectForm {
     private Integer career;
     private String remarks;
     private Risk risk;
-    private FieldDTO fieldDTO;
+    private Long fieldId;
 
     @Builder
-    public SubjectForm(String name, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, FieldDTO fieldDTO) {
+    public SubjectForm(String name, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, Long fieldId) {
         this.name = name;
         this.age = age;
         this.detailedJob = detailedJob;
         this.career = career;
         this.remarks = remarks;
         this.risk = risk;
-        this.fieldDTO = fieldDTO;
+        this.fieldId = fieldId;
     }
 }

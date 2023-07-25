@@ -178,7 +178,7 @@ public class AdminController {
             if (count == 0) {
                 return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }
-            subjectForm.setFieldDTO(field.toDTO());
+            subjectForm.setFieldId(field.getId());
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();

@@ -76,7 +76,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     public SubjectDTO update(Long id, SubjectForm subjectDTO) {
-        Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
+        Field foundedField = fieldRepository.findById(subjectDTO.getFieldId());
 
         Subject subject = Subject.builder()
                 .name(subjectDTO.getName())
