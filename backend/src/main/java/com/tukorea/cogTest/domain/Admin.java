@@ -63,7 +63,7 @@ public class Admin extends User{
 
     public Admin update(AdminDTO admin){
         this.name = (admin.getName()==null)?this.name:admin.getName();
-        this.username = (admin.getUsername()=="")?this.username:admin.getUsername();
+        this.username = (admin.getUsername()==null)?this.username:admin.getUsername();
         this.password = (admin.getPassword()==null)?this.password:admin.getPassword();
         this.field = (admin.getField()==null)?this.field:admin.getField();
         this.position = (admin.getPosition()==null)?this.position:admin.getPosition();

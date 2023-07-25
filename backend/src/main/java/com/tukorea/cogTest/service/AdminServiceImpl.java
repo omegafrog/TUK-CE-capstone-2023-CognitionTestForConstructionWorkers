@@ -134,16 +134,14 @@ public class AdminServiceImpl implements AdminService {
         AdminDTO saved = adminRepository.save(admin).toDTO();
         log.info("id : {}, username : {}, password : {}", saved.getId(), saved.getUsername(), saved.getPassword());
 
+
         return saved;
     }
 
     public AdminDTO updateAdmin(Long id, AdminDTO adminDTO){
         Admin founded = adminRepository.findById(id);
-        log.info("founded : {}", founded);
-        log.info("dto : {}", adminDTO);
-        AdminDTO updated = founded.update(adminDTO).toDTO();
-        log.info("updated : {}", updated);
-        return updated;
+        Admin updated = founded.update(adminDTO);
+        return adminRepository.save(updated).toDTO();
     }
 
     public void deleteAdmin(Long id) throws RuntimeException{

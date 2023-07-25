@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
@@ -74,7 +76,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     public SubjectDTO update(Long id, SubjectForm subjectDTO) {
-        Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
+        Field foundedField = fieldRepository.findById(subjectDTO.getFieldId());
 
         Subject subject = Subject.builder()
                 .name(subjectDTO.getName())
