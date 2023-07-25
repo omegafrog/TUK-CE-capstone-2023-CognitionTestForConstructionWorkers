@@ -138,9 +138,17 @@ public class AdminServiceImpl implements AdminService {
         return saved;
     }
 
-    public AdminDTO updateAdmin(Long id, AdminDTO adminDTO){
+    public AdminDTO updateAdmin(Long id, AdminForm adminForm){
         Admin founded = adminRepository.findById(id);
-        Admin updated = founded.update(adminDTO);
+        Field byId = fieldRepository.findById(adminForm.getFieldId());
+        AdminDTO build = AdminDTO.builder()
+                .name(adminForm.getName())
+                .password(adminForm.getPassword())
+                .field(byId)
+                .position(adminForm.getPosition())
+                .username(adminForm.getUsername())
+                .build();
+        Admin updated = founded.update(build);
         return adminRepository.save(updated).toDTO();
     }
 
