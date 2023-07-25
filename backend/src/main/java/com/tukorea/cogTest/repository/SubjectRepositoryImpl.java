@@ -21,7 +21,8 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     @Override
     public Subject update(Long id, Subject updateArgument) throws RuntimeException{
         Subject foundedSubject = findById(id);
-        return foundedSubject.update(updateArgument.toDTO());
+        foundedSubject.update(updateArgument.toDTO());
+        return simpleSubjectRepository.save(foundedSubject);
     }
 
     @Override
