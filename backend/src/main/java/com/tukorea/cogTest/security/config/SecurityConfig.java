@@ -203,7 +203,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/site/**")
                 .authorizeHttpRequests()
-                .anyRequest().hasRole(Role.SU_ADMIN.value)
+                .anyRequest().hasAnyRole(Role.SU_ADMIN.value,Role.ADMIN.value)
                 .and()
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()

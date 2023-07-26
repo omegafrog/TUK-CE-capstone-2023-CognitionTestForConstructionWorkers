@@ -24,8 +24,8 @@ public class Field {
 
     private int numOfWorkers=0;
 
-    @OneToOne(mappedBy = "field", cascade = CascadeType.REMOVE)
-    private Admin admin;
+    @OneToMany(mappedBy = "field", cascade = CascadeType.REMOVE)
+    private List<Admin> admins;
     @OneToMany(mappedBy = "field", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Subject> subjects;
 
