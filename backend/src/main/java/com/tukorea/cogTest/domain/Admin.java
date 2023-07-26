@@ -2,6 +2,7 @@ package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
+import com.tukorea.cogTest.dto.UpdateAdminDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -61,7 +62,7 @@ public class Admin extends User{
         return id.intValue();
     }
 
-    public Admin update(AdminDTO admin){
+    public Admin update(UpdateAdminDto admin){
         this.name = (admin.getName()==null)?this.name:admin.getName();
         this.username = (admin.getUsername()==null)?this.username:admin.getUsername();
         this.password = (admin.getPassword()==null)?this.password:admin.getPassword();
@@ -77,7 +78,7 @@ public class Admin extends User{
                 .name(name)
                 .username(username)
                 .password(password)
-                .field(field)
+                .field(field.toDTO())
                 .position(position)
                 .role(role)
                 .build();

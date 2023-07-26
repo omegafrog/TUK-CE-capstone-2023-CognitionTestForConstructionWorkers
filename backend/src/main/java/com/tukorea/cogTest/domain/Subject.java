@@ -4,6 +4,7 @@ import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 
@@ -36,7 +37,7 @@ public class Subject extends User{
     private String remarks;
     private Risk risk=Risk.NORMAL;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="field_id")
     private Field field;
 
@@ -81,7 +82,7 @@ public class Subject extends User{
         return id.intValue();
     }
 
-    public Subject update(SubjectDTO subject){
+    public Subject update(UpdateSubjectDto subject){
         this.name = subject.getName();
         this.age = subject.getAge();
         this.career = subject.getCareer();
@@ -102,7 +103,7 @@ public class Subject extends User{
                 .username(this.getUsername())
                 .password(this.getPassword())
                 .career(this.career)
-                .field(this.field)
+                .field(this.field.toDTO())
                 .remarks(this.remarks)
                 .risk(this.risk)
                 .build();

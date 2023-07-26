@@ -8,7 +8,6 @@ public interface AdminRepository {
 
     Admin findByUsername(String username);
 
-    Admin update(Long id, Admin admin);
     void delete(Long id);
 
     List<Admin> findAll();

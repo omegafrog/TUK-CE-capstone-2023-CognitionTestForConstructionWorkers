@@ -2,6 +2,7 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.dto.AdminDTO;
+import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.paging.Page;
@@ -34,6 +35,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final SubjectService subjectService;
+    private final FieldService fieldService;
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
@@ -170,11 +172,11 @@ public class AdminController {
     ) {
         try {
             AdminDTO byUsername = adminService.findByUsername( principal.getName());
-            Field field = byUsername.getField();
+            FieldDTO field = fieldService.findById(byUsername.getField().getId());
 
             // 관리자가 관리하는 피험자인지 검사
             List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
-            long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
+            long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().getId().equals(field.getId())).count();
             if (count == 0) {
                 return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
             }

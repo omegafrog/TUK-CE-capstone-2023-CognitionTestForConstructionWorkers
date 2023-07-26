@@ -14,5 +14,5 @@ public class AdminDTO {
     String password;
     Role role;
     private String position;
-    private Field field;
+    private FieldDTO field;
 }
