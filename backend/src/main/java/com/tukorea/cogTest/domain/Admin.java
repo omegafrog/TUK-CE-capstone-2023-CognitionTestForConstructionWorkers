@@ -33,7 +33,7 @@ public class Admin extends User{
     private String position;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "field_id")
     private Field field;
 
