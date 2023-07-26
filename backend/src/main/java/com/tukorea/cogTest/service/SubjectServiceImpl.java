@@ -5,8 +5,10 @@ import com.tukorea.cogTest.domain.*;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.dto.TestResultDTO;
+import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,8 +79,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     public SubjectDTO update(Long id, SubjectForm subjectDTO) {
         Field foundedField = fieldRepository.findById(subjectDTO.getFieldId());
-
-        Subject subject = Subject.builder()
+        Subject byId = subjectRepository.findById(id);
+        UpdateSubjectDto subject = UpdateSubjectDto.builder()
                 .name(subjectDTO.getName())
                 .age(subjectDTO.getAge())
                 .field(foundedField)
@@ -86,7 +88,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .remarks(subjectDTO.getRemarks())
                 .career(subjectDTO.getCareer())
                 .build();
-        return subjectRepository.update(id, subject).toDTO();
+        Subject updated = byId.update(subject);
+        return subjectRepository.save(updated).toDTO();
     }
 
     /**
@@ -98,7 +101,7 @@ public class SubjectServiceImpl implements SubjectService {
     public void delete(Long subjectId) throws IllegalArgumentException {
         Subject byId = subjectRepository.findById(subjectId);
         byId.getField().decreaseWorkerNum();
-        subjectRepository.save(byId);
+        fieldRepository.save(byId.getField());
         subjectRepository.delete(subjectId);
     }
 }

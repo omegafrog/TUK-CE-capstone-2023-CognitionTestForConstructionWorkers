@@ -6,6 +6,7 @@ import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
 import com.tukorea.cogTest.dto.SubjectForm;
+import com.tukorea.cogTest.dto.UpdateAdminDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
                 .build();
         Subject savedSubject = subjectRepository.save(subject);
         Map<String, Object> result = new ConcurrentHashMap<>();
-        result.put("subject", savedSubject);
+        result.put("subject", savedSubject.toDTO());
         return result;
     }
 
@@ -133,16 +134,13 @@ public class AdminServiceImpl implements AdminService {
                 .position(adminForm.getPosition())
                 .build();
         AdminDTO saved = adminRepository.save(admin).toDTO();
-        log.info("id : {}, username : {}, password : {}", saved.getId(), saved.getUsername(), saved.getPassword());
-
-
         return saved;
     }
 
     public AdminDTO updateAdmin(Long id, AdminForm adminForm){
         Admin founded = adminRepository.findById(id);
         Field byId = fieldRepository.findById(adminForm.getFieldId());
-        AdminDTO build = AdminDTO.builder()
+        UpdateAdminDto build = UpdateAdminDto.builder()
                 .name(adminForm.getName())
                 .password(adminForm.getPassword())
                 .field(byId)

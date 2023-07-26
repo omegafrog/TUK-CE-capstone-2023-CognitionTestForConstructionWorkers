@@ -17,10 +17,10 @@ public class SubjectDTO {
      Integer career;
      String remarks;
      Risk risk;
-     Field field;
+     FieldDTO field;
 
     @Builder
-    public SubjectDTO(Long id, String name, String username, String password, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, Field field) {
+    public SubjectDTO(Long id, String name, String username, String password, Integer age, DetailedJob detailedJob, Integer career, String remarks, Risk risk, FieldDTO field) {
         this.id = id;
         this.name = name;
         this.username= username;

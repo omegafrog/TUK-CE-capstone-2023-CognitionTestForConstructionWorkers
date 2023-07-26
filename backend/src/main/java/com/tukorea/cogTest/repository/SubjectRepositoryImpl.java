@@ -2,6 +2,7 @@ package com.tukorea.cogTest.repository;
 
 import com.tukorea.cogTest.domain.Subject;
 import com.tukorea.cogTest.domain.SubjectRepository;
+import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,12 +19,6 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
 
 
-    @Override
-    public Subject update(Long id, Subject updateArgument) throws RuntimeException{
-        Subject foundedSubject = findById(id);
-        foundedSubject.update(updateArgument.toDTO());
-        return simpleSubjectRepository.save(foundedSubject);
-    }
 
     @Override
     public Subject save(Subject subject) {
