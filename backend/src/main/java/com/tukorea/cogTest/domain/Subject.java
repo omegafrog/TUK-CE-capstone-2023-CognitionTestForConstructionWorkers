@@ -91,6 +91,10 @@ public class Subject extends User{
         return this;
     }
 
+    public void changeRiskLevel(Risk risk){
+        this.risk = risk;
+    }
+
     public void assignField(Field field){
         this.field = field;
     }
