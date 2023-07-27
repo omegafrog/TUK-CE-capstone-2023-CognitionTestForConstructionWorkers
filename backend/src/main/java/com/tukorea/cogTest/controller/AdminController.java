@@ -171,16 +171,7 @@ public class AdminController {
             Principal principal
     ) {
         try {
-            AdminDTO byUsername = adminService.findByUsername( principal.getName());
-            FieldDTO field = fieldService.findById(byUsername.getField().getId());
 
-            // 관리자가 관리하는 피험자인지 검사
-            List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
-            long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().getId().equals(field.getId())).count();
-            if (count == 0) {
-                return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
-            }
-            subjectForm.setFieldId(field.getId());
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();
