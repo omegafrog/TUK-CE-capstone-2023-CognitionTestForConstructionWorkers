@@ -60,7 +60,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws RuntimeException {
         try {
             Subject foundedSubject = subjectRepository.findByUsername(username);
             return User.withUsername(foundedSubject.getUsername())
@@ -72,12 +72,12 @@ public class SubjectServiceImpl implements SubjectService {
         }
     }
 
-    public SubjectDTO findByUsername(String username) {
+    public SubjectDTO findByUsername(String username)throws RuntimeException {
         Subject byUsername = subjectRepository.findByUsername(username);
         return byUsername.toDTO();
     }
 
-    public SubjectDTO update(Long id, SubjectForm subjectDTO) {
+    public SubjectDTO update(Long id, SubjectForm subjectDTO)throws RuntimeException {
         Field foundedField = fieldRepository.findById(subjectDTO.getFieldId());
         Subject byId = subjectRepository.findById(id);
         UpdateSubjectDto subject = UpdateSubjectDto.builder()

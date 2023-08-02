@@ -7,6 +7,7 @@ import com.tukorea.cogTest.dto.AdminDTO;
 import com.tukorea.cogTest.dto.AdminForm;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.dto.UpdateAdminDto;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,28 +41,29 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try{
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, RuntimeException {
+        try {
             Admin foundedAdmin = adminRepository.findByUsername(username);
             return User.withUsername(username)
                     .password(foundedAdmin.getPassword())
                     .roles(foundedAdmin.getRole().value)
                     .build();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.error("msg={}", e.getMessage());
             throw new UsernameNotFoundException(e.getMessage());
         }
     }
-    public AdminDTO findById(Long id) throws RuntimeException{
+
+    public AdminDTO findById(Long id) throws RuntimeException {
         Admin foundedAdmin = adminRepository.findById(id);
         return foundedAdmin.toDTO();
     }
 
-    public AdminDTO findByUsername(String username){
+    public AdminDTO findByUsername(String username) throws RuntimeException{
         return adminRepository.findByUsername(username).toDTO();
     }
 
-    public Map<String, Object> addWorkerByFile(Long id, MultipartFile file) throws IOException {
+    public Map<String, Object> addWorkerByFile(Long id, MultipartFile file) throws RuntimeException, IOException {
         Field foundedField = fieldRepository.findById(id);
 
         InputStream inputStream = file.getInputStream();
@@ -86,7 +88,8 @@ public class AdminServiceImpl implements AdminService {
         result.put("subjects", subjectList);
         return result;
     }
-    public Map<String, Object> addMultiWorkers(Long id, List<SubjectForm> subjects){
+
+    public Map<String, Object> addMultiWorkers(Long id, List<SubjectForm> subjects) throws RuntimeException {
         Field foundedField = fieldRepository.findById(id);
         for (SubjectForm subjectForm : subjects) {
             Subject subject = Subject.builder()
@@ -105,7 +108,9 @@ public class AdminServiceImpl implements AdminService {
         result.put("subjects", subjects);
         return result;
     }
-    public Map<String, Object> addSoleWorker( Long fieldId, SubjectForm subjectForm){
+
+    public Map<String, Object> addSoleWorker(Long fieldId, SubjectForm subjectForm)
+            throws RuntimeException {
         Field foundedField = fieldRepository.findById(fieldId);
         Subject subject = Subject.builder()
                 .name(subjectForm.getName())
@@ -122,7 +127,7 @@ public class AdminServiceImpl implements AdminService {
         return result;
     }
 
-    public AdminDTO addAdmin(AdminForm adminForm) {
+    public AdminDTO addAdmin(AdminForm adminForm) throws RuntimeException {
         Field selectedField = fieldRepository.findById(adminForm.getFieldId());
         selectedField.appendWorkerNum();
         Admin admin = Admin.builder()
@@ -137,7 +142,7 @@ public class AdminServiceImpl implements AdminService {
         return saved;
     }
 
-    public AdminDTO updateAdmin(Long id, AdminForm adminForm){
+    public AdminDTO updateAdmin(Long id, AdminForm adminForm) throws RuntimeException {
         Admin founded = adminRepository.findById(id);
         Field byId = fieldRepository.findById(adminForm.getFieldId());
         UpdateAdminDto build = UpdateAdminDto.builder()
@@ -151,17 +156,17 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.save(updated).toDTO();
     }
 
-    public void deleteAdmin(Long id) throws RuntimeException{
+    public void deleteAdmin(Long id) throws RuntimeException {
         adminRepository.delete(id);
     }
 
-    public List<AdminDTO> findAll(){
+    public List<AdminDTO> findAll() throws RuntimeException {
         return adminRepository.findAll()
                 .stream().map(Admin::toDTO)
                 .toList();
     }
 
-    public AdminDTO findByField_id(Long id){
+    public AdminDTO findByField_id(Long id) throws RuntimeException {
         return adminRepository.findByFieldId(id).toDTO();
     }
 }

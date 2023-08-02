@@ -28,7 +28,6 @@ import static com.tukorea.cogTest.response.ResponseUtil.*;
 @Slf4j
 @RequestMapping("/admin")
 @ResponseBody
-@Transactional
 @RequiredArgsConstructor
 @RestController
 public class AdminController {

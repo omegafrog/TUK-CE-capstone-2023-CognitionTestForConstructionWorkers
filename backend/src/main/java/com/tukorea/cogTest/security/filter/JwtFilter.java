@@ -19,7 +19,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,23 +31,31 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Slf4j
+@Order(2)
 public class JwtFilter extends OncePerRequestFilter {
 
     private final String secret;
     private final AdminService adminService;
     private final SubjectService subjectService;
     private final LogoutRepository logoutRepository;
+    private final ObjectMapper objectMapper;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("jwt filter 시작");
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter writer = response.getWriter();
+
         // 로그인 페이지는 필요 없음.
         String requestURI = request.getRequestURI();
-        String mainResource = requestURI.split("/")[1];
         if (requestURI.contains("login") || requestURI.contains("register")) {
             log.info("로그인,회원가입 페이지 진입");
             filterChain.doFilter(request, response);
@@ -53,19 +65,26 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authorizationHeader == null) {
             // 토큰 헤더 없음.
             log.info("토큰 헤더 없음");
+            ConcurrentHashMap<String, Object> body =
+                    ResponseUtil.setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 헤더 없음.", null);
+            writer.write(objectMapper.writeValueAsString(body));
             return;
         }
         String[] tokenArray = authorizationHeader.split(" ");
         if (!tokenArray[0].equals("Bearer")) {
             // 인증 타입 다름
             log.info("인증 타입 다름");
-            filterChain.doFilter(request, response);
+            ConcurrentHashMap<String, Object> body =
+                    ResponseUtil.setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "인증 타입 다름.", null);
+            writer.write(objectMapper.writeValueAsString(body));
             return;
         }
         if (tokenArray.length != 2) {
             // 토큰 온전하지 않음
             log.info("토큰 온전하지 않음");
-            filterChain.doFilter(request, response);
+            ConcurrentHashMap<String, Object> body =
+                    ResponseUtil.setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 온전하지 않음.", null);
+            writer.write(objectMapper.writeValueAsString(body));
             return;
         }
 
@@ -77,8 +96,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }catch (ExpiredJwtException e){
             log.info("토큰 만료됨");
             e.printStackTrace();
-            request.setAttribute("Throwable", e);
-            filterChain.doFilter(request, response);
+            ConcurrentHashMap<String, Object> body =
+                    ResponseUtil.setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 만료됨.", null);
+            writer.write(objectMapper.writeValueAsString(body));
             return;
         }
         String id = (String) claims.get("userId");
@@ -86,8 +106,9 @@ public class JwtFilter extends OncePerRequestFilter {
         // 로그아웃 체크
         if(logoutRepository.findByToken(jwtToken)){
             log.info("로그아웃된 유저입니다.");
-            request.setAttribute("Throwable", new Exception("로그아웃된 유저의 토큰입니다."));
-            filterChain.doFilter(request, response);
+            ConcurrentHashMap<String, Object> body =
+                    ResponseUtil.setResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃된 유저입니다.", null);
+            writer.write(objectMapper.writeValueAsString(body));
             return;
         }
 

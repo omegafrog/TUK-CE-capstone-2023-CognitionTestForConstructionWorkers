@@ -43,7 +43,7 @@ public class FieldService {
         fieldRepository.delete(id);
     }
 
-    public List<FieldDTO> findAll(){
+    public List<FieldDTO> findAll()throws RuntimeException{
         return fieldRepository.findAll().stream().map(Field::toDTO).toList();
     }
 
