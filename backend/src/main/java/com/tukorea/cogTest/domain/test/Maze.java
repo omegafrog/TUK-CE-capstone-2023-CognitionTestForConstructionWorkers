@@ -11,5 +11,4 @@ import lombok.*;
 public class Maze {
     private int collisionCount;
     private Boolean isPassed;
-
 }

@@ -13,6 +13,4 @@ public class Twohand {
     private Boolean isPassed;
     private int failedCount;
     private double minResponseTime;
-
-
 }
