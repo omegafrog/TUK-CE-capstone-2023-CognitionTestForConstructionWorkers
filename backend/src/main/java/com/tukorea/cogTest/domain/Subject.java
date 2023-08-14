@@ -1,8 +1,8 @@
 package com.tukorea.cogTest.domain;
 
-import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.dto.Sex;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import jakarta.persistence.*;
@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,10 +33,13 @@ public class Subject extends User{
 
     Role role;
 
+    private String phoneNum;
+    private Sex sex;
     private Integer age;
     private Integer career;
     private String remarks;
     private Risk risk=Risk.NORMAL;
+    private LocalDate lastTestedDate;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="field_id")
@@ -43,6 +47,11 @@ public class Subject extends User{
 
     @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TestResult> testResults;
+
+    public void setLastTestedDate(LocalDate testedDate){
+        this.lastTestedDate = testedDate;
+    }
+
 
     @Builder
     public Subject(
@@ -55,7 +64,8 @@ public class Subject extends User{
             Integer career,
             String remarks,
             Risk risk,
-            Field field) {
+            Field field,
+            String phoneNum, Sex sex) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -66,6 +76,8 @@ public class Subject extends User{
         this.remarks = remarks;
         this.risk = risk;
         this.field = field;
+        this.phoneNum = phoneNum;
+        this.sex = sex;
     }
 
     @Override
@@ -88,6 +100,7 @@ public class Subject extends User{
         this.career = subject.getCareer();
         this.field = subject.getField();
         this.remarks = subject.getRemarks();
+        this.password = subject.getPhoneNum();
         return this;
     }
 
@@ -110,6 +123,9 @@ public class Subject extends User{
                 .field(this.field.toDTO())
                 .remarks(this.remarks)
                 .risk(this.risk)
+                .phoneNum(phoneNum)
+                .sex(sex)
+                .lastTestedDate(lastTestedDate)
                 .build();
     }
 
