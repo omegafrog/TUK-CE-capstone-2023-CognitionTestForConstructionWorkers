@@ -47,6 +47,7 @@ public class SuperAdminAuthenticationSuccessHandler implements AuthenticationSuc
         TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.SU_ADMIN);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
+        body.put("id", details.get("id"));
 
         body.put("username", authentication.getName());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "super admin authentication success", body);

@@ -52,6 +52,7 @@ public class TestResultService {
         if(0<testPassedNum && testPassedNum<3) foundedSubject.changeRiskLevel(Risk.MIDEUM_RISK);
         if(3<=testPassedNum && testPassedNum<5) foundedSubject.changeRiskLevel(Risk.LOW_RISK);
         if(testPassedNum == 5) foundedSubject.changeRiskLevel(Risk.NORMAL);
+        foundedSubject.setLastTestedDate(testResult.getDate());
         subjectRepository.save(foundedSubject);
         return testResultRepository.save(testResult).toDTO();
     }
