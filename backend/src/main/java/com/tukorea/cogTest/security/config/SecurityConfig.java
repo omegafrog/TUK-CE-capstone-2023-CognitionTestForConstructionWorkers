@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.repository.LogoutRepository;
 import com.tukorea.cogTest.security.entrypoint.Http401ResponseEntryPoint;
+import com.tukorea.cogTest.security.filter.ExceptionHandlingFilter;
 import com.tukorea.cogTest.security.filter.JwtFilter;
 import com.tukorea.cogTest.security.handler.LogoutHandler;
 import com.tukorea.cogTest.security.handler.admin.AdminAccessDeniedHandler;
@@ -117,9 +118,12 @@ public class SecurityConfig {
 
     @Bean
     JwtFilter jwtFilter(){
-        return new JwtFilter(jwtSecret, adminService, subjectService, logoutRepository);
+        return new JwtFilter(jwtSecret, adminService, subjectService, logoutRepository, objectMapper);
     }
 
+    @Bean
+    ExceptionHandlingFilter exceptionFilter(){
+        return new ExceptionHandlingFilter(objectMapper);}
     @Bean
     LogoutHandler logoutHandler(){
         return new LogoutHandler(jwtSecret);

@@ -5,6 +5,7 @@ import com.tukorea.cogTest.dto.AdminForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.AdminService;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
