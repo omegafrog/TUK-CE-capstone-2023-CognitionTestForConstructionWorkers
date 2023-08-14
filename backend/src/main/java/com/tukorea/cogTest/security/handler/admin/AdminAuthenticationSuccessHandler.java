@@ -45,7 +45,8 @@ public class AdminAuthenticationSuccessHandler implements AuthenticationSuccessH
         TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.ADMIN);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
-        ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "admin authentication success", body);
+        body.put("id", details.get("id"));
+        Map<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "admin authentication success", body);
         writeObjectOnResponse(response, result, objectMapper);
         response.setStatus(HttpStatus.OK.value());
     }

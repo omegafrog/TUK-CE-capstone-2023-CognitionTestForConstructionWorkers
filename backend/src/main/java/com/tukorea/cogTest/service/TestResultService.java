@@ -44,16 +44,19 @@ public class TestResultService {
                 .digitSpanResult(testResultForm.getDigitSpanResult())
                 .build();
         Integer testPassedNum = 0;
-        if (Boolean.TRUE.equals(testResult.getTwoHandResult().getIsPassed())) testPassedNum++;
-        if (Boolean.TRUE.equals(testResult.getConveyorResult().getIsPassed())) testPassedNum++;
-        if (Boolean.TRUE.equals(testResult.getMazeResult().getIsPassed())) testPassedNum++;
-        if (Boolean.TRUE.equals(testResult.getDecisionMakingResult().getIsPassed())) testPassedNum++;
-        if (Boolean.TRUE.equals(testResult.getDigitSpanResult().getIsPassed())) testPassedNum++;
 
-        if (testPassedNum == 0) foundedSubject.changeRiskLevel(Risk.HIGH_RISK);
-        if (0 < testPassedNum && testPassedNum < 3) foundedSubject.changeRiskLevel(Risk.MIDEUM_RISK);
-        if (3 <= testPassedNum && testPassedNum < 5) foundedSubject.changeRiskLevel(Risk.LOW_RISK);
-        if (testPassedNum == 5) foundedSubject.changeRiskLevel(Risk.NORMAL);
+        if(testResult.getTwoHandResult().getIsPassed()) testPassedNum++;
+        if(testResult.getConveyorResult().getIsPassed()) testPassedNum++;
+        if(testResult.getMazeResult().getIsPassed()) testPassedNum++;
+        if(testResult.getDecisionMakingResult().getIsPassed()) testPassedNum++;
+        if(testResult.getDigitSpanResult().getIsPassed()) testPassedNum++;
+
+        if(testPassedNum==0) foundedSubject.changeRiskLevel(Risk.HIGH_RISK);
+        if(0<testPassedNum && testPassedNum<3) foundedSubject.changeRiskLevel(Risk.MIDEUM_RISK);
+        if(3<=testPassedNum && testPassedNum<5) foundedSubject.changeRiskLevel(Risk.LOW_RISK);
+        if(testPassedNum == 5) foundedSubject.changeRiskLevel(Risk.NORMAL);
+        foundedSubject.setLastTestedDate(testResult.getDate());
+
         subjectRepository.save(foundedSubject);
         return testResultRepository.save(testResult).toDTO();
     }

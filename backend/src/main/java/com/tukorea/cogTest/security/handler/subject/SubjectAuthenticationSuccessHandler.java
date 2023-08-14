@@ -38,6 +38,7 @@ public class SubjectAuthenticationSuccessHandler implements AuthenticationSucces
         TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.USER);
 
         body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
+        body.put("id", details.get("id"));
 
         body.put("username", authentication.getName());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "subject authentication success", body);

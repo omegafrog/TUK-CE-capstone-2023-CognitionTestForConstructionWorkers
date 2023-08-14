@@ -15,14 +15,16 @@ public class UpdateSubjectDto {
     private Field field;
     private String remarks;
     private Risk risk;
+    private String phoneNum;
 
     @Builder
-    public UpdateSubjectDto(String name, Integer age, Integer career, Field field, String remarks, Risk risk) {
+    public UpdateSubjectDto(String name, Integer age, Integer career, Field field, String remarks, Risk risk, String phoneNum) {
         this.name = name;
         this.risk = risk;
         this.age = age;
         this.career = career;
         this.field = field;
         this.remarks = remarks;
+        this.phoneNum = phoneNum;
     }
 }
