@@ -2,6 +2,7 @@ package com.tukorea.cogTest.dto;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.enums.Role;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
@@ -9,7 +10,9 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding;
 @Data
 
 public class AdminForm {
+    @NotNull
     String name;
+    @NotNull
     String username;
     String password;
 

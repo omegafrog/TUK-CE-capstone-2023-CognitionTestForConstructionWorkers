@@ -1,9 +1,10 @@
 package com.tukorea.cogTest.domain;
 
-import com.tukorea.cogTest.domain.enums.DetailedJob;
 import com.tukorea.cogTest.domain.enums.Risk;
 import com.tukorea.cogTest.domain.enums.Role;
+import com.tukorea.cogTest.dto.Sex;
 import com.tukorea.cogTest.dto.SubjectDTO;
+import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 
@@ -12,13 +13,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "subject")
 
 @NoArgsConstructor
 @Getter
-public class Subject {
+public class Subject extends User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,14 +33,25 @@ public class Subject {
 
     Role role;
 
+    private String phoneNum;
+    private Sex sex;
     private Integer age;
     private Integer career;
     private String remarks;
     private Risk risk=Risk.NORMAL;
+    private LocalDate lastTestedDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="field_id")
     private Field field;
+
+    @OneToMany(mappedBy = "target", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TestResult> testResults;
+
+    public void setLastTestedDate(LocalDate testedDate){
+        this.lastTestedDate = testedDate;
+    }
+
 
     @Builder
     public Subject(
@@ -50,7 +64,8 @@ public class Subject {
             Integer career,
             String remarks,
             Risk risk,
-            Field field) {
+            Field field,
+            String phoneNum, Sex sex) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -61,6 +76,8 @@ public class Subject {
         this.remarks = remarks;
         this.risk = risk;
         this.field = field;
+        this.phoneNum = phoneNum;
+        this.sex = sex;
     }
 
     @Override
@@ -77,13 +94,18 @@ public class Subject {
         return id.intValue();
     }
 
-    public Subject update(SubjectDTO subject){
+    public Subject update(UpdateSubjectDto subject){
         this.name = subject.getName();
         this.age = subject.getAge();
         this.career = subject.getCareer();
         this.field = subject.getField();
         this.remarks = subject.getRemarks();
+        this.password = subject.getPhoneNum();
         return this;
+    }
+
+    public void changeRiskLevel(Risk risk){
+        this.risk = risk;
     }
 
     public void assignField(Field field){
@@ -95,10 +117,15 @@ public class Subject {
                 .id(this.id)
                 .age(this.age)
                 .name(this.name)
+                .username(this.getUsername())
+                .password(this.getPassword())
                 .career(this.career)
-                .field(this.field)
+                .field(this.field.toDTO())
                 .remarks(this.remarks)
                 .risk(this.risk)
+                .phoneNum(phoneNum)
+                .sex(sex)
+                .lastTestedDate(lastTestedDate)
                 .build();
     }
 

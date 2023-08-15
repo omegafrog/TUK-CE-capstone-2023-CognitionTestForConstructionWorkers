@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -22,6 +23,12 @@ public class Field {
     private String name;
 
     private int numOfWorkers=0;
+
+    @OneToMany(mappedBy = "field", cascade = CascadeType.REMOVE)
+    private List<Admin> admins;
+    @OneToMany(mappedBy = "field", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Subject> subjects;
+
 
     @Builder
     public Field(Long id, String name, int numOfWorkers) {
@@ -47,6 +54,9 @@ public class Field {
 
     public void appendWorkerNum(){
         numOfWorkers++;
+    }
+    public void decreaseWorkerNum(){
+        numOfWorkers--;
     }
 
     public Field update(Field field){

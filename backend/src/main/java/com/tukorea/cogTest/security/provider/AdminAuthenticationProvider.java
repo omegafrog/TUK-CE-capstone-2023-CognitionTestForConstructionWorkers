@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import java.util.Map;
 
 
 @Component
@@ -23,7 +24,6 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -45,7 +45,11 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             // 인증 진행
             if (passwordEncoder.matches(password, foundedUser.getPassword())) {
                 log.info("provider login success");
-                return new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
+                UsernamePasswordAuthenticationToken token
+                        = new UsernamePasswordAuthenticationToken(username, password, foundedUser.getAuthorities());
+                Long id = adminService.findByUsername(foundedUser.getUsername()).getId();
+                token.setDetails(Map.of("id", id));
+                return token;
             } else {
                 // 인증 실패
                 throw new AuthenticationCredentialsNotFoundException("authentication failed");

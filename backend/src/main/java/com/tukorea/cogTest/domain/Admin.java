@@ -2,7 +2,9 @@ package com.tukorea.cogTest.domain;
 
 import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.dto.AdminDTO;
+import com.tukorea.cogTest.dto.UpdateAdminDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,19 +17,23 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @ToString
-public class Admin {
+public class Admin extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotNull
     String username;
+    @NotNull
     String password;
+    @NotNull
     String name;
+    @NotNull
     Role role;
     private String position;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "field_id")
     private Field field;
 
@@ -56,9 +62,9 @@ public class Admin {
         return id.intValue();
     }
 
-    public Admin update(AdminDTO admin){
+    public Admin update(UpdateAdminDto admin){
         this.name = (admin.getName()==null)?this.name:admin.getName();
-        this.username = (admin.getUsername()=="")?this.username:admin.getUsername();
+        this.username = (admin.getUsername()==null)?this.username:admin.getUsername();
         this.password = (admin.getPassword()==null)?this.password:admin.getPassword();
         this.field = (admin.getField()==null)?this.field:admin.getField();
         this.position = (admin.getPosition()==null)?this.position:admin.getPosition();
@@ -72,7 +78,7 @@ public class Admin {
                 .name(name)
                 .username(username)
                 .password(password)
-                .field(field)
+                .field(field.toDTO())
                 .position(position)
                 .role(role)
                 .build();

@@ -1,5 +1,6 @@
 package com.tukorea.cogTest.controller;
 
+import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.paging.Page;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,12 +52,16 @@ public class SubjectController {
         }
     }
 
-    @PostMapping("/{id}/test-result")
+    @PostMapping("/test-result")
     public ResponseEntity<Map<String, Object>> saveSubjectTestResult(
-            @PathVariable Long id,
             @RequestBody TestResultForm testResult) {
         try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = (String) authentication.getPrincipal();
+            SubjectDTO byUsername = subjectService.findByUsername(username);
+            Long id = byUsername.getId();
             TestResultDTO saved = testResultService.save(testResult, id);
+            System.out.println("saved = " + saved);
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("testResult", saved);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);

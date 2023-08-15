@@ -2,13 +2,14 @@ package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.dto.AdminDTO;
+import com.tukorea.cogTest.dto.FieldDTO;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.*;
 import jakarta.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,13 @@ import static com.tukorea.cogTest.response.ResponseUtil.*;
 @Slf4j
 @RequestMapping("/admin")
 @ResponseBody
-@Transactional
 @RequiredArgsConstructor
 @RestController
 public class AdminController {
 
     private final AdminService adminService;
     private final SubjectService subjectService;
+    private final FieldService fieldService;
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
@@ -118,13 +119,22 @@ public class AdminController {
      *     }
      * }
      */
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class WorkerInput{
+        private String mode;
+        private List<SubjectForm> subjects;
+    }
     @PostMapping(value = "/subject")
     public ResponseEntity<Map<String, Object>> addWorker(
-            @RequestParam @Nullable String mode,
-            @RequestBody @Nullable List<SubjectForm> subjects,
+            @RequestBody @Nullable WorkerInput workerInput,
             Principal principal
     ) {
         try {
+            String mode = workerInput.getMode();
+            List<SubjectForm> subjects = workerInput.getSubjects();
             String username = principal.getName();
             Long adminId = adminService.findByUsername(username).getField().getId();
             Map<String, Object> body = switch (mode) {
@@ -160,16 +170,7 @@ public class AdminController {
             Principal principal
     ) {
         try {
-            AdminDTO byUsername = adminService.findByUsername( principal.getName());
-            Field field = byUsername.getField();
 
-            // 관리자가 관리하는 피험자인지 검사
-            List<SubjectDTO> inField = subjectService.findSubjectInField(field.getId());
-            long count = inField.stream().filter(subjectDTO -> subjectDTO.getField().equals(field)).count();
-            if (count == 0) {
-                return returnWrongRequestErrorResponse(new IllegalArgumentException("해당 피험자의 접근 권한이 없습니다."));
-            }
-            subjectForm.setFieldDTO(field.toDTO());
             // 피험자 정보 업데이트
             SubjectDTO updatedSubject = subjectService.update(id, subjectForm);
             Map<String, Object> result = new ConcurrentHashMap<>();

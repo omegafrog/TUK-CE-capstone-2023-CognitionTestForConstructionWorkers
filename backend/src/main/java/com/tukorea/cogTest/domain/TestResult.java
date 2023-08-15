@@ -22,7 +22,7 @@ public class TestResult {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="target_id")
+    @JoinColumn(name = "target_id")
     private Subject target;
 
     @CreatedDate
@@ -30,47 +30,46 @@ public class TestResult {
     private LocalDate date = LocalDate.now();
 
     @Embedded
+    @AttributeOverride(name = "failedCount", column = @Column(name = "TWOHAND_FAILED_COUNT"))
+    @AttributeOverride(name = "isPassed", column = @Column(name = "TWOHAND_ISPASSED"))
+    @AttributeOverride(name = "minResponseTime", column = @Column(name = "TWOHAND_MINRESPONSETIME"))
     private Twohand twoHandResult;
+
     @Embedded
-    private Pvt pvtResult;
+    @AttributeOverride(name = "isPassed", column = @Column(name = "DIGITSPAN_ISPASSED"))
+    private DigitSpan digitSpanResult;
+
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "responseTime", column = @Column(name = "CRANE_RESPONSE_TIME"))
-    })
-    private Crane craneResult;
+    @AttributeOverride(name = "isPassed", column = @Column(name = "CONVEYOR_ISPASSED"))
+    @AttributeOverride(name = "elapsedTime", column = @Column(name = "CONVEYOR_ELAPSEDTIME"))
+    private Conveyor conveyorResult;
+
     @Embedded
+    @AttributeOverride(name = "isPassed", column = @Column(name = "MAZE_ISPASSED"))
+    @AttributeOverride(name = "collisionCount", column = @Column(name = "MAZE_COLLISIONCOUNT"))
     private Maze mazeResult;
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "responseTime", column = @Column(name = "TOVA_RESPONSE_TIME"))
-    })
-    private Tova tovaResult;
+    @AttributeOverride(name = "isPassed", column = @Column(name = "DECISIONMAKING_ISPASSED"))
+    @AttributeOverride(name = "minResponseTime", column = @Column(name = "DECISIONMAKING_MINRESPONSETIME"))
+    @AttributeOverride(name = "missedGo", column = @Column(name = "DECISIONMAKING_MISSEDGO"))
+    @AttributeOverride(name = "missClickedNoGo", column = @Column(name = "DECISIONMAKING_MISSCLICKEDNOGO"))
+    private DecisionMaking decisionMakingResult;
 
     @Builder
-    public TestResult(
-            Long id,
-            Subject target,
-            LocalDate date,
-            Twohand twoHandResult,
-            Pvt pvtResult,
-            Crane craneResult,
-            Maze mazeResult,
-            Tova tovaResult) {
+    public TestResult(Long id, Subject target,  Twohand twoHandResult, DigitSpan digitSpanResult, Conveyor conveyorResult, Maze mazeResult, DecisionMaking decisionMakingResult) {
         this.id = id;
         this.target = target;
-        this.date = date;
         this.twoHandResult = twoHandResult;
-        this.pvtResult = pvtResult;
-        this.craneResult = craneResult;
+        this.digitSpanResult = digitSpanResult;
+        this.conveyorResult = conveyorResult;
         this.mazeResult = mazeResult;
-        this.tovaResult = tovaResult;
+        this.decisionMakingResult = decisionMakingResult;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
-            return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         TestResult item = (TestResult) o;
         return Objects.equals(id, item.id);
     }
@@ -81,31 +80,23 @@ public class TestResult {
     }
 
 
-    public TestResult update(TestResult item){
+    public TestResult update(TestResult item) {
         this.target = item.getTarget();
         this.twoHandResult = item.getTwoHandResult();
-        this.pvtResult = item.getPvtResult();
+        this.digitSpanResult = item.getDigitSpanResult();
         return this;
     }
 
     /**
      * 테스트 결과에 테스트를 진행한 피험자를 할당한다.
+     *
      * @param target : 테스트를 진행한 피험자 객체
      */
-    public void assignTarget(Subject target){
+    public void assignTarget(Subject target) {
         this.target = target;
     }
 
-    public TestResultDTO toDTO(){
-        return TestResultDTO.builder()
-                .id(id)
-                .target(target)
-                .date(date)
-                .twoHandResult(twoHandResult)
-                .pvtResult(pvtResult)
-                .craneResult(craneResult)
-                .mazeResult(mazeResult)
-                .tovaResult(tovaResult)
-                .build();
+    public TestResultDTO toDTO() {
+        return TestResultDTO.builder().id(id).target(target.toDTO()).date(date).twoHandResult(twoHandResult).digitSpanResult(digitSpanResult).conveyorResult(conveyorResult).mazeResult(mazeResult).decisionMakingResult(decisionMakingResult).build();
     }
 }

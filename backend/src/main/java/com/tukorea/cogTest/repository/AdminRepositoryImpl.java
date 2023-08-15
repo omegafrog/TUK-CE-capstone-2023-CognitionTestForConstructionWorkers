@@ -16,7 +16,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     @Override
-    public Admin save(Admin admin) {
+    public Admin save(Admin admin) throws RuntimeException{
         return simpleAdminRepository.save(admin);
     }
 
@@ -42,13 +42,6 @@ public class AdminRepositoryImpl implements AdminRepository {
     public Admin findByFieldId(Long id) {
         return simpleAdminRepository.findByField_id(id)
                 .orElseThrow(() -> new IllegalArgumentException("No such founded admin that has field " + id + "."));
-    }
-
-    @Override
-    public Admin update(Long id, Admin admin) {
-        Admin foundedAdmin = simpleAdminRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No such founded admin. " + id));
-        return foundedAdmin.update(admin.toDTO());
     }
 
     @Override
