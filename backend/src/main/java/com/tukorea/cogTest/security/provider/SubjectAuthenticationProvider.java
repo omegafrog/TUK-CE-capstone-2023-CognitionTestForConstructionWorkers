@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class SubjectAuthenticationProvider implements AuthenticationProvider {
 
@@ -31,7 +33,11 @@ public class SubjectAuthenticationProvider implements AuthenticationProvider {
         try {
             UserDetails foundedSubject = subjectService.loadUserByUsername(username);
             if (passwordEncoder.matches(password, foundedSubject.getPassword())) {
-                return new UsernamePasswordAuthenticationToken(username, password, foundedSubject.getAuthorities());
+                UsernamePasswordAuthenticationToken token
+                        = new UsernamePasswordAuthenticationToken(username, password, foundedSubject.getAuthorities());
+                Long id = subjectService.findByUsername(foundedSubject.getUsername()).getId();
+                token.setDetails(Map.of("id", id));
+                return token;
             } else {
                 throw new AuthenticationCredentialsNotFoundException("authentication failed");
             }

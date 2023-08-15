@@ -4,8 +4,12 @@ import com.tukorea.cogTest.domain.Field;
 import com.tukorea.cogTest.domain.FieldRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class FieldRepositoryImpl implements FieldRepository {
+
+
 
     private final JpaSimpleFieldRepository simpleFieldRepository;
     @Override
@@ -28,5 +32,9 @@ public class FieldRepositoryImpl implements FieldRepository {
     public void delete(Long id) throws IllegalArgumentException {
         Field foundedField = findById(id);
         simpleFieldRepository.delete(foundedField);
+    }
+    @Override
+    public List<Field> findAll() {
+        return simpleFieldRepository.findAll();
     }
 }

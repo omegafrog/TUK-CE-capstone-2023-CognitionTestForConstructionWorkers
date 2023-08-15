@@ -40,18 +40,11 @@ public class FieldService {
     }
 
     public void delete(Long id) throws RuntimeException{
-
-        // delete subject
-        List<SubjectDTO> byFieldId = subjectService.findSubjectInField(id);
-        for(SubjectDTO subjectDTO : byFieldId){
-            subjectService.delete(subjectDTO.getId());
-        }
-        // delete admin
-        AdminDTO byFieldIdAdmin = adminService.findByField_id(id);
-        adminService.deleteAdmin(byFieldIdAdmin.getId());
-        // delete field
         fieldRepository.delete(id);
     }
 
+    public List<FieldDTO> findAll()throws RuntimeException{
+        return fieldRepository.findAll().stream().map(Field::toDTO).toList();
+    }
 
 }

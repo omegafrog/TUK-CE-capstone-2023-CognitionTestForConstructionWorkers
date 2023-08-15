@@ -30,8 +30,8 @@ public class MessageInterceptor implements org.aopalliance.intercept.MethodInter
             logTrace.end(status);
             return result;
         }catch (Exception e){
-            e.printStackTrace();
             logTrace.exception(status, e);
+            e.printStackTrace();
             throw e;
         }
     }

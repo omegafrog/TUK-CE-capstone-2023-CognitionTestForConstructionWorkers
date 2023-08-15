@@ -1,11 +1,14 @@
 package com.tukorea.cogTest.domain.test;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Embeddable;
+import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class Maze extends Test {
-    private Double meanLT;
-    private Double meanFT;
+@Setter
+@Getter
+@NoArgsConstructor
+@Embeddable
+public class Maze {
+    private int collisionCount;
+    private Boolean isPassed;
 }

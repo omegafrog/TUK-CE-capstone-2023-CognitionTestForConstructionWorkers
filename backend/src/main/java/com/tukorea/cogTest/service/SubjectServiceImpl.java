@@ -5,18 +5,22 @@ import com.tukorea.cogTest.domain.*;
 import com.tukorea.cogTest.dto.SubjectDTO;
 import com.tukorea.cogTest.dto.SubjectForm;
 import com.tukorea.cogTest.dto.TestResultDTO;
+import com.tukorea.cogTest.dto.UpdateSubjectDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final TestResultRepository testResultRepository;
@@ -56,7 +60,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws RuntimeException {
         try {
             Subject foundedSubject = subjectRepository.findByUsername(username);
             return User.withUsername(foundedSubject.getUsername())
@@ -68,15 +72,15 @@ public class SubjectServiceImpl implements SubjectService {
         }
     }
 
-    public SubjectDTO findByUsername(String username) {
+    public SubjectDTO findByUsername(String username)throws RuntimeException {
         Subject byUsername = subjectRepository.findByUsername(username);
         return byUsername.toDTO();
     }
 
-    public SubjectDTO update(Long id, SubjectForm subjectDTO) {
-        Field foundedField = fieldRepository.findById(subjectDTO.getFieldDTO().getId());
-
-        Subject subject = Subject.builder()
+    public SubjectDTO update(Long id, SubjectForm subjectDTO)throws RuntimeException {
+        Field foundedField = fieldRepository.findById(subjectDTO.getFieldId());
+        Subject byId = subjectRepository.findById(id);
+        UpdateSubjectDto subject = UpdateSubjectDto.builder()
                 .name(subjectDTO.getName())
                 .age(subjectDTO.getAge())
                 .field(foundedField)
@@ -84,7 +88,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .remarks(subjectDTO.getRemarks())
                 .career(subjectDTO.getCareer())
                 .build();
-        return subjectRepository.update(id, subject).toDTO();
+        Subject updated = byId.update(subject);
+        return subjectRepository.save(updated).toDTO();
     }
 
     /**
@@ -94,10 +99,9 @@ public class SubjectServiceImpl implements SubjectService {
      * @throws IllegalArgumentException : 피험자가 test result를 가지고 있지 않으면 발생한다.
      */
     public void delete(Long subjectId) throws IllegalArgumentException {
-        List<TestResult> byUserId = testResultRepository.findByUserId(subjectId);
-        if (byUserId != null) {
-            testResultRepository.deleteAllBySubjectId(subjectId);
-            subjectRepository.delete(subjectId);
-        }
+        Subject byId = subjectRepository.findById(subjectId);
+        byId.getField().decreaseWorkerNum();
+        fieldRepository.save(byId.getField());
+        subjectRepository.delete(subjectId);
     }
 }

@@ -1,18 +1,16 @@
 package com.tukorea.cogTest.domain.test;
 
-import lombok.Builder;
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
-public class Twohand extends Test{
-    private Double totalMeanDuration;
-    private Double totalMeanError;
-
-    @Builder
-    public Twohand(Double totalMeanDuration, Double totalMeanError) {
-        this.totalMeanDuration = totalMeanDuration;
-        this.totalMeanError = totalMeanError;
-    }
+@Setter
+@Embeddable
+public class Twohand {
+    private Boolean isPassed;
+    private int failedCount;
+    private double minResponseTime;
 }

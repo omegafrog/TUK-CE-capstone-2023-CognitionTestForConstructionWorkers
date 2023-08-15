@@ -1,7 +1,10 @@
 package com.tukorea.cogTest.security.handler.subject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tukorea.cogTest.domain.enums.Role;
 import com.tukorea.cogTest.response.ResponseUtil;
+import com.tukorea.cogTest.security.jwt.TokenInfo;
+import com.tukorea.cogTest.security.jwt.TokenUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,12 +25,21 @@ import static com.tukorea.cogTest.response.ResponseUtil.writeObjectOnResponse;
 public class SubjectAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
+    private final String secret;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("subject authentication success");
         ResponseUtil.setRestResponseHeader(response);
 
         Map<String, Object> body = new ConcurrentHashMap<>();
+
+        Map details = (Map) authentication.getDetails();
+        String id = String.valueOf(details.get("id"));
+        TokenInfo tokenInfo = TokenUtil.generateToken(id, secret, Role.USER);
+
+        body.put("token", tokenInfo.getGrantType()+" "+tokenInfo.getAccessToken());
+        body.put("id", details.get("id"));
+
         body.put("username", authentication.getName());
         ConcurrentHashMap<String, Object> result = ResponseUtil.setResponseBody(HttpStatus.OK, "subject authentication success", body);
         writeObjectOnResponse(response, result, objectMapper);
