@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CRow,
   CCol,
@@ -14,7 +14,21 @@ import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
 
+let a = 0
 const WidgetsDropdown = () => {
+  const [a, setA] = useState(0)
+  useEffect(() => {
+    axios
+      .get('/dummy6.json')
+      .then((response) => {
+        console.log(response)
+        setA(Object.keys(response.data.subject).length)
+        console.log(a)
+      })
+      .catch((error) => {
+        console.error('Error data', error)
+      })
+  })
   return (
     <CRow>
       <CCol sm={6} lg={3}>
@@ -23,7 +37,8 @@ const WidgetsDropdown = () => {
           color="primary"
           value={
             <>
-              26{' '}
+              {`${a} `}
+              {console.log(a)}
               <span className="fs-6 fw-normal">
                 (-12.4% <CIcon icon={cilArrowBottom} />)
               </span>
@@ -110,7 +125,7 @@ const WidgetsDropdown = () => {
           color="info"
           value={
             <>
-              6{' '}
+              {`${a}`}{' '}
               <span className="fs-6 fw-normal">
                 (40.9% <CIcon icon={cilArrowTop} />)
               </span>

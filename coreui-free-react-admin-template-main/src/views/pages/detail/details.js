@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { CCard, CCardBody, CCol, CCardHeader, CRow } from '@coreui/react'
+import React, { useEffect, useRef, useState } from 'react'
+import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react'
 import {
   CChartBar,
   CChartDoughnut,
@@ -13,11 +13,24 @@ import axios from 'axios'
 
 const Charts = () => {
   const random = () => Math.round(Math.random() * 100)
+  const token = sessionStorage.getItem('token')
+  axios.defaults.headers.common['Authorization'] = `${token}`
+  let name = sessionStorage.getItem('sub_name')
+  const subject_information = JSON.parse(localStorage.getItem('userinfo'))
+  console.log(subject_information)
+  let id = sessionStorage.getItem('sub_id')
+  console.log(id)
+  let game1data = [],
+    game2data = [],
+    game3data = [],
+    game4data = [],
+    game5data = [],
+    date = []
   const [chart1Data, setChart1Data] = useState({
     labels: [],
     datasets: [
       {
-        label: 'User data',
+        label: 'Count of Collision',
         backgroundColor: 'rgba(151, 187, 205, 0.2)',
         borderColor: 'rgba(151, 187, 205, 1)',
         pointBackgroundColor: 'rgba(151, 187, 205, 0.5)',
@@ -39,7 +52,7 @@ const Charts = () => {
     labels: [],
     datasets: [
       {
-        label: 'User data',
+        label: 'Minimum of Response Time',
         backgroundColor: 'rgba(151, 187, 205, 0.2)',
         borderColor: 'rgba(151, 187, 205, 1)',
         pointBackgroundColor: 'rgba(151, 187, 205, 0.5)',
@@ -61,7 +74,7 @@ const Charts = () => {
     labels: [],
     datasets: [
       {
-        label: 'User data',
+        label: 'Elapsed Time',
         backgroundColor: 'rgba(151, 187, 205, 0.2)',
         borderColor: 'rgba(151, 187, 205, 1)',
         pointBackgroundColor: 'rgba(151, 187, 205, 0.5)',
@@ -83,7 +96,7 @@ const Charts = () => {
     labels: [],
     datasets: [
       {
-        label: 'User data',
+        label: 'Minimum Response Time',
         backgroundColor: 'rgba(151, 187, 205, 0.2)',
         borderColor: 'rgba(151, 187, 205, 1)',
         pointBackgroundColor: 'rgba(151, 187, 205, 0.5)',
@@ -100,15 +113,37 @@ const Charts = () => {
       },
     ],
   })
+  const awsdata = useRef(null)
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response1 = await axios.get('/dummy2.json')
-        const Data1 = response1.data
-
-        const labels = Data1.map((item) => item.date)
-        const values = Data1.map((item) => item.value)
-
+    axios
+      .get(`https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/subject/${id}/test-result`, {
+        params: {
+          curPageNum: 1,
+          contentPerPage: 7,
+        },
+      })
+      .then((response) => {
+        console.log(response)
+        if (response != null) {
+          awsdata.current = response.data.results.page.contents.testResult
+          console.log(awsdata.current)
+          //console.log(JSON.stringify(awsdata.current[2]))
+          //console.log(awsdata.current[0])
+          for (let i = 0; i < 3; i++) {
+            if (awsdata.current !== null) {
+              game1data.push(awsdata.current[i].mazeResult)
+              game2data.push(awsdata.current[i].decisionMakingResult)
+              game3data.push(awsdata.current[i].conveyorResult)
+              game4data.push(awsdata.current[i].twoHandResult)
+              game5data.push(awsdata.current[i].digitSpanResult)
+              date.push(awsdata.current[i].date.toString())
+            }
+          }
+        }
+        const labels = date.map((item) => item)
+        const values = game1data.map((item) => item.collisionCount)
+        //console.log(game2data)
+        //console.log(labels)
         setChart1Data((prevChart1Data) => ({
           ...prevChart1Data,
           labels,
@@ -121,6 +156,74 @@ const Charts = () => {
           ],
         }))
 
+        const values2 = game2data.map((item) => item.minResponseTime)
+
+        setChart2Data((prevChart2Data) => ({
+          ...prevChart2Data,
+          labels,
+          datasets: [
+            {
+              ...prevChart2Data.datasets[0],
+              data: values2,
+            },
+            prevChart2Data.datasets[1],
+          ],
+        }))
+
+        const values3 = game3data.map((item) => item.elapsedTime)
+        setChart3Data((prevChart3Data) => ({
+          ...prevChart3Data,
+          labels,
+          datasets: [
+            {
+              ...prevChart3Data.datasets[0],
+              data: values3,
+            },
+            prevChart3Data.datasets[1],
+          ],
+        }))
+
+        const values4 = game4data.map((item) => item.minResponseTime)
+        setChart4Data((prevChart4Data) => ({
+          ...prevChart4Data,
+          labels,
+          datasets: [
+            {
+              ...prevChart4Data.datasets[0],
+              data: values4,
+            },
+            prevChart4Data.datasets[1],
+          ],
+        }))
+      })
+      .catch((error) => {
+        console.error('Error aws data', error)
+      })
+  }, [])
+
+  //console.log(game1data)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response1 = await axios.get('/dummy2.json')
+        const Data1 = response1.data
+
+        const labels = date.map((item) => item)
+        const values = game1data.map((item) => item.responseTime)
+        //console.log(values)
+        //console.log(labels)
+        setChart1Data((prevChart1Data) => ({
+          ...prevChart1Data,
+          labels,
+          datasets: [
+            {
+              ...prevChart1Data.datasets[0],
+              data: values,
+            },
+            prevChart1Data.datasets[1],
+          ],
+        }))
+        //console.log(labels)
         const response2 = await axios.get('/standard.json')
         const data2 = response2.data
 
@@ -132,7 +235,7 @@ const Charts = () => {
         const stan3data = Array.from({ length: 7 }, () => stan3value)
         const stan4value = data2[3].value
         const stan4data = Array.from({ length: 7 }, () => stan4value)
-
+        //console.log(Data1)
         setChart1Data((prevChart1Data) => ({
           ...prevChart1Data,
           labels,
@@ -148,12 +251,12 @@ const Charts = () => {
         const response3 = await axios.get('/dummy3.json')
         const Data3 = response3.data
 
-        const labels3 = Data3.map((item) => item.date)
-        const values3 = Data3.map((item) => item.value)
-
+        //const labels3 = Data3.map((item) => item.date)
+        //const values3 = game2data.map((item) => item.mean1divRT)
+        /*
         setChart2Data((prevChart2Data) => ({
           ...prevChart2Data,
-          labels3,
+          labels,
           datasets: [
             {
               ...prevChart2Data.datasets[0],
@@ -162,7 +265,7 @@ const Charts = () => {
             prevChart2Data.datasets[1],
           ],
         }))
-
+        */
         setChart2Data((prevChart2Data) => ({
           ...prevChart2Data,
           labels,
@@ -174,6 +277,7 @@ const Charts = () => {
             },
           ],
         }))
+
         const response4 = await axios.get('/dummy4.json')
         const Data4 = response4.data
 
@@ -239,13 +343,38 @@ const Charts = () => {
     fetchData()
   }, [])
 
+  const DeleteFunc = (e) => {
+    axios
+      .delete(`https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/subject/${id}`, {
+        headers: {
+          'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+        },
+        withCredentials: true,
+        baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+      })
+      .then((response) => {
+        console.log(response)
+        window.location.href = '/#/users'
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
   return (
     <CRow>
       <CCol xs={12}>
         <CCardHeader>
-          <strong>subject_name</strong>
+          <strong>{name}</strong>
           <p></p>
-          <small>subject_information</small>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <small>
+              <p>
+                {`age : ${subject_information.age}`} {`carrer : ${subject_information.career}`}
+              </p>
+            </small>
+            <CButton href="#/infor_change">information change</CButton>
+          </div>
           <p></p>
         </CCardHeader>
       </CCol>
@@ -305,6 +434,9 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
+      <div>
+        <CButton onClick={DeleteFunc}>delete</CButton>
+      </div>
     </CRow>
   )
 }

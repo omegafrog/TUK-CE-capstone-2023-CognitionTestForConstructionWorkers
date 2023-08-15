@@ -3,9 +3,13 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
-const Tables2 = React.lazy(() => import('./views/pages/tables/Tables2'))
+const Users = React.lazy(() => import('./views/pages/tables/Tables2'))
 const Chart2 = React.lazy(() => import('./views/pages/detail/Charts'))
 const Details = React.lazy(() => import('./views/pages/detail/details'))
+const regi_info = React.lazy(() => import('./views/pages/register/Register_info'))
+const Admins = React.lazy(() => import('./views/pages/tables/Tables_Admin'))
+const Sites = React.lazy(() => import('./views/pages/tables/Tables_Site'))
+//const details_sub = React.lazy(() => import('./views/pages/detail/details_sub'))
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -53,7 +57,10 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/tables', name: 'Tables2', element: Tables2 },
+  { path: '/sites', name: 'sites', element: Sites },
+  { path: '/admins', name: 'admins', element: Admins },
+  { path: '/infor_change', name: 'information change', element: regi_info },
+  { path: '/users', name: 'Users', element: Users },
   { path: '/chart', name: 'Chart2', element: Chart2 },
   { path: '/details', name: 'details', element: Details },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
