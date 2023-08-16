@@ -13,6 +13,7 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  //CInputGroupCheckbox,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
@@ -20,14 +21,14 @@ import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import { Cookies } from 'react-cookie'
 
-const cookies = new Cookies()
+//const cookies = new Cookies()
 
 const Login = () => {
   const dispatch = useDispatch()
 
   const [ID, setID] = useState('')
   const [Password, setPassword] = useState('')
-
+  const [su, setsu] = useState(false)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
 
@@ -36,38 +37,37 @@ const Login = () => {
   }, [msg])
 
   const LoginFunc = (e) => {
+    let link = 'abc'
+    let credit = ' '
+    if (su === true) {
+      link = 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/super/admin/login'
+      credit = 'super'
+    } else {
+      link = 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/login'
+      credit = 'adimn'
+    }
     e.preventDefault()
     const data = {
       username: ID,
       password: Password,
     }
     axios
-      .post(
-        'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/login',
-        qs.stringify(data),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            //'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
-          },
-          withCredentials: true,
-          //baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+      .post(link, qs.stringify(data), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
         },
-      )
+        withCredentials: true,
+        baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+      })
       .then((response) => {
-        const responseCookies = response
-        console.log(responseCookies)
-        console.log(response.getCookie)
-        //const [cookieString] = response.headers.get('Set-Cookie').split(';')
-        //const [cookieName, cookieValue] = cookieString.split('=')
-        //console.log(cookieName, cookieValue)
-        //responseCookies.forEach((cookie) => {
-        //  const cookieParts = cookie.split(';')
-        //  const cookieName = cookieParts[0].split('=')[0].trim()
-        //  const cookieValue = cookieParts[0].split('=')[1].trim()
-        //  Cookies.set(cookieName, cookieValue)
-        //})
-        //window.location.href = '/#/dashboard'
+        //const responseCookies = response
+        //console.log(responseCookies)
+        console.log(response)
+        const token = response.data.results.token
+        sessionStorage.setItem('token', token)
+        sessionStorage.setItem('credit', credit)
+        window.location.href = '/#/dashboard'
       })
       .catch((error) => {
         alert(error.message)
@@ -112,6 +112,16 @@ const Login = () => {
                         <CButton type="submit" color="primary" className="px-4">
                           Login
                         </CButton>
+                        <div style={{ display: 'inline', marginLeft: '10px' }}>
+                          <input
+                            type="checkbox"
+                            id="suadmin"
+                            checked={su}
+                            onChange={() => setsu(!su)}
+                            label="suadmin login"
+                          />
+                          <label htmlFor="su">suadmin login</label>
+                        </div>
                         {msg && <div>{msg}</div>}
                       </CCol>
                     </CRow>

@@ -55,6 +55,7 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
 const Dashboard = () => {
+  if (sessionStorage.getItem('token') === null) window.location.href = '/#/login_sub'
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   const progressExample = [
@@ -87,6 +88,7 @@ const Dashboard = () => {
               </h4>
               <div className="small text-medium-emphasis"> {Today.render} </div>
             </CCol>
+            {/*
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
                 <CIcon icon={cilCloudDownload} />
@@ -104,6 +106,7 @@ const Dashboard = () => {
                 ))}
               </CButtonGroup>
             </CCol>
+                */}
           </CRow>
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}

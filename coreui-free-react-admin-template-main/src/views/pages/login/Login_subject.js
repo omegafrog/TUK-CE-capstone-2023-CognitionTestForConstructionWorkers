@@ -40,20 +40,25 @@ const Login_sub = () => {
       password: Password,
     }
     axios
-      .post('http://3.35.167.104:8080/subject/login', qs.stringify(data), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+      .post(
+        'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/subject/login',
+        qs.stringify(data),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+          },
+          withCredentials: true,
+          baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
         },
-      })
+      )
       .then((response) => {
-        const responseCookies = response.headers['set-cookie']
-        responseCookies.forEach((cookie) => {
-          const cookieParts = cookie.split(';')
-          const cookieName = cookieParts[0].split('=')[0].trim()
-          const cookieValue = cookieParts[0].split('=')[1].trim()
-          Cookies.set(cookieName, cookieValue)
-        })
-        window.location.href = '/#/dashboard'
+        console.log(response)
+        const token = response.data.results.token
+        const id = response.data.results.id
+        localStorage.setItem('id', id)
+        sessionStorage.setItem('token', token)
+        window.location.href = '/#/detail_sub'
       })
       .catch((error) => {
         alert(error.message)
@@ -98,6 +103,9 @@ const Login_sub = () => {
                         <CButton type="submit" color="primary" className="px-4">
                           Login
                         </CButton>
+                        <a href="#/login_ad" style={{ marginLeft: '10px' }}>
+                          login as admin
+                        </a>
                         {msg && <div>{msg}</div>}
                       </CCol>
                     </CRow>
