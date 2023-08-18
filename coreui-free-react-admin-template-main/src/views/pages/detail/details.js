@@ -13,6 +13,12 @@ import axios from 'axios'
 
 const Charts = () => {
   const random = () => Math.round(Math.random() * 100)
+  const [Datanum, setDatanum] = useState(1)
+  const numbering = (num) => {
+    if (num >= 7) setDatanum(7)
+    else setDatanum(num)
+    console.log(`numbering setDatanum ${Datanum}`)
+  }
   const token = sessionStorage.getItem('token')
   axios.defaults.headers.common['Authorization'] = `${token}`
   let name = sessionStorage.getItem('sub_name')
@@ -114,6 +120,7 @@ const Charts = () => {
     ],
   })
   const awsdata = useRef(null)
+  //let num = 0
   useEffect(() => {
     axios
       .get(`https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/subject/${id}/test-result`, {
@@ -127,9 +134,10 @@ const Charts = () => {
         if (response != null) {
           awsdata.current = response.data.results.page.contents.testResult
           console.log(awsdata.current)
+          const num = awsdata.current.length
           //console.log(JSON.stringify(awsdata.current[2]))
-          //console.log(awsdata.current[0])
-          for (let i = 0; i < 3; i++) {
+          console.log(`Datanum: ${Datanum}, num: ${num}`)
+          for (let i = 0; i < num; i++) {
             if (awsdata.current !== null) {
               game1data.push(awsdata.current[i].mazeResult)
               game2data.push(awsdata.current[i].decisionMakingResult)
@@ -200,7 +208,6 @@ const Charts = () => {
         console.error('Error aws data', error)
       })
   }, [])
-
   //console.log(game1data)
   useEffect(() => {
     const fetchData = async () => {
