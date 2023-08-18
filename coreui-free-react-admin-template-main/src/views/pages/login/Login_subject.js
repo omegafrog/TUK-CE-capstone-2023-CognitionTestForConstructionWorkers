@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Cookies } from 'react-cookie'
 import qs from 'qs'
 import { Link } from 'react-router-dom'
 import {
