@@ -11,7 +11,7 @@ import {
 import { DocsCallout } from 'src/components'
 import axios from 'axios'
 //import { VscClose } from 'react-icons/vsc'
-import * as S from './style'
+//import * as S from './style'
 
 const Test = () => {
   //* 화면에 출력될 파일과 서버에 보내질 파일을 구분할 필요없다.
@@ -52,6 +52,7 @@ const Test = () => {
   }
 
   //브라우저상에 보여질 첨부파일
+  /*
   const attachFile =
     selectedImages &&
     selectedImages.map((image) => {
@@ -64,7 +65,9 @@ const Test = () => {
         </S.DivImg>
       )
     })
+    */
   return (
+    /*
     <div>
       <S.Wrapper>
         <S.Table>
@@ -97,6 +100,8 @@ const Test = () => {
         <S.QnAButton2>등록</S.QnAButton2>
       </S.Wrapper>
     </div>
+  */
+    <div>test </div>
   )
 }
 
