@@ -13,17 +13,61 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
-
 let a = 0
 const WidgetsDropdown = () => {
-  const [a, setA] = useState(0)
+  const token = sessionStorage.getItem('token')
+  axios.defaults.headers.common[`Authorization`] = token
+  const today = new Date()
+  const [pass, setPass] = useState(0)
+  const [absence, setAbsence] = useState(0)
+  const [np, setNp] = useState(0)
+  const [danger, setDanger] = useState(0)
+  const setdata = (data) => {
+    console.log(data)
+    console.log(Object.keys(data).length)
+    var pa = 0
+    var npa = 0
+    var abs = 0
+    var dan = 0
+    if (data != null) {
+      const month = today.getMonth() + 1
+      const date = today.getDate()
+      console.log(`month : ${month}, date : ${date}, today : ${today}`)
+      console.log(data[2].lastTestedDate)
+      for (var i = 0; i < Object.keys(data).length; i++) {
+        if (
+          data[i].lastTestedDate != null &&
+          month === data[i].lastTestedDate[1] &&
+          date === data[i].lastTestedDate[2]
+        ) {
+          console.log(`lastTestday : ${data[i].lastTestedDate}`)
+          if (data[i].risk === 'NORMAL') pa++
+          else if (data[i].risk === 'LOW_RISK') dan++
+          else npa++
+        } else abs++
+      }
+    }
+    setPass(pa)
+    setNp(npa)
+    setAbsence(abs)
+    setDanger(dan)
+  }
   useEffect(() => {
     axios
-      .get('/dummy6.json')
+      .get('https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/subjects', {
+        params: {
+          curPageNum: 1,
+          contentPerPage: 1000,
+        },
+        headers: {
+          'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+          withCredentials: true,
+          baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+        },
+      })
       .then((response) => {
-        console.log(response)
-        setA(Object.keys(response.data.subject).length)
-        console.log(a)
+        //console.log(response)
+        setdata(response.data.results.page.contents.subject)
       })
       .catch((error) => {
         console.error('Error data', error)
@@ -37,7 +81,7 @@ const WidgetsDropdown = () => {
           color="primary"
           value={
             <>
-              {`${a} `}
+              {`${pass} `}
               {console.log(a)}
               <span className="fs-6 fw-normal">
                 (-12.4% <CIcon icon={cilArrowBottom} />)
@@ -125,7 +169,7 @@ const WidgetsDropdown = () => {
           color="info"
           value={
             <>
-              {`${a}`}{' '}
+              {`${absence}`}{' '}
               <span className="fs-6 fw-normal">
                 (40.9% <CIcon icon={cilArrowTop} />)
               </span>
@@ -211,7 +255,7 @@ const WidgetsDropdown = () => {
           color="warning"
           value={
             <>
-              2{' '}
+              {`${danger}`}{' '}
               <span className="fs-6 fw-normal">
                 (84.7% <CIcon icon={cilArrowTop} />)
               </span>
@@ -284,7 +328,7 @@ const WidgetsDropdown = () => {
           color="danger"
           value={
             <>
-              44{' '}
+              {`${np}`}{' '}
               <span className="fs-6 fw-normal">
                 (-23.6% <CIcon icon={cilArrowBottom} />)
               </span>
