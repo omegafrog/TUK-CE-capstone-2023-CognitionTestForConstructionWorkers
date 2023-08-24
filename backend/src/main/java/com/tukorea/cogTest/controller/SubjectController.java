@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,9 +43,10 @@ public class SubjectController {
     ) {
         try {
             List<TestResultDTO> testResult = subjectService.findTestResult(id);
+            Collections.reverse(testResult);
 
             Page page = Page.getPage(curPageNum, contentPerPage, "testResult", testResult);
-
+            page.reverseForTestResult();
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject " + id + "'s result success", result), HttpStatus.OK);
@@ -73,6 +75,7 @@ public class SubjectController {
         } catch (IllegalArgumentException e) {
             return ResponseUtil.returnWrongRequestErrorResponse(e);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseUtil.setInternalErrorResponse(e);
         }
     }

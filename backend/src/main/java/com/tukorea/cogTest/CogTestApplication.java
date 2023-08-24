@@ -18,7 +18,7 @@ public class CogTestApplication {
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(CogTestApplication.class);
 		application.addListeners(new ApplicationPidFileWriter());
-		application.run(CogTestApplication.class, args);
+		application.run(args);
 	}
 
 }

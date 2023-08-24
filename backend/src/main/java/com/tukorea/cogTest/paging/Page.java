@@ -1,10 +1,13 @@
 package com.tukorea.cogTest.paging;
 
 
+import com.tukorea.cogTest.domain.TestResult;
+import com.tukorea.cogTest.dto.TestResultDTO;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,5 +84,11 @@ public class Page {
         page.getContents().put(contentType, new ArrayList<>(
                 contents.subList(startIdx, endIdx)));
         return page;
+    }
+
+    public void reverseForTestResult(){
+        List<TestResultDTO> list = (List<TestResultDTO>) contents.get("testResult");
+        Collections.reverse(list);
+        contents.put("testResult", list);
     }
 }
