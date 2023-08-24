@@ -43,10 +43,9 @@ public class SubjectController {
     ) {
         try {
             List<TestResultDTO> testResult = subjectService.findTestResult(id);
-            Collections.reverse(testResult);
 
-            Page page = Page.getPage(curPageNum, contentPerPage, "testResult", testResult);
-            page.reverseForTestResult();
+            Page page = Page.getPage(curPageNum, contentPerPage, "testResult", testResult, -1);
+            Collections.reverse((List<TestResultDTO>)page.getContents().get("testResult"));
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("page", page);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get subject " + id + "'s result success", result), HttpStatus.OK);

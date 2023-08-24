@@ -45,7 +45,10 @@ public class Page {
      * @return page 객체를 리턴한다.
      * @param <T> page의 컨텐츠 DTO
      */
-    public static <T> Page getPage(int curPageNum, int contentPerPage, String contentType, List<T> contents) throws IndexOutOfBoundsException{
+    public static <T> Page getPage(int curPageNum, int contentPerPage, String contentType, List<T> contents){
+        return getPage(curPageNum, contentPerPage, contentType, contents, 1);
+    }
+    public static <T> Page getPage(int curPageNum, int contentPerPage, String contentType, List<T> contents, int sorting) throws IndexOutOfBoundsException{
         int allPageNum = contents.size()/ contentPerPage;
         if(contents.size()% contentPerPage != 0){
             allPageNum+=1;
@@ -80,7 +83,7 @@ public class Page {
                 .prev(prev)
                 .next(next)
                 .build();
-
+        if(sorting == -1)            Collections.reverse(contents);
         page.getContents().put(contentType, new ArrayList<>(
                 contents.subList(startIdx, endIdx)));
         return page;

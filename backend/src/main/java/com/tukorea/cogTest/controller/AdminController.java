@@ -1,26 +1,25 @@
 package com.tukorea.cogTest.controller;
 
 import com.tukorea.cogTest.domain.NotPassedCount;
-import com.tukorea.cogTest.dto.AdminDTO;
-import com.tukorea.cogTest.dto.NotPassedCountDto;
-import com.tukorea.cogTest.dto.SubjectDTO;
-import com.tukorea.cogTest.dto.SubjectForm;
+import com.tukorea.cogTest.domain.NotPassedRepository;
+import com.tukorea.cogTest.dto.*;
 import com.tukorea.cogTest.paging.Page;
-import com.tukorea.cogTest.repository.NotPassedCountRepository;
 import com.tukorea.cogTest.response.ResponseUtil;
 import com.tukorea.cogTest.service.*;
 import jakarta.annotation.Nullable;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static com.tukorea.cogTest.paging.Page.getPage;
 import static com.tukorea.cogTest.response.ResponseUtil.*;
@@ -34,7 +33,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final SubjectService subjectService;
-    private final NotPassedCountRepository notPassedCountRepository;
+    private final NotPassedRepository notPassedCountRepository;
 
     /**
      * Admin으로 인증된 유저가 특정 피험자의 정보를 열람한다.
@@ -65,14 +64,18 @@ public class AdminController {
 
     @GetMapping("/np_count")
     public ResponseEntity<Map<String, Object>> getNonPassedCount(
-            Principal principal
+            Principal principal,
+            @RequestParam int curPageNum,
+            @RequestParam int contentPerPage
     ) {
         try {
             String username = principal.getName();
             AdminDTO byUsername = adminService.findByUsername(username);
             Long fieldId = byUsername.getField().getId();
-            Optional<NotPassedCount> byFieldId = notPassedCountRepository.findByField_id(fieldId);
-            NotPassedCountDto dto = byFieldId.get().toDto();
+            List<NotPassedCount> byFieldId = notPassedCountRepository.findByField_id(fieldId);
+            List<NotPassedCountDto> dto = byFieldId.stream().map(NotPassedCount::toDto).collect(Collectors.toList());
+            Page page = Page.getPage(curPageNum, contentPerPage, "notPassedCount",dto, -1 );
+            Collections.reverse((List<NotPassedCountDto>)page.getContents().get("notPassedCount"));
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("NotPassedCount", dto);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Get npCount success", result), HttpStatus.OK);
