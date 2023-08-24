@@ -1,5 +1,5 @@
-import React from 'react'
-
+import { React, useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -56,16 +56,73 @@ import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
 const Dashboard = () => {
   if (sessionStorage.getItem('token') === null) window.location.href = '/#/login_sub'
+  const token = sessionStorage.getItem('token')
+  let np_data = [],
+    date = []
+  axios.defaults.headers.common['Authorization'] = `${token}`
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+  const [npchartData, setNpchartDate] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'My First dataset',
+        backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+        borderColor: getStyle('--cui-danger'),
+        pointHoverBackgroundColor: getStyle('--cui-info'),
+        borderWidth: 2,
+        data: [],
+        fill: true,
+      },
+    ],
+  })
+  useEffect(() => {
+    axios
+      .get('https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/np_count', {
+        params: {
+          curPageNum: 1,
+          contentPerPage: 7,
+        },
+        headers: {
+          'Access-Control-Allow-Origin': 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+          withCredentials: true,
+          baseURL: 'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080',
+        },
+      })
+      .then((response) => {
+        console.log(response)
+        const awsdata = response.data.results.NotPassedCount
+        const num = awsdata.length
+        for (let i = 0; i < num; i++) {
+          if (awsdata !== null) {
+            np_data.push(awsdata[i].count)
+            date.push(awsdata[i].date.toString())
+          }
+        }
+        console.log(np_data)
+        console.log(date)
+        const labels = date.map((item) => item)
+        //console.log(`labels : ${labels}`)
+        const np_data2 = np_data.map((item) => item)
+        //console.log(`data : ${np_data2}`)
+        setNpchartDate((prevData) => ({
+          ...prevData,
+          labels,
+          datasets: [
+            {
+              ...prevData.datasets,
+              data: np_data2,
+            },
+          ],
+        }))
+      })
+      .catch((error) => {
+        console.error('Error data', error)
+      })
+  }, [])
 
-  const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
-  ]
-
+  /*
+  
+  /*
   class Today extends React.Component {
     render() {
       const today = new Date()
@@ -74,8 +131,8 @@ const Dashboard = () => {
       console.log(date)
       return date
     }
-  }
-
+    
+  }*/
   return (
     <>
       <WidgetsDropdown />
@@ -86,7 +143,7 @@ const Dashboard = () => {
               <h4 id="traffic" className="card-title mb-0">
                 Non Pass
               </h4>
-              <div className="small text-medium-emphasis"> {Today.render} </div>
+              <div className="small text-medium-emphasis"> 2023/08/24 </div>
             </CCol>
             {/*
             <CCol sm={7} className="d-none d-md-block">
@@ -110,53 +167,50 @@ const Dashboard = () => {
           </CRow>
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
-            data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-              datasets: [
-                {
-                  label: 'My First dataset',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
-                  borderColor: getStyle('--cui-info'),
-                  pointHoverBackgroundColor: getStyle('--cui-info'),
-                  borderWidth: 2,
-                  data: [
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                  ],
-                  fill: true,
-                },
-                {
-                  label: 'My Second dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-success'),
-                  pointHoverBackgroundColor: getStyle('--cui-success'),
-                  borderWidth: 2,
-                  data: [
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                    random(50, 200),
-                  ],
-                },
-                {
-                  label: 'My Third dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-danger'),
-                  pointHoverBackgroundColor: getStyle('--cui-danger'),
-                  borderWidth: 1,
-                  borderDash: [8, 5],
-                  data: [65, 65, 65, 65, 65, 65, 65],
-                },
-              ],
-            }}
+            data={
+              npchartData
+              /*
+              {
+                labels: [`2023,8,24`, `2023,8,25`],
+                datasets: [
+                  {
+                    label: 'My First dataset',
+                    backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                    borderColor: getStyle('--cui-danger'),
+                    pointHoverBackgroundColor: getStyle('--cui-info'),
+                    borderWidth: 2,
+                    data: [3, 3],
+                    fill: true,
+                  },
+                  {
+                    label: 'My Second dataset',
+                    backgroundColor: 'transparent',
+                    borderColor: getStyle('--cui-success'),
+                    pointHoverBackgroundColor: getStyle('--cui-success'),
+                    borderWidth: 2,
+                    data: [
+                      random(50, 200),
+                      random(50, 200),
+                      random(50, 200),
+                      random(50, 200),
+                      random(50, 200),
+                      random(50, 200),
+                      random(50, 200),
+                    ],
+                  },
+                  {
+                    label: 'My Third dataset',
+                    backgroundColor: 'transparent',
+                    borderColor: getStyle('--cui-danger'),
+                    pointHoverBackgroundColor: getStyle('--cui-danger'),
+                    borderWidth: 1,
+                    borderDash: [8, 5],
+                    data: [65, 65, 65, 65, 65, 65, 65],
+                  },
+                ],
+              }
+              */
+            }
             options={{
               maintainAspectRatio: false,
               plugins: {
@@ -193,19 +247,6 @@ const Dashboard = () => {
             }}
           />
         </CCardBody>
-        <CCardFooter>
-          <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
-            {progressExample.map((item, index) => (
-              <CCol className="mb-sm-2 mb-0" key={index}>
-                <div className="text-medium-emphasis">{item.title}</div>
-                <strong>
-                  {item.value} ({item.percent}%)
-                </strong>
-                <CProgress thin className="mt-2" color={item.color} value={item.percent} />
-              </CCol>
-            ))}
-          </CRow>
-        </CCardFooter>
       </CCard>
     </>
   )
