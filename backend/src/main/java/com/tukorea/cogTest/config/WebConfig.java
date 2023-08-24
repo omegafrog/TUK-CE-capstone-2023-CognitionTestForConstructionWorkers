@@ -2,10 +2,7 @@ package com.tukorea.cogTest.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.tukorea.cogTest.controller.AdminController;
-import com.tukorea.cogTest.controller.FieldController;
-import com.tukorea.cogTest.controller.SubjectController;
-import com.tukorea.cogTest.controller.SuperAdminController;
+import com.tukorea.cogTest.DailyNotPassedSingletonCounter;
 import com.tukorea.cogTest.domain.AdminRepository;
 import com.tukorea.cogTest.domain.FieldRepository;
 import com.tukorea.cogTest.domain.SubjectRepository;

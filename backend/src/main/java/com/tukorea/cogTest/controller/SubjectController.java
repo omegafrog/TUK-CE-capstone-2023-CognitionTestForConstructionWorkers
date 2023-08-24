@@ -5,8 +5,8 @@ import com.tukorea.cogTest.dto.TestResultDTO;
 import com.tukorea.cogTest.dto.TestResultForm;
 import com.tukorea.cogTest.paging.Page;
 import com.tukorea.cogTest.response.ResponseUtil;
+import com.tukorea.cogTest.service.NotPassedCountService;
 import com.tukorea.cogTest.service.SubjectService;
-import com.tukorea.cogTest.service.SubjectServiceImpl;
 import com.tukorea.cogTest.service.TestResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SubjectController {
 
     @Autowired
+    private NotPassedCountService notPassedCountService;
+
+    @Autowired
     private SubjectService subjectService;
     @Autowired
-    private  TestResultService testResultService;
+    private TestResultService testResultService;
 
     @GetMapping("/{id}/test-result")
     public ResponseEntity<Map<String, Object>> lookupSubjectTestResult(
@@ -55,13 +58,15 @@ public class SubjectController {
     @PostMapping("/test-result")
     public ResponseEntity<Map<String, Object>> saveSubjectTestResult(
             @RequestBody TestResultForm testResult) {
-        try{
+        try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = (String) authentication.getPrincipal();
             SubjectDTO byUsername = subjectService.findByUsername(username);
             Long id = byUsername.getId();
             TestResultDTO saved = testResultService.save(testResult, id);
-            System.out.println("saved = " + saved);
+
+            notPassedCountService.updateNotPassedCount(byUsername);
+
             Map<String, Object> result = new ConcurrentHashMap<>();
             result.put("testResult", saved);
             return new ResponseEntity<>(ResponseUtil.setResponseBody(HttpStatus.OK, "Save subject " + id + "'s result success", result), HttpStatus.OK);
