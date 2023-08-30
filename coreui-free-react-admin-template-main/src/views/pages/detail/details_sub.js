@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react'
+import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton, CContainer } from '@coreui/react'
 import {
   CChartBar,
   CChartDoughnut,
@@ -363,84 +363,88 @@ const Details_sub = () => {
   }
 
   return (
-    <CRow>
-      <CCol xs={12}>
-        <CCardHeader>
-          {/*
-          <strong>{name}</strong>
-          <p></p>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <small>
-              <p>
-                {`age : ${subject_information.age}`} {`carrer : ${subject_information.career}`}
-              </p>
-            </small>
-            <CButton href="#/infor_change">information change</CButton>
+    <div className="bg-light min-vh-100 d-flex align-items-center">
+      <CContainer>
+        <CRow classname="justify-content-center">
+          <CCol xs={12}>
+            <CCardHeader>
+              {/*
+            <strong>{name}</strong>
+            <p></p>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <small>
+                <p>
+                  {`age : ${subject_information.age}`} {`carrer : ${subject_information.career}`}
+                </p>
+              </small>
+              <CButton href="#/infor_change">information change</CButton>
+            </div>
+            <p></p>
+    */}
+            </CCardHeader>
+          </CCol>
+          <CCol xs={6}>
+            <CCard className="mb-4">
+              <CCardHeader>test1</CCardHeader>
+              <CCardBody>
+                <CChartLine
+                  data={
+                    chart1Data /*{
+                  labels: ['6/1', '6/2', '6/3', '6/4', '6/5', '6/6', '6/7'],
+                  datasets: [
+                    {
+                      label: 'User data',
+                      backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                      borderColor: 'rgba(151, 187, 205, 1)',
+                      pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                      pointBorderColor: '#fff',
+                      data: [],
+                    },
+                    {
+                      label: 'standard',
+                      backgroundColor: 'rgba(255, 70, 50, 0.2)',
+                      borderColor: 'rgba(255,70, 50, 1)',
+                      pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                      pointBorderColor: '#fff',
+                      data: [],
+                    },
+                  ],
+                }*/
+                  }
+                />
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol xs={6}>
+            <CCard className="mb-4">
+              <CCardHeader>test2</CCardHeader>
+              <CCardBody>
+                <CChartLine data={chart2Data} />
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol xs={6}>
+            <CCard className="mb-4">
+              <CCardHeader>test3</CCardHeader>
+              <CCardBody>
+                <CChartLine data={chart3Data} />
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol xs={6}>
+            <CCard className="mb-4">
+              <CCardHeader>test4</CCardHeader>
+              <CCardBody>
+                <CChartLine data={chart4Data} />
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <div>
+            <CButton onClick={LogoutFunc}>logout</CButton>
           </div>
-          <p></p>
-  */}
-        </CCardHeader>
-      </CCol>
-      <CCol xs={6}>
-        <CCard className="mb-4">
-          <CCardHeader>test1</CCardHeader>
-          <CCardBody>
-            <CChartLine
-              data={
-                chart1Data /*{
-                labels: ['6/1', '6/2', '6/3', '6/4', '6/5', '6/6', '6/7'],
-                datasets: [
-                  {
-                    label: 'User data',
-                    backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                    borderColor: 'rgba(151, 187, 205, 1)',
-                    pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                    pointBorderColor: '#fff',
-                    data: [],
-                  },
-                  {
-                    label: 'standard',
-                    backgroundColor: 'rgba(255, 70, 50, 0.2)',
-                    borderColor: 'rgba(255,70, 50, 1)',
-                    pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                    pointBorderColor: '#fff',
-                    data: [],
-                  },
-                ],
-              }*/
-              }
-            />
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={6}>
-        <CCard className="mb-4">
-          <CCardHeader>test2</CCardHeader>
-          <CCardBody>
-            <CChartLine data={chart2Data} />
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={6}>
-        <CCard className="mb-4">
-          <CCardHeader>test3</CCardHeader>
-          <CCardBody>
-            <CChartLine data={chart3Data} />
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={6}>
-        <CCard className="mb-4">
-          <CCardHeader>test4</CCardHeader>
-          <CCardBody>
-            <CChartLine data={chart4Data} />
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <div>
-        <CButton onClick={LogoutFunc}>logout</CButton>
-      </div>
-    </CRow>
+        </CRow>
+      </CContainer>
+    </div>
   )
 }
 

@@ -377,7 +377,8 @@ const Charts = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <small>
               <p>
-                {`age : ${subject_information.age}`} {`carrer : ${subject_information.career}`}
+                {`age : ${subject_information.age}`} {`carrer : ${subject_information.career}`}{' '}
+                {`Phone : ${subject_information.phoneNum}`} {`Gender : ${subject_information.sex}`}
               </p>
             </small>
             <CButton href="#/infor_change">information change</CButton>
