@@ -15,15 +15,15 @@ import axios from 'axios'
 
 class Test extends React.Component {
   state = { selectedFiles: null }
-  onClickHandler = (event) => {
+  fileClickHandler = (event) => {
     const formData = new FormData()
-    formData.append(`uploadImages`, this.state.selectedFiles, this.state.selectedFiles.name)
+    formData.append(`uploadFile`, this.state.selectedFiles, this.state.selectedFiles.name)
     const config = {
       headers: {
         'content-type': 'multipart/form-data',
       },
     }
-    axios.post(`uploadAPI`, formData, config)
+    //axios.post(`uploadAPI`, formData, config)
   }
   fileChangedHandler = (event) => {
     const files = event.target.files
@@ -35,7 +35,7 @@ class Test extends React.Component {
     return (
       <div className="App" style={{ marginTop: `100px` }}>
         <input type="file" multiple onChange={this.fileChangedHandler} />
-        <button onClick={this.onClickHandler}>저장하기</button>
+        <button onClick={this.fileClickHandler}>저장하기</button>
       </div>
     )
   }
