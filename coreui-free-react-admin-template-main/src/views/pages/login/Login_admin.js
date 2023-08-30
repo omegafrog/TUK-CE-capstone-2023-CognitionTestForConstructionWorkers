@@ -67,7 +67,11 @@ const Login = () => {
         const token = response.data.results.token
         sessionStorage.setItem('token', token)
         sessionStorage.setItem('credit', credit)
-        window.location.href = '/#/dashboard'
+        if (su === false) {
+          window.location.href = '/#/dashboard'
+        } else {
+          window.location.href = '/#/admins'
+        }
       })
       .catch((error) => {
         alert(error.message)

@@ -27,6 +27,12 @@ const Tables_Admin = () => {
   const token = sessionStorage.getItem('token')
   axios.defaults.headers.common['Authorization'] = `${token}`
   const subjectname = sessionStorage.getItem('subjectname')
+  const credit = sessionStorage.getItem('credit')
+  if (credit !== 'super') {
+    window.alert('suadmin 계정으로 접속해야 합니다.')
+    sessionStorage.clear()
+    window.location.href = '#/login_sub'
+  }
   if (subjectname) {
     console.log(subjectname)
     sessionStorage.removeItem('subjectname')

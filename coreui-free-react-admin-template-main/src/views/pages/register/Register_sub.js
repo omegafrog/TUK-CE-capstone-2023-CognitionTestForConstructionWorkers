@@ -16,6 +16,8 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
+
+//var mode = 'sole'
 const Register = () => {
   const dispatch = useDispatch()
   const token = sessionStorage.getItem('token')
@@ -23,14 +25,17 @@ const Register = () => {
   const [Name, setName] = useState('')
   const [Password, setPassword] = useState('')
   const [Age, setAge] = useState('')
-  const [Field, setField] = useState('')
+  const [Phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
   const [Carrer, setCarrer] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   useEffect(() => {
     /*...*/
   }, [msg])
-
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
   const UserFunc = (e) => {
     e.preventDefault()
     const Subjects = [
@@ -137,10 +142,10 @@ const Register = () => {
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
                     <CFormInput
-                      placeholder="Field"
-                      autoComplete="Field"
-                      value={Field}
-                      onChange={(e) => setField(e.target.value)}
+                      placeholder="Phonenumber"
+                      autoComplete="Phonenumber"
+                      value={Phone}
+                      onChange={(e) => setPhone(e.target.value)}
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-3">
@@ -162,6 +167,7 @@ const Register = () => {
                 </CForm>
               </CCardBody>
             </CCard>
+            <CButton href="/#/register_sub2">+</CButton>
           </CCol>
         </CRow>
       </CContainer>
