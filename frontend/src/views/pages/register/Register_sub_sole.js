@@ -16,7 +16,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
-const Register_sole = () => {
+const Register = () => {
   const dispatch = useDispatch()
   const token = sessionStorage.getItem('token')
   const [ID, setID] = useState('')
@@ -167,4 +167,4 @@ const Register_sole = () => {
     </div>
   )
 }
-export default Register_sole
+export default Register

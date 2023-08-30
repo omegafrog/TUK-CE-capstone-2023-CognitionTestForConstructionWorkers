@@ -16,7 +16,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import axios from 'axios'
-const Register_sole = () => {
+const Register_sub_multi2 = () => {
   const dispatch = useDispatch()
   const token = sessionStorage.getItem('token')
   const [ID, setID] = useState('')
@@ -27,6 +27,11 @@ const Register_sole = () => {
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
   const [Carrer, setCarrer] = useState('')
+  const [Name2, setName2] = useState('')
+  const [ID2, setID2] = useState('')
+  const [Password2, setPassword2] = useState('')
+  const [Age2, setAge2] = useState('')
+  const [Carrer2, setCarrer2] = useState('')
   useEffect(() => {
     /*...*/
   }, [msg])
@@ -41,13 +46,20 @@ const Register_sole = () => {
         age: Age,
         career: Carrer,
       },
+      {
+        name: Name2,
+        username: ID2,
+        password: Password2,
+        age: Age2,
+        career: Carrer2,
+      },
     ]
     axios.defaults.headers.common['Authorization'] = `${token}`
     axios
       .post(
         'https://oiwaejofenwiaovjsoifaoiwnfiofweafj.site:8080/admin/subject',
         {
-          mode: 'sole',
+          mode: 'multi',
           subjects: Subjects,
         },
         {
@@ -75,7 +87,8 @@ const Register_sole = () => {
               <CCardBody className="p-4">
                 <CForm onSubmit={UserFunc}>
                   <h2>Subject Create</h2>
-                  <p className="text-medium-emphasis">Create subject account</p>
+                  <p className="text-medium-emphasis">Create subject account 2</p>
+                  <p>user 1</p>
                   <CInputGroup className="mb-3">
                     <CInputGroupText>
                       <CIcon icon={cilUser} />
@@ -153,6 +166,84 @@ const Register_sole = () => {
                       onChange={(e) => setCarrer(e.target.value)}
                     />
                   </CInputGroup>
+                  <p>user 2</p>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Username"
+                      autoComplete="Username"
+                      value={Name}
+                      onChange={(e) => setName2(e.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="ID"
+                      autoComplete="ID"
+                      value={ID}
+                      onChange={(e) => setID2(e.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilLockLocked} />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="password"
+                      placeholder="Password"
+                      autoComplete="new-password"
+                      value={Password}
+                      onChange={(e) => setPassword2(e.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-4">
+                    <CInputGroupText>
+                      <CIcon icon={cilLockLocked} />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="password"
+                      placeholder="Repeat password"
+                      autoComplete="new-password"
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Age"
+                      autoComplete="Age"
+                      value={Age}
+                      onChange={(e) => setAge2(e.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Field"
+                      autoComplete="Field"
+                      value={Field}
+                      onChange={(e) => setField(e.target.value)}
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Carrer"
+                      autoComplete="Carrer"
+                      value={Carrer}
+                      onChange={(e) => setCarrer2(e.target.value)}
+                    />
+                  </CInputGroup>
                   <div className="d-grid">
                     <CButton type="submit" color="success">
                       Create Account
@@ -161,10 +252,11 @@ const Register_sole = () => {
                 </CForm>
               </CCardBody>
             </CCard>
+            <CButton href="/#/register_sub3">+</CButton>
           </CCol>
         </CRow>
       </CContainer>
     </div>
   )
 }
-export default Register_sole
+export default Register_sub_multi2
