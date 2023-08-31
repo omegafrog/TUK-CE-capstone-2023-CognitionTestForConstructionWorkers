@@ -38,3 +38,8 @@ out/
 
 .attach_pid*
 
+/backend/src/main/resources/application-h2.properties
+/backend/src/main/resources/application-mysql.properties
+/backend/src/main/resources/application-security.properties
+/backend/src/main/resources/application.properties
+/backend/boot.pid
