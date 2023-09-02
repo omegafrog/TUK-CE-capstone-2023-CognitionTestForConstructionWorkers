@@ -22,9 +22,10 @@ public class Menu_UI : MonoBehaviour
     public Text Cov_opt;
     public Text Cov_avr;
 
-    public Text DMT_opt;
+
     public Text DMT_Go_missed;
     public Text DMT_AvgResult;
+    public Text DMT_opt;
 
     public Text DST_opt;
 
