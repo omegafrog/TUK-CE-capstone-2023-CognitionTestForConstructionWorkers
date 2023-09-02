@@ -12,20 +12,27 @@ public class DMT_button : MonoBehaviour
     /// 잘못된 입력시 페널티 부여
     /// </summary>
     public float move_speed = 0.5f;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
     // Update is called once per frame
     void Update()
     {
-        Button_press();
+        if (DecisionMakingTest.isDMTstarted)
+        {
+            Button_press();
+        }
+        else if (DecisionMakingTest_tuto.isDMTstarted)
+        {
+            Button_press();
+        }
     }
 
     void Button_press()
-    {            
+    {
         if (Input.GetMouseButtonDown(0)) // 마우스 클릭 시
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -33,15 +40,15 @@ public class DMT_button : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.CompareTag("DMT_PracticeInputButton")|| hit.collider.CompareTag("DMT_InputButton")) //이 이름의 태그를 가진 버튼 오브젝트를 눌렀을 때
+                if (hit.collider.CompareTag("DMT_PracticeInputButton") || hit.collider.CompareTag("DMT_InputButton")) //이 이름의 태그를 가진 버튼 오브젝트를 눌렀을 때
                 {
-                        StartCoroutine(buttonpress(1.0f));
+                    StartCoroutine(buttonpress(1.0f));
                 }
             }
         }
     }
 
-    
+
     IEnumerator buttonpress(float delay) //버튼 입력시 효과
     {
         transform.localPosition = new Vector3(0f, 1.2f, 0f);

@@ -43,22 +43,23 @@ public class DigitSpanGame_tuto : MonoBehaviour
 
     private TextMesh InputNumbers; // 사용자가 입력한 숫자를 유니티 화면에 표시해줄 텍스트를 저장할 TextMesh 컴포넌트
 
-    List<string> Practicelist ;
+    List<string> Practicelist;
 
 
     private TextMesh SnRText;
 
+    private bool isDSTstarted;
 
     void Start()
     {
-
+        isDSTstarted = false;
 
         DST_PracticeGamestartbutton = GameObject.FindGameObjectWithTag("DST_PracticeGamestartbutton").GetComponent<Button>();
         DST_PracticeGamestartPannel = GameObject.FindGameObjectWithTag("DST_PracticeGamestartPannel");
 
 
         enteredNumber = "";
-        Practicelist  = new List<string>() {"123", "678"};
+        Practicelist = new List<string>() { "123", "678" };
         wrongcnt = 0;
         roundcnt = 0;
         //MaxRoundcnt = Questionlist.Count-1;//인덱스라서 하나 빠져야 함
@@ -85,13 +86,13 @@ public class DigitSpanGame_tuto : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ButtonClick();
-        //DST_PracticeStartbutton.onClick.AddListener(PracticeButtonClick);
+        if (isDSTstarted) ButtonClick();
     }
 
 
     private void PracticeGameStartButtonClick()//UI 부분
     {
+        isDSTstarted = true;
         DST_PracticeGamestartbutton.gameObject.SetActive(false);
         DST_PracticeGamestartPannel.SetActive(false);
         StartCoroutine(PracticeGameStart(Practicelist));
@@ -141,7 +142,7 @@ public class DigitSpanGame_tuto : MonoBehaviour
     }
     private void IsCorrectCheck()
     {
-        
+
         if ((roundcnt > PracticeStraightRoundcnt) && wrongcnt == 0)//인덱스 4,5 일 때 역방향 입력 구현을 위함
         {
             Practicelist[roundcnt] = ReverseString(Practicelist[roundcnt]);
@@ -182,10 +183,10 @@ public class DigitSpanGame_tuto : MonoBehaviour
                 DigitGameresult = true;
                 SceneManager.LoadScene("Main_menu", LoadSceneMode.Single);
             }
-            
+
         }
-       
-        
+
+
     }
 
 
@@ -205,7 +206,7 @@ public class DigitSpanGame_tuto : MonoBehaviour
     }
 
 
-    
+
     IEnumerator PracticeGameStart(List<string> question)
     {
         for (; roundcnt <= Practicelist.Count && isRoundPassed == true;)
@@ -237,64 +238,6 @@ public class DigitSpanGame_tuto : MonoBehaviour
 
     //문제 하나당 하나씩 돌려야 하는 함수. 
     //매개변수로 돌아온 숫자만큼 숫자 생성. 
-    private string CreateSequence(int QuestionNumberLength)
-    {
-        HashSet<string> digitSet = new HashSet<string>();//한 숫자열 안에는 중복되는게 없도록 HashSet 사용
-        System.Random random = new System.Random();//시드값을 랜덤으로 만들기 위한 코드
-        System.Random randomint = new System.Random(random.Next(10000));//시드값 1만개이므로 숫자 배열 1만가지 생성
 
-        while (digitSet.Count < QuestionNumberLength)//2-5자리 문제 각각 생성하기 위함. 반복문 한번에 랜덤한 숫자 1개 생성되어서 QuestionNumberLength만큼의 자릿수 구성
-        {            
-            int digit = randomint.Next(10);//0-9 정수 생성해서 digit에 추가하는데 한 숫자열 안에는 중복되는게 없도록 HashSet 사용해서 생성
-            digitSet.Add(digit.ToString());//digitSet 에는 숫자 들어가게 함. 
-        }
-
-        string CombinedDigit = string.Join("", digitSet);
-
-
-        Debug.Log("CombinedDigit 자체 : " + CombinedDigit);
-        Debug.Log("아래는 CombinedDigit 순회");
-        foreach(var q in CombinedDigit)
-        {
-            Debug.Log(q);//해쉬셋 잘 만들어짐.
-        }
-
-        return CombinedDigit;//한 문제. 
-
-    }
-    public List<char> MakeStraightNumbers()
-    {
-        //해쉬셋 한세트 만들어지면 그걸 string으로 만들기
-        List<char> Questionlist = new List<char>();
-
-        for (int i = Straight_Minlength; i < Straight_Maxlength; i++)//2-5까지 반복.
-        {
-            string OneQuestion = CreateSequence(Straight_Minlength);
-
-            foreach (char x in OneQuestion)
-            {
-                Questionlist.Add(x);//문제에서 하나씩 추가하기. 문자열 하나씩 추가하기. 숫자로 추가하면 이상하게 쪼개짐. 
-            }
-            
-        }
-        
-
-        return Questionlist;//정방향 질문 리스트 자료형
-    }
-
-    public List<string> MakeReverseNumbers()
-    {
-        List<string> Questionlist = new List<string>();
-
-        for (int i = Reverse_Minlength; i < Reverse_Maxlength; i++)//2-3까지 반복.
-        {
-            Questionlist.Add(CreateSequence(i).ToString());//2자리부터 3자리까지 반복
-        }
-        foreach (string str in Questionlist)
-        {
-            Debug.Log(str);//2~3자리 잘 만들어졌는지 확인
-        }
-        return Questionlist;//역방향 질문 리스트 자료형
-    }
 
 }

@@ -20,10 +20,6 @@ public class DigitSpanGame : MonoBehaviour
 
     private string enteredNumber;
 
-    private int Straight_Minlength = 2;
-    private int Straight_Maxlength = 5;
-    private int Reverse_Minlength = 2;
-    private int Reverse_Maxlength = 3;
 
     private int wrongcnt;
 
@@ -31,13 +27,8 @@ public class DigitSpanGame : MonoBehaviour
     public static bool DigitGameresult;
 
 
-    //public List<string> StraightNumbers;
-    //public List<string> ReverseNumbers;
-
     private TextMesh QuestionNumbers; //문제를 유니티 화면에 표시해줄 텍스트를 저장할 TextMesh 컴포넌트
-    //List<char> Questionlist = new List<char>();//2-6자리 문제가 들어갈 리스트 변수 선언
 
-    //List<string> question = new List<string>();
 
     private int MaxRoundcnt;
     private int StraightRoundcnt;//정방향 라운드 갯수
@@ -45,34 +36,69 @@ public class DigitSpanGame : MonoBehaviour
     private bool isRoundPassed;
     private bool isQuestionDisplayActivated;
 
-    //private ButtonController Buttoncontroller;
     private TextMesh InputNumbers; // 사용자가 입력한 숫자를 유니티 화면에 표시해줄 텍스트를 저장할 TextMesh 컴포넌트
 
-    List<string> Questionlist, Practicelist ;
+    List<List<string>> Questionlistarray = new List<List<string>>
+    {
+        new List<string> {"2342","34519","607815","785","946"},
+        new List<string> {"2951","53014","243867","458","769"},
+        new List<string> {"4719","51246","332508","769","458"},
+        new List<string> {"7453","12654","180923","694","758"},
+        new List<string> {"2429","41303","785651","876","549"},
+        new List<string> {"2635","54389","127104","574","869"},
+        new List<string> {"9375","13158","424620","758","694"},
+        new List<string> {"9250","24334","756118","795","486"},
+        new List<string> {"1602","27358","419534","579","846"},
+        new List<string> {"9243","25031","514876","586","947"},
+        new List<string> {"6311","52347","942580","496","587"},
+        new List<string> {"6502","25814","194373","495","786"},
+        new List<string> {"4137","38920","552641","869","754"},
+        new List<string> {"3731","52648","419250","748","956"},
+        new List<string> {"5464","73921","503821","879","654"},
+        new List<string> {"4755","10482","263391","865","947"},
+        new List<string> {"4175","12930","836524","569","874"},
+        new List<string> {"1563","53249","417802","748","596"},
+        new List<string> {"5692","13123","574480","864","795"},
+        new List<string> {"1245","39845","310627","986","475"},
+        new List<string> {"5107","84924","231536","457","968"},
+        new List<string> {"2965","75231","401438","875","694"},
+        new List<string> {"1484","31552","796320","984","675"},
+        new List<string> {"2076","58911","435324","956","487"},
+        new List<string> {"4833","51657","422190","786","495"},
+        new List<string> {"9205","54823","674311","597","468"},
+        new List<string> {"3415","38024","276195","854","976"},
+        new List<string> {"2859","23305","147614","548","796"},
+        new List<string> {"4658","51391","402273","789","645"},
+        new List<string> {"7141","80243","952653","698","754"}
 
+    };
+
+    List<string> Questionlist;
+
+    System.Random random = new System.Random();
 
     private TextMesh SnRText;
+
+    private bool isDSTstarted;
 
 
     void Start()
     {
+        isDSTstarted = false;
+
+        int randomIndex = random.Next(Questionlistarray.Count);
 
 
         DST_Gamestartbutton = GameObject.FindGameObjectWithTag("DST_Gamestartbutton").GetComponent<Button>();
         DST_GamestartPannel = GameObject.FindGameObjectWithTag("DST_GamestartPannel");
         //DST_PracticeStartbutton = GameObject.FindGameObjectWithTag("DST_PracticeButton").GetComponent<Button>();
 
-
         enteredNumber = "";
-        Questionlist = new List<string>() { "345", "6789", "01234","67","456" };
-        Practicelist  = new List<string>() {"123", "678"};
-        //Questionlist = new List<string>() { "11", "12", "13", "14", "67", "456" };
+        Questionlist = Questionlistarray[randomIndex];
         wrongcnt = 0;
         roundcnt = 0;
-        MaxRoundcnt = Questionlist.Count-1;//인덱스라서 하나 빠져야 함
-        //PracticeMaxRoundcnt = Practicelist.Count - 1;//인덱스라서 하나 빠져야 함
+        MaxRoundcnt = Questionlist.Count - 1;//인덱스라서 하나 빠져야 함
         StraightRoundcnt = 2;//0~2 인덱스까지 3개 라운드
-        //PracticeStraightRoundcnt = 0;//0 인덱스 1개
         isRoundPassed = true;
         isQuestionDisplayActivated = true;
         isDigitGamePassed = false;
@@ -92,26 +118,19 @@ public class DigitSpanGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ButtonClick();
+        if (isDSTstarted) ButtonClick();
         DST_Gamestartbutton.onClick.AddListener(GameStartButtonClick);
-        //DST_PracticeStartbutton.onClick.AddListener(PracticeButtonClick);
     }
 
 
     private void GameStartButtonClick()//UI 부분
     {
+        isDSTstarted = true;
         DST_Gamestartbutton.gameObject.SetActive(false);
         DST_GamestartPannel.SetActive(false);
         StartCoroutine(GameStart(Questionlist));
     }
-    /*
-    private void PracticeButtonClick()//UI 부분
-    {
-        DST_Gamestartbutton.gameObject.SetActive(false);
-        DST_GamestartPannel.SetActive(false);
-        StartCoroutine(PracticeStart(Practicelist));
-    }
-    */
+
 
     public void ButtonClick()//버튼 클릭할 수 있게 하는 함수
     {
@@ -122,7 +141,7 @@ public class DigitSpanGame : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.CompareTag("Button")) //이 이름의 태그를 가진 버튼 오브젝트를 눌렀을 때
+                if (hit.collider.CompareTag("DST_InputButton")) //이 이름의 태그를 가진 버튼 오브젝트를 눌렀을 때
                 {
                     int buttonValue = int.Parse(hit.collider.gameObject.name); // 버튼의 이름을 숫자로 변환하여 버튼 값으로 사용
                     ButtonPressed(buttonValue);
@@ -156,7 +175,7 @@ public class DigitSpanGame : MonoBehaviour
     }
     private void IsCorrectCheck()
     {
-        
+
         if ((roundcnt > StraightRoundcnt) && wrongcnt == 0)//인덱스 4,5 일 때 역방향 입력 구현을 위함
         {
             Questionlist[roundcnt] = ReverseString(Questionlist[roundcnt]);
@@ -197,16 +216,15 @@ public class DigitSpanGame : MonoBehaviour
                 DigitGameresult = true;
                 SceneManager.LoadScene("Main_menu", LoadSceneMode.Single);
             }
-            
+
         }
-       
-        
+
+
     }
 
 
 
 
-    //게임 
     string ReverseString(string input)//문자열 역순으로 바꿔줌
     {
         char[] charArray = input.ToCharArray();
@@ -220,7 +238,8 @@ public class DigitSpanGame : MonoBehaviour
     }
 
 
-    IEnumerator GameStart(List<string> question){
+    IEnumerator GameStart(List<string> question)
+    {
 
 
         for (; roundcnt <= Questionlist.Count && isRoundPassed == true;)
@@ -247,98 +266,6 @@ public class DigitSpanGame : MonoBehaviour
             }
             yield return null;
         }
-    }
-    /*
-    IEnumerator PracticeStart(List<string> question)
-    {
-        for (; roundcnt <= Practicelist.Count && isRoundPassed == true;)
-        {
-            if (isQuestionDisplayActivated == true)
-            {
-                if (roundcnt > StraightRoundcnt)
-                {
-                    SnRText.text = "역방향 입력 : ";
-                }
-                else
-                {
-                    SnRText.text = "정방향 입력 : ";
-                }
-                foreach (char c in question[roundcnt])//인덱스 n번째 시퀀스를 하나씩 불러옴
-                {
-                    QuestionNumbers.text = c.ToString();
-                    yield return new WaitForSeconds(1.0f); // 1초 동안 문제 보여줌
-                }
-                QuestionNumbers.text = "";
-                InputNumbers.text = "";
-
-                isQuestionDisplayActivated = false;//문제 표시하는 숫자가 안나오도록 함
-            }
-            yield return null;
-        }
-    }
-
-    */
-
-    //문제 하나당 하나씩 돌려야 하는 함수. 
-    //매개변수로 돌아온 숫자만큼 숫자 생성. 
-    private string CreateSequence(int QuestionNumberLength)
-    {
-        HashSet<string> digitSet = new HashSet<string>();//한 숫자열 안에는 중복되는게 없도록 HashSet 사용
-        System.Random random = new System.Random();//시드값을 랜덤으로 만들기 위한 코드
-        System.Random randomint = new System.Random(random.Next(10000));//시드값 1만개이므로 숫자 배열 1만가지 생성
-
-        while (digitSet.Count < QuestionNumberLength)//2-5자리 문제 각각 생성하기 위함. 반복문 한번에 랜덤한 숫자 1개 생성되어서 QuestionNumberLength만큼의 자릿수 구성
-        {            
-            int digit = randomint.Next(10);//0-9 정수 생성해서 digit에 추가하는데 한 숫자열 안에는 중복되는게 없도록 HashSet 사용해서 생성
-            digitSet.Add(digit.ToString());//digitSet 에는 숫자 들어가게 함. 
-        }
-
-        string CombinedDigit = string.Join("", digitSet);
-
-
-        Debug.Log("CombinedDigit 자체 : " + CombinedDigit);
-        Debug.Log("아래는 CombinedDigit 순회");
-        foreach(var q in CombinedDigit)
-        {
-            Debug.Log(q);//해쉬셋 잘 만들어짐.
-        }
-
-        return CombinedDigit;//한 문제. 
-
-    }
-    public List<char> MakeStraightNumbers()
-    {
-        //해쉬셋 한세트 만들어지면 그걸 string으로 만들기
-        List<char> Questionlist = new List<char>();
-
-        for (int i = Straight_Minlength; i < Straight_Maxlength; i++)//2-5까지 반복.
-        {
-            string OneQuestion = CreateSequence(Straight_Minlength);
-
-            foreach (char x in OneQuestion)
-            {
-                Questionlist.Add(x);//문제에서 하나씩 추가하기. 문자열 하나씩 추가하기. 숫자로 추가하면 이상하게 쪼개짐. 
-            }
-            
-        }
-        
-
-        return Questionlist;//정방향 질문 리스트 자료형
-    }
-
-    public List<string> MakeReverseNumbers()
-    {
-        List<string> Questionlist = new List<string>();
-
-        for (int i = Reverse_Minlength; i < Reverse_Maxlength; i++)//2-3까지 반복.
-        {
-            Questionlist.Add(CreateSequence(i).ToString());//2자리부터 3자리까지 반복
-        }
-        foreach (string str in Questionlist)
-        {
-            Debug.Log(str);//2~3자리 잘 만들어졌는지 확인
-        }
-        return Questionlist;//역방향 질문 리스트 자료형
     }
 
 }

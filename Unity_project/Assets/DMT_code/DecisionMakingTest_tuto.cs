@@ -5,35 +5,23 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
-/// <summary>
-/// 게임 결과 변수
-/// Go 놓친 횟수 : Go_missed, int 자료형
-/// NoGo 클릭 횟수 : NoGo_clicked ,int자료형
-/// Go 누른 평균 시간 : AvgResult, string 자료형
-/// isDMTPassed 변수 : 게임 통과 여부, bool 자료형
-/// </summary>
-/// 
-///바꿔야 할 것 : 결과 화면 제거, 메뉴 화면에 결과 넘기기
-
-
 public class DecisionMakingTest_tuto : MonoBehaviour
 {
-
-
     private GameObject PracticeGamestartPannel;
     private Button PracticeGamestartbutton;
 
-    string GoList, PracticeGoList, PracticeGoNoGoQuestion;//문제 담는 변수
+    string PracticeGoList, PracticeGoNoGoQuestion;//문제 담는 변수
 
     private GameObject PracticeQuestionDisplayGameobject;//사용자가 입력한 숫자를 유니티 화면에 표시해주는 역할
     private TextMesh PracticeQuestionDisplay; // 사용자가 입력한 숫자를 유니티 화면에 표시해줄 텍스트를 저장할 TextMesh 컴포넌트   
 
+    public static bool isDMTstarted;
 
     // Start is called before the first frame update
     void Start()
     {
 
-
+        isDMTstarted = false;
 
         PracticeGamestartPannel = GameObject.FindGameObjectWithTag("DMT_PracticeGamestartPanel");
         PracticeGamestartbutton = GameObject.FindGameObjectWithTag("DMT_PracticeGamestartButton").GetComponent<Button>();
@@ -45,10 +33,10 @@ public class DecisionMakingTest_tuto : MonoBehaviour
         PracticeGoNoGoQuestion = "ㄹㅓ4";
 
         PracticeGamestartbutton.onClick.AddListener(PracticeButtonClick);//게임시작
-        
+
     }
 
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -57,12 +45,14 @@ public class DecisionMakingTest_tuto : MonoBehaviour
 
     private void PracticeButtonClick()
     {
+        isDMTstarted = true;
         PracticeGamestartbutton.gameObject.SetActive(false);
         PracticeGamestartPannel.SetActive(false);
         StartCoroutine(PracticeGoNoGoGame());
+
     }
 
-    
+
 
     IEnumerator PracticeGoNoGoGame()
     {
@@ -113,7 +103,7 @@ public class DecisionMakingTest_tuto : MonoBehaviour
     /// </summary>
     private void Counting()
     {
-       
+
         SceneManager.LoadScene("Main_menu", LoadSceneMode.Single);
     }
 
