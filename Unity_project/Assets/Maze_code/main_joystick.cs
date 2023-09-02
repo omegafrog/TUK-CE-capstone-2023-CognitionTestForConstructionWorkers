@@ -10,7 +10,7 @@ public class main_joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, I
 
     Transform m_trCube;
     float m_fRadius;
-    float m_fSpeed = 0.7f;
+    float m_fSpeed = 0.15f;
     float m_fSqr = 0f;
 
     Vector3 m_vecMove;

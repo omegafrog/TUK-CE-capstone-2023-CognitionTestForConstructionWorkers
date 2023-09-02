@@ -35,7 +35,7 @@ public class Maze_move : MonoBehaviour
 
     void Start()
     {
-        CH_speed = 2.5f;
+        CH_speed = 1.5f;
         Trigger_Count = 0;
         timeout_count = 0;
 

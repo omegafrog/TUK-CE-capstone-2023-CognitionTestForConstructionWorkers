@@ -13,7 +13,7 @@ public class Mazemove_tuto : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CH_speed = 3f;
+        CH_speed = 1.5f;
         Tutorial_Count = 0;
     }
 
