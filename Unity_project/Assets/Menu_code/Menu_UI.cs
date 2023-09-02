@@ -151,7 +151,7 @@ public class Menu_UI : MonoBehaviour
     public void Conveyor_OP()
     {
         Cov_count.text = "실패횟수: " + Conveyor_button.err_count + "번";
-        Cov_avr.text = "평균 반응속도: " + Conveyor_button.save_time + "ms";
+        //Cov_avr.text = "평균 반응속도: " + Conveyor_button.save_time + "ms";
         if (Conveyor_button.conveyor_result)
         {
             Cov_opt.text = "결과: 통과";

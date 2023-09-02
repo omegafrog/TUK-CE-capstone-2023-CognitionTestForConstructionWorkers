@@ -30,9 +30,10 @@ public class Conveyor_UI : MonoBehaviour
     public void game_start()
     {
         Time.timeScale = 1;
+        UI_check = true;
         timestart = true;
         Panel.SetActive(false);
-        UI_check = true;
+        
 
     }
 
