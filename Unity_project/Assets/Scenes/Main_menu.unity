@@ -2941,7 +2941,7 @@ GameObject:
   - component: {fileID: 1330425701}
   - component: {fileID: 1330425700}
   m_Layer: 5
-  m_Name: password_tuto
+  m_Name: conveyor_tuto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
