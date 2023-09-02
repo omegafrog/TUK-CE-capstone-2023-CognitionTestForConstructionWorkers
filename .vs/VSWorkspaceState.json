@@ -3,8 +3,9 @@
     "",
     "\\Unity_project",
     "\\Unity_project\\Assets",
-    "\\Unity_project\\Assets\\Maze_code"
+    "\\Unity_project\\Assets\\Conveyor_code",
+    "\\Unity_project\\Assets\\Menu_code"
   ],
-  "SelectedNode": "\\Unity_project\\Assets\\Maze_code\\main_joystick.cs",
+  "SelectedNode": "\\Unity_project\\Assets\\Maze_code",
   "PreviewInSolutionExplorer": false
 }

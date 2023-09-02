@@ -158,17 +158,19 @@ public class Menu_UI : MonoBehaviour
         //Cov_avr.text = "평균 반응속도: " + Conveyor_button.save_time + "ms";
         if (Conveyor_button.conveyor_result)
         {
-            Cov_opt.text = "결과: 통과";
-            conveyor_web_result = true;
+            if (Conveyor_button.err_count < 3)
+            {
+                Cov_opt.text = "결과: 통과";
+                conveyor_web_result = true;
+            }
+            else
+            {
+                Cov_opt.text = "결과: 실패";
+                conveyor_web_result = false;
+            }
         }
-        else
-        {
-            Cov_opt.text = "결과: 검사 미실시";
-            conveyor_web_result = false;
-        }
-        
+        else Cov_opt.text = "결과: 검사 미실시";
     }
-
     public void DMT_OP()
     {
 
@@ -190,6 +192,7 @@ public class Menu_UI : MonoBehaviour
         }
         else DMT_opt.text = "결과: 검사 미실시";
     }
+
     public void DST_OP()
     {
 
