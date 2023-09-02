@@ -22,10 +22,9 @@ public class Menu_UI : MonoBehaviour
     public Text Cov_opt;
     public Text Cov_avr;
 
-    public Text DMT_Go_missed;
-    public Text DMT_NoGo_clicked;
-    public Text DMT_AvgResult;
     public Text DMT_opt;
+    public Text DMT_Go_missed;
+    public Text DMT_AvgResult;
 
     public Text DST_opt;
 
@@ -100,6 +99,11 @@ public class Menu_UI : MonoBehaviour
         Panel.SetActive(false);
         SceneManager.LoadScene("DST_test", LoadSceneMode.Single);
     }
+    public void DST_tuto()
+    {
+        Panel.SetActive(false);
+        SceneManager.LoadScene("DST_tuto", LoadSceneMode.Single);
+    }
 
     public void menu_ID()
     {
@@ -171,7 +175,6 @@ public class Menu_UI : MonoBehaviour
     {
 
         DMT_Go_missed.text = "놓친 횟수: " + DecisionMakingTest.Go_missed + "번";
-        DMT_NoGo_clicked.text = "오입력 횟수 : " + DecisionMakingTest.NoGo_clicked + "번";
         DMT_AvgResult.text = "평균 입력시간 : " + DecisionMakingTest.AvgResult + "초";
 
         if (DecisionMakingTest.isDMTEnded)

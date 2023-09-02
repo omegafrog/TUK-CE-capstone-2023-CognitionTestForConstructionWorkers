@@ -27,16 +27,28 @@ EditorBuildSettings:
     path: Assets/Scenes/Conveyor_test.unity
     guid: f743a973de82be048adf99b177682830
   - enabled: 1
-    path: Assets/Scenes/DMT_tuto.unity
-    guid: 42c3a2fc3e70b0b41ac6c678109d964a
-  - enabled: 1
     path: Assets/Scenes/DMT_test.unity
-    guid: 7a576c70a8742f74a8281e21a749dec3
+    guid: a2e03783a56df1043b56c6df16830874
   - enabled: 1
-    path: Assets/Scenes/DST_tuto.unity
-    guid: d4fb1880ba1cb3a47baa41527e5e1465
+    path: Assets/Scenes/DMT_tuto.unity
+    guid: 183225d378bf03547ab78ea067224989
   - enabled: 1
     path: Assets/Scenes/DST_test.unity
+    guid: 376f47caf3eddb34ab16924d0d48121e
+  - enabled: 1
+    path: Assets/Scenes/DST_tuto.unity
+    guid: 199a938658b675b4893212bade1a283f
+  - enabled: 0
+    path: Assets/Scenes/DMT_tuto_b.unity
+    guid: 42c3a2fc3e70b0b41ac6c678109d964a
+  - enabled: 0
+    path: Assets/Scenes/DMT_test_b.unity
+    guid: 7a576c70a8742f74a8281e21a749dec3
+  - enabled: 0
+    path: Assets/Scenes/DST_tuto_b.unity
+    guid: d4fb1880ba1cb3a47baa41527e5e1465
+  - enabled: 0
+    path: Assets/Scenes/DST_test_b.unity
     guid: f359c6d1a026a1640a69d133ad261f8c
   - enabled: 0
     path: 
