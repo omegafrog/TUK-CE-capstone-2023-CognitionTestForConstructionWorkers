@@ -186,7 +186,7 @@ public class Menu_UI : MonoBehaviour
     {
 
         DMT_Go_missed.text = "놓친 횟수: " + DecisionMakingTest.Go_missed + "번";
-        //DMT_AvgResult.text = "평균 입력시간 : " + DecisionMakingTest.AvgResult + "초";
+        DMT_AvgResult.text = "평균 입력시간 : " + DecisionMakingTest.AvgResult + "초";
 
         if (DecisionMakingTest.isDMTEnded)
         {

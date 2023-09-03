@@ -13,12 +13,13 @@ public class SaveTestResult : MonoBehaviour
 
     public TestResult testTestResult = new TestResult(new TestResult.Twohand(true, 0, 200), new TestResult.Conveyor(true, 1234), new TestResult.DigitSpan(true), new TestResult.Maze(false, 6), new TestResult.DecisionMaking(true, 0.123, 2, 3));
 
+    public GameObject Savebutton;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        Savebutton.SetActive(true);
     }
 
     // Update is called once per frame
@@ -30,14 +31,16 @@ public class SaveTestResult : MonoBehaviour
     public void Save()
     {
         print("clicked");
-         TestResult testResult = new TestResult(
+        TestResult testResult = new TestResult(
             new TestResult.Twohand(Menu_UI.conveyor_web_result, Conveyor_button.err_count, Conveyor_button.save_time), 
             new TestResult.Conveyor(Menu_UI.two_hand_web_result, Mathf.Round(UI_control.display_time)),
             new TestResult.DigitSpan(Menu_UI.DST_web_result), 
             new TestResult.Maze(Menu_UI.maze_web_result, Maze_move.Trigger_Count), 
             new TestResult.DecisionMaking(Menu_UI.DMT_web_result, DecisionMakingTest.Avg_GoClickTime, DecisionMakingTest.Go_missed, DecisionMakingTest.NoGo_clicked));
 
+
         StartCoroutine(SendTestResultTest(testResult));
+        Savebutton.SetActive(false);
     }
     IEnumerator SendTestResultTest(TestResult testResult)
     {
