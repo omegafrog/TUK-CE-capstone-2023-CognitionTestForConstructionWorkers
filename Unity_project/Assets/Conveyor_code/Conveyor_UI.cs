@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+//using System.Web.UI.WebControls;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Conveyor_UI : MonoBehaviour
 {
     public GameObject Panel;
-    public Text timeText;
+    public Text countText;
+    public Text object_counter;
+
     public static float playtime;
     public bool timestart;
     public static bool UI_check;
@@ -25,6 +28,7 @@ public class Conveyor_UI : MonoBehaviour
     void Update()
     {
         time_check();
+        counter();
     }
 
     public void game_start()
@@ -42,6 +46,15 @@ public class Conveyor_UI : MonoBehaviour
         if(timestart){
             playtime += Time.deltaTime;
             //timeText.text = "제한시간: " + Mathf.Round(playtime) + "초";
+        }
+    }
+
+    public void counter()
+    {
+        if (timestart)
+        {
+            countText.text = "실패: " + Conveyor_button.err_count;
+            object_counter.text = "전체: " + Conveyor_move.object_count;
         }
     }
 }

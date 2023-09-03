@@ -28,6 +28,7 @@ public class Conveyor_move : MonoBehaviour
 
     public bool object_tr;
     public static bool timer_start;
+    public static int object_count;
 
     void Start()
     {   
@@ -38,6 +39,7 @@ public class Conveyor_move : MonoBehaviour
         i = Random.Range(min, max); 
         timer = 0;
         object_speed = 4.0f;
+        object_count = 0;
         object_tr = false;
         timer_start = false;
     }
@@ -59,7 +61,11 @@ public class Conveyor_move : MonoBehaviour
             object_tr =true;
             i++;
         }
-        if (other.tag == "conveyor_start") timer_start = true; //오브젝트 출발 확인
+        if (other.tag == "conveyor_start")
+        {
+            timer_start = true; //오브젝트 출발 확인
+            object_count++;
+        }
 
     }
 
