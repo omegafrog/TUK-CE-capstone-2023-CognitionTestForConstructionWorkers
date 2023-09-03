@@ -2908,9 +2908,9 @@ MonoBehaviour:
   Cov_count: {fileID: 25547757}
   Cov_opt: {fileID: 1007743937}
   Cov_avr: {fileID: 234277120}
-  DMT_Go_missed: {fileID: 131624473}
-  DMT_AvgResult: {fileID: 1696851247}
   DMT_opt: {fileID: 1362130756}
+  DMT_Go_missed: {fileID: 131624473}
+  DMT_AvgClickedtime: {fileID: 1696851247}
   DST_opt: {fileID: 417907960}
 --- !u!4 &1317267422
 Transform:
