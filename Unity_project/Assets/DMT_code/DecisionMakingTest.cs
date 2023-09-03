@@ -32,7 +32,7 @@ public class DecisionMakingTest : MonoBehaviour
     private TextMesh QuestionDisplay; // 사용자가 입력한 숫자를 유니티 화면에 표시해줄 텍스트를 저장할 TextMesh 컴포넌트   
 
     public static int Go_clicked, Go_missed, NoGo_clicked; //버튼 클릭 판별
-    public static float Sum_GoClickTime, Avg_GoClickTime;//계산 결과 담을 변수
+    public static double Sum_GoClickTime, Avg_GoClickTime;//계산 결과 담을 변수
 
     private int ProcessCounting;
     private float startTime;      // 시간 측정 시작 시간
