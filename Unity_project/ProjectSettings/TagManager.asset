@@ -40,6 +40,10 @@ TagManager:
   - DMT_PracticeInputButton
   - DST_PracticeGamestartbutton
   - DST_PracticeGamestartPannel
+  - DST_InputButton
+  - red_button
+  - yellow_button
+  - blue_button
   layers:
   - Default
   - TransparentFX

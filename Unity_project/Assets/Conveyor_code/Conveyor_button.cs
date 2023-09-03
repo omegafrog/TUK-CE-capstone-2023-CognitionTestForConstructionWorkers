@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +20,9 @@ public class Conveyor_button : MonoBehaviour
     private int ingame_succes;
     private int ingame_err;
     public static bool conveyor_result;
+
+    public static bool yellow_button;
+    public static bool blue_button;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +31,7 @@ public class Conveyor_button : MonoBehaviour
         ingame_succes = 0;
         ingame_err = 0;
         conveyor_result = false;
+        yellow_button = false;
     }
     // Update is called once per frame
     void Update()
@@ -41,22 +46,58 @@ public class Conveyor_button : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) //버튼 입력확인
         {
-            if (Conveyor_move.sr.material.color == Color.red)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(ray, out hit))
             {
-                //Debug.Log("succes");
-                succes++;
-                ingame_succes++;
-                save_time += Conveyor_move.timer; //반응속도 측정값 합산
-                StartCoroutine(buttonpress(1.0f));
+                if (hit.collider.CompareTag("red_button"))
+                {
+                    if (Conveyor_move.sr.material.color == Color.red)
+                    {
+                        //Debug.Log("succes");
+                        succes++;
+                        ingame_succes++;
+                        save_time += Conveyor_move.timer; //반응속도 측정값 합산
+                        StartCoroutine(buttonpress(1.0f));
+                    }
+                    else
+                    {
+                        StartCoroutine(buttonpress(1.0f));
+                        //붉은색이 아닌 다른색의 오브젝트에 입력시 오류추가
+                        //Debug.Log("error +1");
+                        err_count++;
+                        ingame_err++;
+                    }
+                }
+                if (hit.collider.CompareTag("yellow_button")) //노란버튼 입력확인, 반응속도는 측정안함
+                {
+                    if (Conveyor_move.sr.material.color == Color.yellow)
+                    {
+                        yellow_button = true;
+                        //UnityEngine.Debug.Log("yellow");
+                    }
+                    else
+                    {
+                        yellow_button = true;
+                        err_count++;
+                        ingame_err++;
+                    }
+                }
+                if (hit.collider.CompareTag("blue_button")) //파란버튼 입력확인, 반응속도는 측정안함
+                {
+                    if (Conveyor_move.sr.material.color == Color.blue)
+                    {
+                        blue_button = true;
+                    }
+                    else
+                    {
+                        blue_button = true;
+                        err_count++;
+                        ingame_err++;
+                    }
+                }
             }
-            else
-            {
-                StartCoroutine(buttonpress(1.0f));
-                //붉은색이 아닌 다른색의 오브젝트에 입력시 오류추가
-                //Debug.Log("error +1");
-                err_count++;
-                ingame_err++;
-            }
+
         
         }
     }

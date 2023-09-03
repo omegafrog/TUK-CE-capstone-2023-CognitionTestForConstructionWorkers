@@ -32,7 +32,7 @@ public class SaveTestResult : MonoBehaviour
         print("clicked");
          TestResult testResult = new TestResult(
             new TestResult.Twohand(Menu_UI.conveyor_web_result, Conveyor_button.err_count, Conveyor_button.save_time), 
-            new TestResult.Conveyor(Menu_UI.two_hand_web_result, Mathf.Floor(Move_key.avr_time / 3f * 100f) / 100f), 
+            new TestResult.Conveyor(Menu_UI.two_hand_web_result, Mathf.Round(UI_control.display_time)),
             new TestResult.DigitSpan(true), 
             new TestResult.Maze(Menu_UI.maze_web_result, Maze_move.Trigger_Count), 
             new TestResult.DecisionMaking(true, 123, 2, 3));
