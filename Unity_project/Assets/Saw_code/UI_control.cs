@@ -10,6 +10,7 @@ public class UI_control : MonoBehaviour
     public GameObject Panel;
     public TextMeshProUGUI Tp_time;
     public static float playtime;
+    public static float display_time;
     public bool timestart;
 
     // Start is called before the first frame update
@@ -37,8 +38,9 @@ public class UI_control : MonoBehaviour
     {
         if (timestart)
         {
-        // playtime += Time.deltaTime;
-        // timeText.text = "Play time : " + playtime.ToString("N2") + "s";
+            // playtime += Time.deltaTime;
+            // timeText.text = "Play time : " + playtime.ToString("N2") + "s";
+            display_time += Time.deltaTime;
             playtime -= Time.deltaTime;
             Tp_time.text = Mathf.Round(playtime) + "s";
             //Debug.Log(Mathf.Round(Move_key.count_time)); //시간확인

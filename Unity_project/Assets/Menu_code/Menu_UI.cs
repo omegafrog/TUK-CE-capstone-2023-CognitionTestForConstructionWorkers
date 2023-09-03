@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Login;
+using System;
+//using System.Web.UI.WebControls;
 
 public class Menu_UI : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class Menu_UI : MonoBehaviour
 
     public Text Saw_counter;
     public Text Saw_opt;
+    public Text Saw_err_time;
 
     public Text Cov_count;
     public Text Cov_opt;
@@ -134,8 +137,9 @@ public class Menu_UI : MonoBehaviour
     }
     public void Saw_OP()
     {
-        Saw_counter.text = "진행시간: " + Move_key.avr_time /100f  + "초";
-        //"진행시간: " + Mathf.Floor(Move_key.avr_time / 3f * 100f) / 100f + "초";
+        Saw_counter.text = "진행시간: " + Mathf.Round(UI_control.display_time) + "초";
+        Saw_err_time.text = "패널티시간: " + Move_key.err_time_save + "초";
+        
         if (Move_key.two_hand_result)
         {
             if (Move_key.timeout < 1)

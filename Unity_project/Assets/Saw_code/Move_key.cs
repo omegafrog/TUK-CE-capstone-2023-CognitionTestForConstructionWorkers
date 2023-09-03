@@ -32,9 +32,9 @@ public class Move_key : MonoBehaviour
     public static bool camera1 = false;
     public static bool camera2 = false;
     
-    public static float avr_time;
+    //게임 진행시간 관련 변수
     public static int timeout;
-
+    public static float err_time_save;
     public bool up;
     public bool down;
     public bool left;
@@ -44,7 +44,6 @@ public class Move_key : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        avr_time = 0;
         timeout = 0;
         speed = 0.5f;
         isround2 = false;
@@ -131,8 +130,6 @@ public class Move_key : MonoBehaviour
         isround1 = false;
         if (round1_end == true)
         {
-            //1라운드 시간저장
-            avr_time += UI_control.playtime;
             //Debug.Log("round2 start");
             transform.position = new Vector3(-35.253f, 4.845f, 25.077f);
             UI_control.playtime = 30;
@@ -156,8 +153,6 @@ public class Move_key : MonoBehaviour
         isround2 = false;
         if (round2_end == true)
         {
-            //2라운드 시간저장
-            avr_time += UI_control.playtime;
             transform.position = new Vector3(-54.429f, 9.038f, 41.681f);
             UI_control.playtime = 45;
             camera2 = true;
@@ -172,8 +167,7 @@ public class Move_key : MonoBehaviour
         }
         if (round3_end == true)
         {
-            //3라운드 시간저장
-            avr_time += UI_control.playtime;
+
             SceneManager.LoadScene("Main_menu", LoadSceneMode.Single);
             round3_end = false;
             isround1 = true;
@@ -214,6 +208,7 @@ public class Move_key : MonoBehaviour
     IEnumerator Tigger_start(float delay)
     {
         Time.timeScale = 4;
+        err_time_save += delay;
         while (delay > 1.0f)
         {
             delay -= Time.deltaTime;
