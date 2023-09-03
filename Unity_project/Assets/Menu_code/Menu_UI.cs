@@ -44,7 +44,7 @@ public class Menu_UI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        menu_ID();
+        //menu_ID();
         Maze_OP();
         Saw_OP();
         Conveyor_OP();
@@ -134,7 +134,8 @@ public class Menu_UI : MonoBehaviour
     }
     public void Saw_OP()
     {
-        Saw_counter.text = "진행시간: " + Mathf.Floor(Move_key.avr_time / 3f * 100f) / 100f + "초";
+        Saw_counter.text = "진행시간: " + Move_key.avr_time /100f  + "초";
+        //"진행시간: " + Mathf.Floor(Move_key.avr_time / 3f * 100f) / 100f + "초";
         if (Move_key.two_hand_result)
         {
             if (Move_key.timeout < 1)
@@ -175,7 +176,7 @@ public class Menu_UI : MonoBehaviour
     {
 
         DMT_Go_missed.text = "놓친 횟수: " + DecisionMakingTest.Go_missed + "번";
-        DMT_AvgResult.text = "평균 입력시간 : " + DecisionMakingTest.AvgResult + "초";
+        //DMT_AvgResult.text = "평균 입력시간 : " + DecisionMakingTest.AvgResult + "초";
 
         if (DecisionMakingTest.isDMTEnded)
         {

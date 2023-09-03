@@ -56,7 +56,7 @@ namespace Login
                 // 이걸로 form에다가 로그인 정보 넣음.
                 form.AddField("username", username.text);
                 form.AddField("password", password.text);
-                ID_save = username.text;
+                
                 // form을 이용해서 해당 주소로 요청 보냄
                 UnityWebRequest www = UnityWebRequest.Post(url, form);
 
@@ -73,6 +73,7 @@ namespace Login
                     print(result.results.username);
                     print(result.results.token);
                     print(result.statusCode);
+                    //ID_save = username.text;
                     // 로그인 시에 result.results.token을 함께 건네줘야 함.
                     // 그래서 전역변수로 토큰을 저장함.
                     loginToken = result.results.token;
