@@ -86,6 +86,12 @@ public class Menu_UI : MonoBehaviour
         SceneManager.LoadScene("Conveyor_test", LoadSceneMode.Single);
     }
 
+    public void Conveyor_tuto()
+    {
+        Panel.SetActive(false);
+        SceneManager.LoadScene("Conveyor_test", LoadSceneMode.Single);
+    }
+
     public void Menu_DMT()
     {
         Panel.SetActive(false);
