@@ -44,18 +44,6 @@ public class SaveTestResult : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 게임종료. 전처리기를 이용해 에디터 아닐때 종료.
-    /// </summary>
-    public void GameExit()
-    {
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                Application.Quit();
-        #endif
-    }
-
     public void Save()
     {
 

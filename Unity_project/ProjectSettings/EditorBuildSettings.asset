@@ -39,17 +39,17 @@ EditorBuildSettings:
     path: Assets/Scenes/DST_tuto.unity
     guid: 199a938658b675b4893212bade1a283f
   - enabled: 0
-    path: Assets/Scenes/DMT_tuto_b.unity
-    guid: 42c3a2fc3e70b0b41ac6c678109d964a
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/DMT_test_b.unity
-    guid: 7a576c70a8742f74a8281e21a749dec3
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/DST_tuto_b.unity
-    guid: d4fb1880ba1cb3a47baa41527e5e1465
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/DST_test_b.unity
-    guid: f359c6d1a026a1640a69d133ad261f8c
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
