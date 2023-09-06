@@ -44,6 +44,7 @@ TagManager:
   - red_button
   - yellow_button
   - blue_button
+  - SaveButton
   layers:
   - Default
   - TransparentFX
