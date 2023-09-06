@@ -42,6 +42,7 @@ public class Conveyor_move : MonoBehaviour
         object_count = 0;
         object_tr = false;
         timer_start = false;
+        sr.material.color = Color.yellow;
     }
 
     void Update()
