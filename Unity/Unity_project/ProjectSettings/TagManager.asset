@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - start_point
+  - end_point
+  - wall
+  - start_map2
+  - end_map2
+  - start_map3
+  - end_map3
+  - mazer_trigger
+  - maze_end3
+  - maze_end2
+  - maze_end1
+  - tuto_end
+  - tutorial_trigger
+  - saw_limit
+  - saw_limit2
+  - saw_limit3
+  - detector
+  - conveyor_ob
+  - conveyor_dt
+  - conveyor_start
+  - Button
+  - DST_GamestartPannel
+  - DST_SnRText
+  - DisplayUserInput
+  - DST_Gamestartbutton
+  - DisplayQuestionText
+  - DMT_InputButton
+  - DMT_QuestionText
+  - DMT_GamestartButton
+  - DMT_GamestartPanel
+  - DMT_PracticeGamestartPanel
+  - DMT_PracticeGamestartButton
+  - DMT_PracticeQuestionText
+  - DMT_PracticeInputButton
+  - DST_PracticeGamestartbutton
+  - DST_PracticeGamestartPannel
+  - DST_InputButton
+  - red_button
+  - yellow_button
+  - blue_button
+  - SaveButton
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
